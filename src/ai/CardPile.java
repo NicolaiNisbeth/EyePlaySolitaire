@@ -1,6 +1,6 @@
 package ai;
 
-public class CardStack {
+public class CardPile {
     private static final class CardNode {
         CardNode next;
         CardNode prev;
@@ -16,7 +16,7 @@ public class CardStack {
     private CardNode firstVisible;
     private int invisibleCount;
 
-    public CardStack(Card... cards) {
+    public CardPile(Card... cards) {
         for (Card card : cards)
             addLast(card);
     }
