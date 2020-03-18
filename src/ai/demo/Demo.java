@@ -4,14 +4,14 @@ import ai.action.Action;
 import ai.state.Card;
 import ai.state.CardPile;
 import ai.state.State;
-import ai.state.Stockpile;
+import ai.state.Stock;
 
 import java.util.ArrayList;
 import java.util.Stack;
 
 public class Demo {
 
-    private static Deck deck;
+    private static DemoDeck deck;
 
     public static void main(String[] args) {
         State state = createDummyState();
@@ -26,7 +26,7 @@ public class Demo {
     }
 
     private static State createDummyState() {
-        deck = new Deck();
+        deck = new DemoDeck();
         CardPile[] cardPiles = new CardPile[7];
         cardPiles[0] = new CardPile(deck.draw());
         cardPiles[1] = new CardPile(null, deck.draw());
@@ -39,11 +39,11 @@ public class Demo {
         for (int i = 0; i < stockpileCards.length; i++) {
             stockpileCards[i] = deck.draw();
         }
-        Stockpile stockpile = new Stockpile(stockpileCards);
+        Stock stock = new Stock(stockpileCards);
         ArrayList<Stack<Card>> foundation = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             foundation.add(new Stack<>());
         }
-        return new State(stockpile, cardPiles, foundation);
+        return new State(stock, cardPiles, foundation);
     }
 }

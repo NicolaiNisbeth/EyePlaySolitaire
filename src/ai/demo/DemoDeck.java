@@ -2,12 +2,12 @@ package ai.demo;
 
 import ai.state.Card;
 
-public class Deck {
+public class DemoDeck {
 
     private int head = 0;
     private Card[] cards = new Card[52];
 
-    public Deck() {
+    public DemoDeck() {
         for (int i = 0; i < 13; i++) {
             for (int j = 0; j < 4; j++) {
                 cards[j*13+i] = new Card(i, j);

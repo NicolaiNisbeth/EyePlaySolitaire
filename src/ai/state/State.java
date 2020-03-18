@@ -1,7 +1,7 @@
 package ai.state;
 
 import ai.action.Action;
-import ai.action.PlayStockpileCardToCardPiles;
+import ai.action.StockToTableau;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,9 +10,8 @@ import java.util.Stack;
 
 public class State {
 
-
     //Bunken
-    private Stockpile stockpile;
+    private Stock stock;
 
     //Byggestabler
     private CardPile[] cardPiles;
@@ -20,8 +19,8 @@ public class State {
     //Grundbunker
     private ArrayList<Stack<Card>> foundations;
 
-    public State(Stockpile stockpile, CardPile[] cardPiles, ArrayList<Stack<Card>> foundations){
-        this.stockpile = stockpile;
+    public State(Stock stock, CardPile[] cardPiles, ArrayList<Stack<Card>> foundations){
+        this.stock = stock;
         this.cardPiles = cardPiles;
         this.foundations = foundations;
         foundations.get(0).size();
@@ -37,8 +36,8 @@ public class State {
 
     private List<Integer> findStockpilePlayableIndexes() {
         List<Integer> indices = new ArrayList<>();
-        int index = stockpile.getHead();
-        int size = stockpile.getCards().length;
+        int index = stock.getHead();
+        int size = stock.getCards().length;
         while(!indices.contains(index)){
             indices.add(index);
             index = (index + 3) % size;
@@ -48,7 +47,7 @@ public class State {
 
     private void addPlayStockpileCardToCardPilesActions(List<Action> actions, List<Integer> stockpilePlayableIndexes) {
         for (Integer integer : stockpilePlayableIndexes) {
-            Card card = stockpile.getCards()[integer];
+            Card card = stock.getCards()[integer];
             for (int i = 0; i < cardPiles.length; i++) {
                 CardPile cardPile = cardPiles[i];
                 Card first = cardPile.getFirstVisible().card;
@@ -57,7 +56,7 @@ public class State {
                         || ((card.getSuit() == Card.CLUB || card.getSuit() == Card.SPADE)
                         && (first.getSuit() == Card.DIAMOND || first.getSuit() == Card.HEART));
                 if(suitFits && first.getValue() == card.getValue() + 1){
-                    actions.add(new PlayStockpileCardToCardPiles(integer, i));
+                    actions.add(new StockToTableau(integer, i));
                 }
             }
         }
@@ -68,8 +67,8 @@ public class State {
     }
 
 
-    public Stockpile getStockpile() {
-        return stockpile;
+    public Stock getStock() {
+        return stock;
     }
 
     public CardPile[] getCardPiles() {
@@ -91,7 +90,7 @@ public class State {
     @Override
     public String toString() {
         return "State{" + "\n" +
-                "stockpile=" + stockpile + "\n" +
+                "stockpile=" + stock + "\n" +
                 ", cardPiles=" + Arrays.toString(cardPiles) + "\n" +
                 ", foundations=" + foundations + "\n" +
                 '}';

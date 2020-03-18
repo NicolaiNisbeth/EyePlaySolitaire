@@ -2,17 +2,17 @@ package ai.state;
 
 import java.util.Arrays;
 
-public class Stockpile {
+public class Stock {
 
     private Card[] cards;
     private int head = 2;
 
-    private Stockpile(int head, Card... cards) {
+    private Stock(int head, Card... cards) {
         this.cards = cards;
         this.head = head;
     }
 
-    public Stockpile(Card... cards) {
+    public Stock(Card... cards) {
         this.cards = cards;
     }
 
@@ -52,17 +52,17 @@ public class Stockpile {
         return cards;
     }
 
-    public Stockpile deepCopy(){
+    public Stock deepCopy(){
         Card[] cards = new Card[this.cards.length];
         for (int i = 0; i < this.cards.length; i++) {
             Card oldCard = this.cards[i];
             cards[i] = new Card(oldCard.getValue(), oldCard.getSuit());
         }
-        return new Stockpile(head, cards);
+        return new Stock(head, cards);
     }
 
-    public Stockpile shallowCopy() {
-        return new Stockpile(cards);
+    public Stock shallowCopy() {
+        return new Stock(cards);
     }
 
     @Override
