@@ -16,7 +16,7 @@ public class Foundation {
     }
 
     public void add(Card card){
-        sum += card.getValue();
+        sum++;
         stacks.get(card.getSuit()).add(card);
     }
 
