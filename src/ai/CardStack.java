@@ -22,7 +22,6 @@ public class CardStack {
         left = node;
     }
 
-    // null <-> null <-> 6 <-> 5 <-> 4 <-> 3
     private void addLast(Card card) {
         CardNode node = new CardNode(card);
         if (right == null) {
