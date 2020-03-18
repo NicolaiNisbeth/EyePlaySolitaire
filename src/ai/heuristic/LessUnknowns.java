@@ -4,7 +4,7 @@ import ai.state.State;
 
 public class LessUnknowns implements Heuristic {
     @Override
-    public int getEvaluation(State state) {
+    public int evaluate(State state) {
         return 0;
     }
 }
