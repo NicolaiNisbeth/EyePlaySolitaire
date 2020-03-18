@@ -1,7 +1,5 @@
 package ai;
 
-import java.util.*;
-
 public class CardStack {
     private CardNode left;
     private CardNode right;
@@ -24,10 +22,6 @@ public class CardStack {
         left = node;
     }
 
-    public boolean hasInvisible(){
-        return left != null && left.card == null;
-    }
-
     // null <-> null <-> 6 <-> 5 <-> 4 <-> 3
     private void addLast(Card card) {
         CardNode node = new CardNode(card);
@@ -38,6 +32,10 @@ public class CardStack {
             node.prev = right;
         }
         right = node;
+    }
+
+    public boolean hasInvisible(){
+        return left != null && left.card == null;
     }
 
     public int getInvisibleCount() {
@@ -55,22 +53,6 @@ public class CardStack {
             node = node.next;
         }
         return count;
-    }
-
-    public CardNode getLeft() {
-        return left;
-    }
-
-    public void setLeft(CardNode left) {
-        this.left = left;
-    }
-
-    public CardNode getRight() {
-        return right;
-    }
-
-    public void setRight(CardNode right) {
-        this.right = right;
     }
 
     public CardNode getFirstVisible() {
@@ -91,4 +73,22 @@ public class CardStack {
         }
         return index;
     }
+
+    public CardNode getLeft() {
+        return left;
+    }
+
+    public void setLeft(CardNode left) {
+        this.left = left;
+    }
+
+    public CardNode getRight() {
+        return right;
+    }
+
+    public void setRight(CardNode right) {
+        this.right = right;
+    }
+
+
 }
