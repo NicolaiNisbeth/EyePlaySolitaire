@@ -2,6 +2,8 @@ package ai;
 
 import ai.action.Action;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -14,9 +16,9 @@ public class State {
     private CardPile[] cardPiles;
 
     //Grundbunker
-    private Stack<Card>[] foundations;
+    private ArrayList<Stack<Card>> foundations;
 
-    public State(Stockpile stockpile, CardPile[] cardPiles, Stack<Card>[] foundations){
+    public State(Stockpile stockpile, CardPile[] cardPiles, ArrayList<Stack<Card>> foundations){
         this.stockpile = stockpile;
         this.cardPiles = cardPiles;
         this.foundations = foundations;
@@ -35,7 +37,15 @@ public class State {
         return cardPiles;
     }
 
-    public Stack<Card>[] getFoundations() {
+    public CardPile[] shallowCopyCardPiles() {
+        return Arrays.copyOf(cardPiles, cardPiles.length);
+    }
+
+    public ArrayList<Stack<Card>> getFoundations() {
         return foundations;
+    }
+
+    public ArrayList<Stack<Card>> shallowCopyFoundations() {
+        return new ArrayList<>(foundations);
     }
 }

@@ -1,11 +1,14 @@
 package ai;
 
-import java.util.Arrays;
-
 public class Stockpile {
 
     private Card[] cards;
     private int head = 2;
+
+    private Stockpile(int head, Card... cards) {
+        this.cards = cards;
+        this.head = head;
+    }
 
     public Stockpile(Card... cards) {
         this.cards = cards;
@@ -45,8 +48,16 @@ public class Stockpile {
         return cards;
     }
 
-    public Stockpile copy(){
-        Card[] cards = Arrays.copyOf(this.cards, this.cards.length);
+    public Stockpile deepCopy(){
+        Card[] cards = new Card[this.cards.length];
+        for (int i = 0; i < this.cards.length; i++) {
+            Card oldCard = this.cards[i];
+            cards[i] = new Card(oldCard.getValue(), oldCard.getSuit());
+        }
+        return new Stockpile(head, cards);
+    }
+
+    public Stockpile shallowCopy() {
         return new Stockpile(cards);
     }
 }

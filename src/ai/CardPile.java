@@ -2,26 +2,26 @@ package ai;
 
 public class CardPile {
     private static final class CardNode {
+
         CardNode next;
         CardNode prev;
         Card card;
-
         public CardNode(Card card) {
             this.card = card;
         }
-    }
 
+    }
     private CardNode left;
+
     private CardNode right;
     private CardNode firstVisible;
     private int invisibleCount;
-
     public CardPile(Card... cards) {
         for (Card card : cards)
             addLast(card);
     }
 
-    private void addFirst(Card card) {
+    public void addFirst(Card card) {
         CardNode node = new CardNode(card);
         if (left == null) {
             right = node;
@@ -32,7 +32,7 @@ public class CardPile {
         left = node;
     }
 
-    private void addLast(Card card) {
+    public void addLast(Card card) {
         CardNode node = new CardNode(card);
         if (right == null) {
             left = node;
@@ -97,6 +97,16 @@ public class CardPile {
 
     public void setRight(CardNode right) {
         this.right = right;
+    }
+
+    public CardPile deepCopy() {
+        CardPile copy = new CardPile();
+        CardNode index = left;
+        while(index != null){
+            copy.addLast(index.card.copy());
+            index = index.next;
+        }
+        return copy;
     }
 
 
