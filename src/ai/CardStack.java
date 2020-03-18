@@ -1,6 +1,16 @@
 package ai;
 
 public class CardStack {
+    private static final class CardNode {
+        CardNode next;
+        CardNode prev;
+        Card card;
+
+        public CardNode(Card card) {
+            this.card = card;
+        }
+    }
+
     private CardNode left;
     private CardNode right;
     private CardNode firstVisible;
