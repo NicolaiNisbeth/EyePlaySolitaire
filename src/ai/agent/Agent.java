@@ -1,6 +1,6 @@
 package ai.agent;
 
-import ai.State;
+import ai.state.State;
 import ai.action.Action;
 import ai.heuristic.Heuristic;
 

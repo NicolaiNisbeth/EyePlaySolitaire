@@ -1,4 +1,6 @@
-package ai;
+package ai.demo;
+
+import ai.state.Card;
 
 public class Deck {
 

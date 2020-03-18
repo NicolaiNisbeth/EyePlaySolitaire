@@ -1,9 +1,13 @@
 package ai.action;
 
-import ai.Card;
-import ai.CardPile;
-import ai.State;
-import ai.Stockpile;
+import ai.state.Card;
+import ai.state.CardPile;
+import ai.state.State;
+import ai.state.Stockpile;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PlayStockpileCardToCardPiles implements Action {
 

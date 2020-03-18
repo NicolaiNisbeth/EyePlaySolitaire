@@ -1,4 +1,4 @@
-package ai;
+package ai.state;
 
 import ai.action.Action;
 import ai.action.PlayStockpileCardToCardPiles;

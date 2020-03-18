@@ -1,7 +1,7 @@
 package ai.action;
 
-import ai.State;
-import ai.Stockpile;
+import ai.state.State;
+import ai.state.Stockpile;
 
 public class ThreeNextCards implements Action {
     @Override

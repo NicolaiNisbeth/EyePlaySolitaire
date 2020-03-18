@@ -1,4 +1,4 @@
-package ai;
+package ai.state;
 
 public class Card {
 

@@ -1,6 +1,10 @@
-package ai;
+package ai.demo;
 
 import ai.action.Action;
+import ai.state.Card;
+import ai.state.CardPile;
+import ai.state.State;
+import ai.state.Stockpile;
 
 import java.util.ArrayList;
 import java.util.Stack;

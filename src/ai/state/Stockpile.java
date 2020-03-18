@@ -1,4 +1,4 @@
-package ai;
+package ai.state;
 
 import java.util.Arrays;
 

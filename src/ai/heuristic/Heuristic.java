@@ -1,6 +1,6 @@
 package ai.heuristic;
 
-import ai.State;
+import ai.state.State;
 
 public interface Heuristic {
     int getEvaluation(State state);
