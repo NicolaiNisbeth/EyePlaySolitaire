@@ -24,6 +24,7 @@ public class State {
         this.stockpile = stockpile;
         this.cardPiles = cardPiles;
         this.foundations = foundations;
+        foundations.get(0).size();
     }
 
     public List<Action> getActions() {
