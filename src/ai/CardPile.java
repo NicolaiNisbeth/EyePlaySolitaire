@@ -10,12 +10,17 @@ public class CardPile {
             this.card = card;
         }
 
+        @Override
+        public String toString() {
+            String string = card == null ? "null" : card.toString();
+            return " <- " + string + " -> ";
+        }
     }
     private CardNode left;
 
     private CardNode right;
     private CardNode firstVisible;
-    private int invisibleCount;
+    private int invisibleCount = -1;
     public CardPile(Card... cards) {
         for (Card card : cards)
             addLast(card);
@@ -109,5 +114,16 @@ public class CardPile {
         return copy;
     }
 
+    @Override
+    public String toString() {
+        getFirstVisible();
+        getInvisibleCount();
 
+        return "CardPile{" +
+                "left=" + left +
+                ", right=" + right +
+                ", firstVisible=" + firstVisible +
+                ", invisibleCount=" + invisibleCount +
+                '}' + "\n";
+    }
 }

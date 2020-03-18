@@ -23,4 +23,12 @@ public class Card {
     public Card copy() {
         return new Card(value, suit);
     }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "value=" + value +
+                ", suit=" + suit +
+                '}';
+    }
 }

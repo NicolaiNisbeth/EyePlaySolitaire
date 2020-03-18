@@ -9,6 +9,7 @@ import java.util.Stack;
 
 public class State {
 
+
     //Bunken
     private Stockpile stockpile;
 
@@ -74,10 +75,10 @@ public class State {
 
     @Override
     public String toString() {
-        return "State{" +
-                "stockpile=" + stockpile +
-                ", cardPiles=" + Arrays.toString(cardPiles) +
-                ", foundations=" + foundations +
+        return "State{" + "\n" +
+                "stockpile=" + stockpile + "\n" +
+                ", cardPiles=" + Arrays.toString(cardPiles) + "\n" +
+                ", foundations=" + foundations + "\n" +
                 '}';
     }
 }
