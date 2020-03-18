@@ -1,5 +1,7 @@
 package ai;
 
+import java.util.Arrays;
+
 public class Stockpile {
 
     private Card[] cards;
@@ -12,7 +14,7 @@ public class Stockpile {
     public Card takeCard(int index) {
         Card card = cards[index];
         removeCard(index);
-        head--;
+        head = Math.abs(--head % 3);
         return card;
     }
 
@@ -31,11 +33,20 @@ public class Stockpile {
         cards = newCards;
     }
 
+    public void goNext() {
+        head = (head + 3) % cards.length;
+    }
+
     public int getHead() {
-        return Math.abs(head % 3);
+        return head;
     }
 
     public Card[] getCards() {
         return cards;
+    }
+
+    public Stockpile copy(){
+        Card[] cards = Arrays.copyOf(this.cards, this.cards.length);
+        return new Stockpile(cards);
     }
 }

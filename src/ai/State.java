@@ -8,13 +8,13 @@ import java.util.Stack;
 public class State {
 
     //Bunken
-    Stockpile stockpile;
+    private Stockpile stockpile;
 
     //Byggestabler
-    CardPile[] cardPiles;
+    private CardPile[] cardPiles;
 
     //Grundbunker
-    Stack<Card>[] foundations;
+    private Stack<Card>[] foundations;
 
     public State(Stockpile stockpile, CardPile[] cardPiles, Stack<Card>[] foundations){
         this.stockpile = stockpile;
@@ -27,4 +27,15 @@ public class State {
     }
 
 
+    public Stockpile getStockpile() {
+        return stockpile;
+    }
+
+    public CardPile[] getCardPiles() {
+        return cardPiles;
+    }
+
+    public Stack<Card>[] getFoundations() {
+        return foundations;
+    }
 }
