@@ -48,4 +48,13 @@ public class State {
     public ArrayList<Stack<Card>> shallowCopyFoundations() {
         return new ArrayList<>(foundations);
     }
+
+    @Override
+    public String toString() {
+        return "State{" +
+                "stockpile=" + stockpile +
+                ", cardPiles=" + Arrays.toString(cardPiles) +
+                ", foundations=" + foundations +
+                '}';
+    }
 }
