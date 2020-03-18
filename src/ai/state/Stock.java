@@ -1,6 +1,8 @@
 package ai.state;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Stock {
 
@@ -38,6 +40,17 @@ public class Stock {
             }
         }
         cards = newCards;
+    }
+
+    private List<Integer> findStockpilePlayableIndexes() {
+        List<Integer> indices = new ArrayList<>();
+        int index = getHead();
+        int size = getCards().length;
+        while(!indices.contains(index)){
+            indices.add(index);
+            index = (index + 3) % size;
+        }
+        return indices;
     }
 
     public void goNext() {
