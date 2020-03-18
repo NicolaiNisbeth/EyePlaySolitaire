@@ -1,6 +1,7 @@
 package ai;
 
 import ai.action.Action;
+import ai.action.PlayStockpileCardToCardPiles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +46,20 @@ public class State {
     }
 
     private void addPlayStockpileCardToCardPilesActions(List<Action> actions, List<Integer> stockpilePlayableIndexes) {
-
+        for (Integer integer : stockpilePlayableIndexes) {
+            Card card = stockpile.getCards()[integer];
+            for (int i = 0; i < cardPiles.length; i++) {
+                CardPile cardPile = cardPiles[i];
+                Card first = cardPile.getFirstVisible().card;
+                boolean suitFits = ((card.getSuit() == Card.DIAMOND || card.getSuit() == Card.HEART)
+                        && (first.getSuit() == Card.CLUB || first.getSuit() == Card.SPADE))
+                        || ((card.getSuit() == Card.CLUB || card.getSuit() == Card.SPADE)
+                        && (first.getSuit() == Card.DIAMOND || first.getSuit() == Card.HEART));
+                if(suitFits && first.getValue() == card.getValue() + 1){
+                    actions.add(new PlayStockpileCardToCardPiles(integer, i));
+                }
+            }
+        }
     }
 
     private void addPlayStockpileCardToFoundationsActions(List<Action> actions, List<Integer> stockpilePlayableIndexes) {

@@ -1,5 +1,7 @@
 package ai;
 
+import ai.action.Action;
+
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -10,6 +12,13 @@ public class Demo {
     public static void main(String[] args) {
         State state = createDummyState();
         System.out.println(state);
+        for(Action action : state.getActions()){
+            System.out.println(action);
+        }
+        if(state.getActions().size() > 0){
+            State newS = state.getActions().get(0).getResult(state);
+            System.out.println(newS);
+        }
     }
 
     private static State createDummyState() {

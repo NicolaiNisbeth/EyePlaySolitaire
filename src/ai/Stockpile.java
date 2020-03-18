@@ -19,7 +19,9 @@ public class Stockpile {
     public Card takeCard(int index) {
         Card card = cards[index];
         removeCard(index);
-        head = Math.abs(--head % 3);
+        head = index - 1;
+        if(head == -1)
+            head = 2;
         return card;
     }
 

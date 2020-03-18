@@ -25,4 +25,12 @@ public class PlayStockpileCardToCardPiles implements Action {
         cardPiles[cardPileIndex] = newCardPile;
         return new State(stockpile, cardPiles, state.getFoundations());
     }
+
+    @Override
+    public String toString() {
+        return "PlayStockpileCardToCardPiles{" +
+                "index=" + index +
+                ", cardPileIndex=" + cardPileIndex +
+                '}';
+    }
 }

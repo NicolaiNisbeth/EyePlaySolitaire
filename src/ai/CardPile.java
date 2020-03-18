@@ -1,7 +1,7 @@
 package ai;
 
 public class CardPile {
-    private static final class CardNode {
+    public static final class CardNode {
 
         CardNode next;
         CardNode prev;
@@ -12,8 +12,7 @@ public class CardPile {
 
         @Override
         public String toString() {
-            String string = card == null ? "null" : card.toString();
-            return " <- " + string + " -> ";
+            return card == null ? "null" : card.toString();
         }
     }
     private CardNode left;
@@ -108,7 +107,11 @@ public class CardPile {
         CardPile copy = new CardPile();
         CardNode index = left;
         while(index != null){
-            copy.addLast(index.card.copy());
+            if(index.card == null){
+                copy.addLast(null);
+            } else {
+                copy.addLast(index.card.copy());
+            }
             index = index.next;
         }
         return copy;
