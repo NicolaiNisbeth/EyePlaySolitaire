@@ -1,7 +1,5 @@
 package ai;
 
-import java.util.Arrays;
-
 public class Stockpile {
 
     private Card[] cards;
@@ -63,11 +61,5 @@ public class Stockpile {
         return new Stockpile(cards);
     }
 
-    @Override
-    public String toString() {
-        return "Stockpile{" +
-                "cards=" + Arrays.toString(cards) +
-                ", head=" + head +
-                '}';
-    }
+
 }

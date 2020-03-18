@@ -25,7 +25,30 @@ public class State {
     }
 
     public List<Action> getActions() {
-        return null;
+        List<Action> actions = new ArrayList<>();
+        List<Integer> stockpilePlayableIndexes = findStockpilePlayableIndexes();
+        addPlayStockpileCardToCardPilesActions(actions, stockpilePlayableIndexes);
+        addPlayStockpileCardToFoundationsActions(actions, stockpilePlayableIndexes);
+        return actions;
+    }
+
+    private List<Integer> findStockpilePlayableIndexes() {
+        List<Integer> indices = new ArrayList<>();
+        int index = stockpile.getHead();
+        int size = stockpile.getCards().length;
+        while(!indices.contains(index)){
+            indices.add(index);
+            index = (index + 3) % size;
+        }
+        return indices;
+    }
+
+    private void addPlayStockpileCardToCardPilesActions(List<Action> actions, List<Integer> stockpilePlayableIndexes) {
+
+    }
+
+    private void addPlayStockpileCardToFoundationsActions(List<Action> actions, List<Integer> stockpilePlayableIndexes) {
+
     }
 
 
