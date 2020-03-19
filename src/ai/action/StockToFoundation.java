@@ -1,38 +1,41 @@
 package ai.action;
 
 import ai.state.Card;
+import ai.state.Foundation;
+import ai.state.Producer;
 import ai.state.State;
 import ai.state.Stock;
+import ai.state.Tableau;
 
-import java.util.ArrayList;
-import java.util.Stack;
+import java.util.function.Consumer;
 
 public class StockToFoundation implements Action {
 
-    private int index;
+    private Card card;
 
-    public StockToFoundation(int index) {
-        this.index = index;
+    public StockToFoundation(Card card) {
+        this.card = card;
     }
 
     @Override
     public State getResult(State state) {
-        /*
-    Stock stock = state.getStock().deepCopy();
-        Card card = stock.takeCard(index);
-        ArrayList<Stack<Card>> foundations = state.shallowCopyFoundations();
-        Stack<Card> foundation = shallowCopyFoundation(foundations.get(card.getSuit()));
-        foundation.push(card);
-        foundations.remove(foundations.get(card.getSuit()));
-        foundations.add(foundation);
-        return new State(stock, state.getCardPiles(), foundations);
-    */
-        return null;
+        Stock stock = state.getStock();
+        Tableau tableau = state.getTableau();
+        Foundation foundation = state.getFoundation();
+
+        Consumer<Stock> removeCardFromStock = s -> s.removeCard(card);
+        stock = Producer.produceStock(stock, removeCardFromStock);
+
+        Consumer<Foundation> addCardToFoundation = f -> f.add(card);
+        foundation = Producer.produceFoundation(foundation, addCardToFoundation);
+
+        return new State(stock, tableau, foundation);
     }
 
-    private Stack<Card> shallowCopyFoundation(Stack<Card> cards) {
-        Stack<Card> newStack = new Stack<>();
-        newStack.addAll(cards);
-        return newStack;
+    @Override
+    public String toString() {
+        return "StockToFoundation{" +
+                "card=" + card +
+                '}';
     }
 }

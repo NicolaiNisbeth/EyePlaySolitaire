@@ -26,10 +26,11 @@ public class Tableau {
         stacks.get(index).push(card);
     }
 
-    public void remove(int index) {
+    public Card remove(int index) {
         Card card = stacks.get(index).pop();
         if(card != null)
             sum += card.getValue();
+        return card;
     }
 
     public int getSum() {

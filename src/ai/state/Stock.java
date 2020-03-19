@@ -27,6 +27,10 @@ public class Stock {
         return card;
     }
 
+    public void removeCard(Card card){
+
+    }
+
     private void removeCard(int toRemove) {
         if(toRemove < 0)
             throw new IllegalArgumentException("Index may not be negative");

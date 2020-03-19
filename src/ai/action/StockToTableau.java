@@ -1,37 +1,44 @@
 package ai.action;
 
+import ai.state.Card;
+import ai.state.Foundation;
+import ai.state.Producer;
 import ai.state.State;
+import ai.state.Stock;
+import ai.state.Tableau;
+
+import java.util.function.Consumer;
 
 public class StockToTableau implements Action {
 
-    private int index;
-    private int cardPileIndex;
+    private Card card;
+    private int tableauIndex;
 
-    public StockToTableau(int stockpileIndex, int cardPileIndex) {
-        this.index = stockpileIndex;
-        this.cardPileIndex = cardPileIndex;
+    public StockToTableau(Card card, int tableauIndex) {
+        this.card = card;
+        this.tableauIndex = tableauIndex;
     }
 
     @Override
     public State getResult(State state) {
-        /*
-        Stock stock = state.getStock().deepCopy();
-        Card card = stock.takeCard(index);
-        CardPile[] cardPiles = state.shallowCopyCardPiles();
-        CardPile newCardPile = cardPiles[cardPileIndex].deepCopy();
-        newCardPile.addLast(card);
-        cardPiles[cardPileIndex] = newCardPile;
-        return new State(stock, cardPiles, state.getFoundations());
+        Stock stock = state.getStock();
+        Tableau tableau = state.getTableau();
+        Foundation foundation = state.getFoundation();
 
-         */
-        return null;
+        Consumer<Stock> removeCardFromStock = s -> s.removeCard(card);
+        stock = Producer.produceStock(stock, removeCardFromStock);
+
+        Consumer<Tableau> addCardToTableau = t -> t.add(card, tableauIndex);
+        tableau = Producer.produceTableau(tableau, addCardToTableau);
+
+        return new State(stock, tableau, foundation);
     }
 
     @Override
     public String toString() {
-        return "PlayStockpileCardToCardPiles{" +
-                "index=" + index +
-                ", cardPileIndex=" + cardPileIndex +
+        return "StockToTableau{" +
+                "card=" + card +
+                ", tableauIndex=" + tableauIndex +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package ai.state;
 
+import java.util.Objects;
+
 public class Card {
 
     public static final int CLUB = 0, DIAMOND = 1, HEART = 2, SPADE = 3;
@@ -31,4 +33,14 @@ public class Card {
                 ", suit=" + suit +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return value == card.value &&
+                suit == card.suit;
+    }
+
 }

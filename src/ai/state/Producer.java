@@ -3,13 +3,13 @@ package ai.state;
 import java.util.function.Consumer;
 
 public class Producer {
-    public void produceStock(Stock stock, Consumer<Stock> consumer){
-
+    public static Stock produceStock(Stock stock, Consumer<Stock> consumer){
+        return null;
     }
-    public void produceTableau(Tableau tableau, Consumer<Tableau> consumer){
-
+    public static Tableau produceTableau(Tableau tableau, Consumer<Tableau> consumer){
+        return null;
     }
-    public void produceFoundation(Foundation foundation, Consumer<Foundation> consumer){
-
+    public static Foundation produceFoundation(Foundation foundation, Consumer<Foundation> consumer){
+        return null;
     }
 }
