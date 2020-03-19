@@ -1,8 +1,6 @@
 package ai.state;
 
-import java.util.Objects;
-
-public class Card {
+public class Card implements Comparable<Card>{
 
     public static final int CLUB = 0, DIAMOND = 1, HEART = 2, SPADE = 3;
 
@@ -43,4 +41,11 @@ public class Card {
                 suit == card.suit;
     }
 
+    @Override
+    public int compareTo(Card other) {
+        return Integer.compare(
+                suit * 13 + value,
+                other.suit * 13 + other.value
+        );
+    }
 }
