@@ -4,6 +4,7 @@ import ai.action.Action;
 import ai.action.StockToFoundation;
 import ai.action.StockToTableau;
 import ai.action.TableauToFoundation;
+import ai.action.TableauToTableau;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +69,35 @@ public class ActionFinder {
     }
 
     private void addTableauToTableauActions(Tableau tableau, List<Action> actions) {
+        List<Stack<Card>> stacks = tableau.getStacks();
+        List<Card> targets = new ArrayList<>();
+        for(Stack<Card> stack : stacks) {
+            targets.add(stack.peek());
+        }
 
+        for (int i = 0; i < stacks.size(); i++) {
+            Stack<Card> source = stacks.get(i);
+            for(Card card : source){
+                if(card == null) continue;
+                for (int j = 0; j < targets.size(); j++) {
+                    if(j == i) continue;
+                    Card target = targets.get(j);
+                    if(fitsOnTableauCard(card, target))
+                        actions.add(new TableauToTableau(i, j, card));
+                }
+            }
+
+        }
     }
+
+    private boolean fitsOnTableauCard(Card card, Card target) {
+        if(target == null && card.getValue() == 13)
+            return true;
+        if(target == null)
+            return false;
+        return card.getValue() == target.getValue() - 1 && card.getColour() != target.getColour();
+    }
+
 
     private boolean fitsOnFoundation(Card card, Foundation foundation){
         int suit = card.getSuit();
