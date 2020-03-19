@@ -9,77 +9,34 @@ public class Stock {
     private Card[] cards;
     private int head = 2;
 
-    private Stock(int head, Card... cards) {
-        this.cards = cards;
-        this.head = head;
-    }
-
     public Stock(Card... cards) {
         this.cards = cards;
     }
 
-    public Card takeCard(int index) {
-        Card card = cards[index];
-        removeCard(index);
-        head = index - 1;
-        if(head == -1)
-            head = 2;
-        return card;
-    }
-
-    public void removeCard(Card card){
-
-    }
-
-    private void removeCard(int toRemove) {
-        if(toRemove < 0)
-            throw new IllegalArgumentException("Index may not be negative");
-
+    public void removeCard(Card toRemove){
         Card[] newCards = new Card[cards.length-1];
-        for (int i = 0; i < cards.length; i++) {
-            if(i > toRemove){
-                newCards[i-1] = cards[i];
-            } else {
-                newCards[i] = cards[i];
-            }
+        int i = 0;
+
+        for(Card card : cards){
+            if(card == toRemove)
+                head = i-1;
+            else
+                newCards[i++] = card;
         }
+
         cards = newCards;
     }
 
-    private List<Integer> findStockpilePlayableIndexes() {
-        List<Integer> indices = new ArrayList<>();
-        int index = getHead();
-        int size = getCards().length;
-        while(!indices.contains(index)){
-            indices.add(index);
-            index = (index + 3) % size;
-        }
-        return indices;
-    }
+    private List<Card> showOptions() {
+        List<Card> availableCards = new ArrayList<>();
+        int index = head;
 
-    public void goNext() {
-        head = (head + 3) % cards.length;
-    }
+        do {
+            availableCards.add(cards[index]);
+            index = (index + 3) % cards.length;
+        } while (index != head);
 
-    public int getHead() {
-        return head;
-    }
-
-    public Card[] getCards() {
-        return cards;
-    }
-
-    public Stock deepCopy(){
-        Card[] cards = new Card[this.cards.length];
-        for (int i = 0; i < this.cards.length; i++) {
-            Card oldCard = this.cards[i];
-            cards[i] = new Card(oldCard.getValue(), oldCard.getSuit());
-        }
-        return new Stock(head, cards);
-    }
-
-    public Stock shallowCopy() {
-        return new Stock(cards);
+        return availableCards;
     }
 
     @Override

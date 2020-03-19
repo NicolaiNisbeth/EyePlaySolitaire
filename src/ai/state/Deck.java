@@ -20,19 +20,20 @@ public class Deck {
         return this.remainingCards;
     }
 
-    public void removeCard(Card card){
-        int index = binarySearch(0, remainingCards.length-1, card);
-        Card[] updatedCards = new Card[remainingCards.length - 1];
-        for (int i = 0, j = 0; i < remainingCards.length; i++, j++) {
-            if(i == index)
-                j--;
-            else
-                updatedCards[j] = remainingCards[i];
-        }
-        remainingCards = updatedCards;
+    public void removeCard(Card toRemove){
+        Card[] newCards = new Card[remainingCards.length-1];
+        int i = 0;
+
+        for(Card card : remainingCards)
+            if(card != toRemove)
+                newCards[i++] = card;
+
+        remainingCards = newCards;
     }
 
     private int binarySearch(int left, int right, Card target) {
+        if(right == 0) return -1;
+
         int middle = left + (right - 1) / 2;
         if(remainingCards[middle] == target)
             return middle;
