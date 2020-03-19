@@ -6,18 +6,23 @@ import java.util.Stack;
 
 public class Foundation {
     private List<Stack<Card>> stacks = new ArrayList<>();
+    private int[] sizes;
     private int sum;
 
     public Foundation(){
-        stacks.add(new Stack<>());
-        stacks.add(new Stack<>());
-        stacks.add(new Stack<>());
-        stacks.add(new Stack<>());
+        int suits = 4;
+        sizes = new int[suits];
+
+        for (int i = 0; i < suits; i++)
+            stacks.add(new Stack<>());
+
     }
 
     public void add(Card card){
+        int index = card.getSuit();
+        stacks.get(index).add(card);
+        sizes[index]++;
         sum++;
-        stacks.get(card.getSuit()).add(card);
     }
 
     public int getSum() {
@@ -25,6 +30,13 @@ public class Foundation {
     }
 
     public int getLargestDifference(){
-        return -1;
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+        for(int size : sizes){
+            if(size < min)
+                min = size;
+            if(size > max)
+                max = size;
+        }
+        return max - min;
     }
 }
