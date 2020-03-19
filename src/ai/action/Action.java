@@ -2,6 +2,8 @@ package ai.action;
 
 import ai.state.State;
 
+import java.util.Collection;
+
 public interface Action {
-    State getResult(State state);
+    Collection<State> getResult(State state);
 }

@@ -7,6 +7,8 @@ import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.function.Consumer;
 
 public class StockToTableau implements Action {
@@ -20,18 +22,19 @@ public class StockToTableau implements Action {
     }
 
     @Override
-    public State getResult(State state) {
-        Stock stock = state.getStock();
-        Tableau tableau = state.getTableau();
-        Foundation foundation = state.getFoundation();
+    public Collection<State> getResult(State state) {
+        Collection<State> results = new HashSet<>();
 
+        Stock stock = state.getStock();
         Consumer<Stock> removeCardFromStock = s -> s.removeCard(card);
         stock = Producer.produceStock(stock, removeCardFromStock);
 
+        Tableau tableau = state.getTableau();
         Consumer<Tableau> addCardToTableau = t -> t.add(card, tableauIndex);
         tableau = Producer.produceTableau(tableau, addCardToTableau);
 
-        return new State(stock, tableau, foundation);
+        results.add(new State(stock, tableau, state.getFoundation()));
+        return results;
     }
 
     @Override

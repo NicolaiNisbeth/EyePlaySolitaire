@@ -7,6 +7,8 @@ import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Stack;
 import java.util.function.Consumer;
 
@@ -23,7 +25,9 @@ public class TableauToTableau implements Action {
     }
 
     @Override
-    public State getResult(State state) {
+    public Collection<State> getResult(State state) {
+        Collection<State> results = new HashSet<>();
+
         Stock stock = state.getStock();
         Tableau tableau = state.getTableau();
         Foundation foundation = state.getFoundation();
@@ -41,7 +45,8 @@ public class TableauToTableau implements Action {
         tableau = Producer.produceTableau(tableau, takeCardsFromTableau);
         tableau = Producer.produceTableau(tableau, addCardsToTableau);
 
-        return new State(stock, tableau, foundation);
+        results.add(new State(stock, tableau, foundation)); //TODO: Flip card randomly add all!
+        return results;
     }
 
     @Override
