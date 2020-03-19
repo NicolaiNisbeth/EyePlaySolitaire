@@ -11,12 +11,12 @@ import java.util.function.Consumer;
 
 public class TableauToFoundation implements Action {
 
-    private int tableauIndex;
     private Card card;
+    private int tableauIndex;
 
-    public TableauToFoundation(int tableauIndex, Card card){
-        this.tableauIndex = tableauIndex;
+    public TableauToFoundation(Card card, int tableauIndex){
         this.card = card;
+        this.tableauIndex = tableauIndex;
     }
 
     @Override

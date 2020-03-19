@@ -8,7 +8,7 @@ public class Deck {
 
     public Deck(){
         remainingCards = new Card[52];
-        for (int i = 0; i < 13; i++){
+        for (int i = 1; i <= 13; i++){
             for (int j = 0; j < 4; j++){
                 remainingCards[j*13+i] = new Card(i, j);
             }

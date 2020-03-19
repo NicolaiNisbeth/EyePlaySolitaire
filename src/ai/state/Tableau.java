@@ -37,4 +37,8 @@ public class Tableau {
         return sum;
     }
 
+    public List<Stack<Card>> getStacks(){
+        return stacks;
+    }
+
 }

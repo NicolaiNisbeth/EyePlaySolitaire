@@ -3,6 +3,7 @@ package ai.state;
 public class Card implements Comparable<Card>{
 
     public static final int CLUB = 0, DIAMOND = 1, HEART = 2, SPADE = 3;
+    public static final int BLACK = 0, RED = 1;
 
     private int value;
     private int suit;
@@ -20,8 +21,8 @@ public class Card implements Comparable<Card>{
         return suit;
     }
 
-    public Card copy() {
-        return new Card(value, suit);
+    public int getColour(){
+        return suit == HEART || suit == DIAMOND ? RED : BLACK;
     }
 
     @Override

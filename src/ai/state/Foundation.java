@@ -25,6 +25,10 @@ public class Foundation {
         sum++;
     }
 
+    public Card peek(int index){
+        return stacks.get(index).peek();
+    }
+
     public int getSum() {
         return sum;
     }

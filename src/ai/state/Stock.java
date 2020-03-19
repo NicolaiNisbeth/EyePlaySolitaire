@@ -27,7 +27,7 @@ public class Stock {
         cards = newCards;
     }
 
-    private List<Card> showOptions() {
+    public List<Card> showOptions() {
         List<Card> availableCards = new ArrayList<>();
         int index = head;
 
