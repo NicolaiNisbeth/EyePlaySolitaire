@@ -1,9 +1,6 @@
 package ai.action;
 
-import ai.state.Card;
-import ai.state.CardPile;
 import ai.state.State;
-import ai.state.Stock;
 
 public class StockToTableau implements Action {
 
@@ -17,6 +14,7 @@ public class StockToTableau implements Action {
 
     @Override
     public State getResult(State state) {
+        /*
         Stock stock = state.getStock().deepCopy();
         Card card = stock.takeCard(index);
         CardPile[] cardPiles = state.shallowCopyCardPiles();
@@ -24,6 +22,9 @@ public class StockToTableau implements Action {
         newCardPile.addLast(card);
         cardPiles[cardPileIndex] = newCardPile;
         return new State(stock, cardPiles, state.getFoundations());
+
+         */
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ai.agent;
 
+import ai.state.ActionFinder;
 import ai.state.State;
 import ai.action.Action;
 import ai.heuristic.Heuristic;
@@ -10,7 +11,8 @@ public class RandomAgent implements Agent {
 
     @Override
     public Action getAction(State state) {
-        List<Action> actionList = state.getActions();
+        ActionFinder finder = new ActionFinder();
+        List<Action> actionList = finder.getActions(state);
         int count = actionList.size();
         int choice = (int) (Math.random() * count);
         return actionList.get(choice);

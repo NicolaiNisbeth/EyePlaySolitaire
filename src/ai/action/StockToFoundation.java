@@ -17,7 +17,8 @@ public class StockToFoundation implements Action {
 
     @Override
     public State getResult(State state) {
-        Stock stock = state.getStock().deepCopy();
+        /*
+    Stock stock = state.getStock().deepCopy();
         Card card = stock.takeCard(index);
         ArrayList<Stack<Card>> foundations = state.shallowCopyFoundations();
         Stack<Card> foundation = shallowCopyFoundation(foundations.get(card.getSuit()));
@@ -25,6 +26,8 @@ public class StockToFoundation implements Action {
         foundations.remove(foundations.get(card.getSuit()));
         foundations.add(foundation);
         return new State(stock, state.getCardPiles(), foundations);
+    */
+        return null;
     }
 
     private Stack<Card> shallowCopyFoundation(Stack<Card> cards) {
