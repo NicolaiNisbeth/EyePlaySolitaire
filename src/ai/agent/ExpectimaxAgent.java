@@ -17,6 +17,9 @@ public class ExpectimaxAgent implements Agent {
         int maxValue = Integer.MIN_VALUE;
         Action maxAction = null;
 
+        //TODO: Collection!
+
+
         for(Action action : actionFinder.getActions(state)){
             /*
             State child = action.getResult(state);
