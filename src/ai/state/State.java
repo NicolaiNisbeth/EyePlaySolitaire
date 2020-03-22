@@ -7,11 +7,13 @@ public class State {
     private Stock stock;
     private Tableau tableau;
     private Foundation foundation;
+    private RemainingCards remainingCards;
 
-    public State(Stock stock, Tableau tableau, Foundation foundation){
+    public State(Stock stock, Tableau tableau, Foundation foundation, RemainingCards remainingCards){
         this.stock = stock;
         this.tableau = tableau;
         this.foundation = foundation;
+        this.remainingCards = remainingCards;
     }
 
     public Stock getStock() {
@@ -24,6 +26,10 @@ public class State {
 
     public Foundation getFoundation() {
         return foundation;
+    }
+
+    public RemainingCards getRemainingCards() {
+        return remainingCards;
     }
 
     @Override

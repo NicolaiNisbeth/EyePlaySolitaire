@@ -3,6 +3,7 @@ package ai.action;
 import ai.state.Card;
 import ai.state.Foundation;
 import ai.state.Producer;
+import ai.state.RemainingCards;
 import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
@@ -45,7 +46,13 @@ public class TableauToTableau implements Action {
         tableau = Producer.produceTableau(tableau, takeCardsFromTableau);
         tableau = Producer.produceTableau(tableau, addCardsToTableau);
 
-        results.add(new State(stock, tableau, foundation)); //TODO: Flip card randomly add all!
+        RemainingCards remainingCards = state.getRemainingCards();
+        for(Card card : remainingCards){
+            RemainingCards copy = remainingCards.copy();
+            copy.removeCard(card);
+            results.add(new State(stock, tableau, foundation, copy));
+        }
+
         return results;
     }
 

@@ -9,7 +9,6 @@ import ai.state.Tableau;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class StockToFoundation implements Action {
@@ -32,7 +31,7 @@ public class StockToFoundation implements Action {
         Consumer<Foundation> addCardToFoundation = f -> f.add(card);
         foundation = Producer.produceFoundation(foundation, addCardToFoundation);
 
-        results.add(new State(stock, state.getTableau(), foundation));
+        results.add(new State(stock, state.getTableau(), foundation, state.getRemainingCards()));
         return results;
     }
 

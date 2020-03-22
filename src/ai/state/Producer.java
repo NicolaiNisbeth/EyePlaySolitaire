@@ -11,7 +11,7 @@ public class Producer {
     public static Stock produceStock(Stock stock, Consumer<Stock> consumer){
         Card[] cardsCopyDeep = Arrays
                 .stream(stock.getCards())
-                .map(card -> new Card(card.getValue(), card.getSuit()))
+                .map(card -> Deck.getCard(card.getValue(), card.getSuit()))
                 .toArray(Card[]::new);
 
         Stock stockProduced = new Stock(cardsCopyDeep);
@@ -27,7 +27,7 @@ public class Producer {
                 .stream()
                 .map(stack -> stack
                         .stream()
-                        .map(card -> new Card(card.getValue(), card.getSuit()))
+                        .map(card -> Deck.getCard(card.getValue(), card.getSuit()))
                         .toArray(Card[]::new))
                 .toArray(Card[][]::new);
 
@@ -44,7 +44,7 @@ public class Producer {
                 .stream()
                 .map(stack -> stack
                         .stream()
-                        .map(card -> new Card(card.getValue(), card.getSuit()))
+                        .map(card -> Deck.getCard(card.getValue(), card.getSuit()))
                         .collect(Collectors.toCollection(Stack::new)))
                 .collect(Collectors.toList());
 

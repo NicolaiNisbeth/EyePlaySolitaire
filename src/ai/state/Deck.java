@@ -1,44 +1,18 @@
 package ai.state;
 
-import java.util.Arrays;
-
 public class Deck {
 
-    private Card[] remainingCards;
-
-    public Deck(){
-        remainingCards = new Card[52];
-        for (int i = 1; i <= 13; i++){
-            for (int j = 0; j < 4; j++){
-                remainingCards[j*13+i] = new Card(i, j);
+    public static final Card[] cards = new Card[52];
+    static {
+        for (int suit = 0; suit < 4; suit++) {
+            for (int value = 0; value < 13; value++) {
+                cards[suit * 13 + value] = new Card(suit, value);
             }
         }
-        Arrays.sort(remainingCards);
     }
 
-    public Card[] getRemainingCards(){
-        return this.remainingCards;
+    public static Card getCard(int value, int suit){
+        return cards[suit * 13 + value];
     }
 
-    public void removeCard(Card toRemove){
-        Card[] newCards = new Card[remainingCards.length-1];
-        int i = 0;
-
-        for(Card card : remainingCards)
-            if(card != toRemove)
-                newCards[i++] = card;
-
-        remainingCards = newCards;
-    }
-
-    private int binarySearch(int left, int right, Card target) {
-        if(right == 0) return -1;
-
-        int middle = left + (right - 1) / 2;
-        if(remainingCards[middle] == target)
-            return middle;
-        if(remainingCards[middle].compareTo(target) > 0)
-            return binarySearch(left, middle - 1, target);
-        return binarySearch(middle + 1, right, target);
-    }
 }

@@ -33,7 +33,7 @@ public class StockToTableau implements Action {
         Consumer<Tableau> addCardToTableau = t -> t.add(card, tableauIndex);
         tableau = Producer.produceTableau(tableau, addCardToTableau);
 
-        results.add(new State(stock, tableau, state.getFoundation()));
+        results.add(new State(stock, tableau, state.getFoundation(), state.getRemainingCards()));
         return results;
     }
 
