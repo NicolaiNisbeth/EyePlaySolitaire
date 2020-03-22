@@ -18,7 +18,7 @@ public class Stock {
         int i = 0;
 
         for(Card card : cards){
-            if(card == toRemove)
+            if(card.equals(toRemove))
                 head = i-1;
             else
                 newCards[i++] = card;
@@ -37,6 +37,10 @@ public class Stock {
         } while (index != head);
 
         return availableCards;
+    }
+
+    public Card[] getCards() {
+        return cards;
     }
 
     @Override

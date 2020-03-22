@@ -43,4 +43,12 @@ public class Foundation {
         }
         return max - min;
     }
+
+    public List<Stack<Card>> getStacks() {
+        return stacks;
+    }
+
+    public void setStacks(List<Stack<Card>> stacks) {
+        this.stacks = stacks;
+    }
 }
