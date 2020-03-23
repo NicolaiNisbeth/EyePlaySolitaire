@@ -55,4 +55,8 @@ public class State {
     public int hashCode() {
         return Objects.hash(stock, tableau, foundation);
     }
+
+    public boolean isGoal() {
+        return foundation.getSum() == 52;
+    }
 }
