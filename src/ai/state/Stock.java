@@ -24,6 +24,9 @@ public class Stock {
                 newCards[i++] = card;
         }
 
+        if(head == -1)
+            head = 0;
+
         cards = newCards;
     }
 

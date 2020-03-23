@@ -6,6 +6,7 @@ import ai.state.ActionFinder;
 import ai.state.State;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class MCTSAgent implements Agent {
         Tree tree = new Tree(state);
 
         long start = System.currentTimeMillis();
-        long time = 0, goal = 1000 * 30;
+        long time = 0, goal = 1000 * 1;
         while(time < goal){
             Node selection = selectFrom(tree.root);
             expand(selection);
@@ -103,13 +104,23 @@ public class MCTSAgent implements Agent {
     private int simulate(Node node) {
         State state = node.state;
         List<Action> actions = actionFinder.getActions(state);
+        HashMap<Action, Integer> repetitions = new HashMap<>();
         while (actions.size() > 0) {
             int random = (int) (Math.random() * actions.size());
             Action action = actions.get(random);
+            //System.out.println(action);
+            Integer count = repetitions.get(action);
+            if(count == null){
+                repetitions.put(action, 1);
+            } else {
+                if(count >= 100)
+                    return LOSS;
+                repetitions.put(action, ++count);
+            }
             Collection<State> results = action.getResults(state);
             random = (int) (Math.random() * results.size());
             Iterator<State> resultIterator = results.iterator();
-            for (int i = 0; i < random; i++) {
+            for (int i = 0; i <= random; i++) {
                 state = resultIterator.next();
             }
             actions = actionFinder.getActions(state);

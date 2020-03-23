@@ -58,7 +58,7 @@ public class ActionTest {
 
             // execute from stock to foundation action
             stockToFoundation = new ai.action.StockToFoundation(cardToTake);
-            State resultState = stockToFoundation.getResult(state).iterator().next();
+            State resultState = stockToFoundation.getResults(state).iterator().next();
 
             // confirm correct result state
             boolean isCardRemovedFromStock = Arrays.stream(resultState.getStock().getCards()).noneMatch(card -> card.equals(cardToTake));
@@ -89,7 +89,7 @@ public class ActionTest {
 
                 // execute stock to foundation action
                 stockToFoundation = new ai.action.StockToFoundation(cardToMove);
-                State resultState = stockToFoundation.getResult(state).iterator().next();
+                State resultState = stockToFoundation.getResults(state).iterator().next();
 
                 // confirm correct result state
                 int numberOfCardsInFoundation = count++;
@@ -150,7 +150,7 @@ public class ActionTest {
 
             // execute stock to tableau action
             stockToTableau = new ai.action.StockToTableau(cardToTake, firstStack);
-            State resultState = stockToTableau.getResult(state).iterator().next();
+            State resultState = stockToTableau.getResults(state).iterator().next();
 
             // confirm correct result state
             boolean isCardRemovedFromStock = Arrays.stream(resultState.getStock().getCards()).noneMatch(card -> card.equals(cardToTake));
@@ -186,7 +186,7 @@ public class ActionTest {
 
             // execute stock to tableau action
             stockToTableau = new ai.action.StockToTableau(cardToTake, secondStack);
-            State resultState = stockToTableau.getResult(state).iterator().next();
+            State resultState = stockToTableau.getResults(state).iterator().next();
 
             // confirm correct result state
             boolean isCardRemovedFromStock = Arrays.stream(resultState.getStock().getCards()).noneMatch(card -> card.equals(cardToTake));
@@ -243,7 +243,7 @@ public class ActionTest {
 
             // execute tableau to foundation action
             tableauToFoundation = new ai.action.TableauToFoundation(cardToMove, cardToMove.getSuit());
-            State resultState = tableauToFoundation.getResult(state).iterator().next();
+            State resultState = tableauToFoundation.getResults(state).iterator().next();
 
             // confirm result state
             Assertions.assertAll(
@@ -271,7 +271,7 @@ public class ActionTest {
 
             // execute tableau to foundation action
             tableauToFoundation = new ai.action.TableauToFoundation(cardToMove, cardToMove.getSuit());
-            State resultState = tableauToFoundation.getResult(state).iterator().next();
+            State resultState = tableauToFoundation.getResults(state).iterator().next();
 
             // confirm result state
             Assertions.assertAll(
@@ -323,7 +323,7 @@ public class ActionTest {
 
             // execute tableau to tableau action
             tableauToTableau = new ai.action.TableauToTableau(0, 1, cardToMove);
-            State resultState = tableauToTableau.getResult(state).iterator().next();
+            State resultState = tableauToTableau.getResults(state).iterator().next();
 
             // confirm result state
             Card newTopCardInSecondStack = resultState.getTableau().getStacks().get(secondStack).peek();

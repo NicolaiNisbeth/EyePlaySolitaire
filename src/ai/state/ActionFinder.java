@@ -37,7 +37,9 @@ public class ActionFinder {
     private void addStockToTableauActions(List<Card> options, Tableau tableau, List<Action> actions) {
         List<Stack<Card>> stacks = tableau.getStacks();
         for (int i = 0; i < stacks.size(); i++) {
-            Card target = stacks.get(i).peek();
+            Stack<Card> stack = stacks.get(i);
+            if(stack.isEmpty()) continue;
+            Card target = stack.peek();
             for(Card card : options){
                 boolean kingToEmptyStack = (target == null && card.getValue() == 13);
                 boolean descendingValueAndDifferentColour =
@@ -62,6 +64,7 @@ public class ActionFinder {
         List<Stack<Card>> stacks = tableau.getStacks();
         for (int i = 0; i < stacks.size(); i++) {
             Stack<Card> stack = stacks.get(i);
+            if(stack.isEmpty()) continue;
             Card card = stack.peek();
             if(fitsOnFoundation(card, foundation))
                 actions.add(new TableauToFoundation(card, i));
@@ -72,7 +75,10 @@ public class ActionFinder {
         List<Stack<Card>> stacks = tableau.getStacks();
         List<Card> targets = new ArrayList<>();
         for(Stack<Card> stack : stacks) {
-            targets.add(stack.peek());
+            if(stack.isEmpty())
+                targets.add(null);
+            else
+                targets.add(stack.peek());
         }
 
         for (int i = 0; i < stacks.size(); i++) {
@@ -101,8 +107,11 @@ public class ActionFinder {
 
     private boolean fitsOnFoundation(Card card, Foundation foundation){
         int suit = card.getSuit();
+        if(foundation.getStacks().get(suit).isEmpty()){
+            return card.getValue() == 1;
+        }
         Card top = foundation.peek(suit);
-        int topValue = top == null ? 0 : top.getValue();
+        int topValue = top.getValue();
         return card.getValue() == topValue + 1;
     }
 

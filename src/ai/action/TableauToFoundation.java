@@ -10,6 +10,8 @@ import ai.state.Tableau;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.Stack;
 import java.util.function.Consumer;
 
 public class TableauToFoundation implements Action {
@@ -37,12 +39,30 @@ public class TableauToFoundation implements Action {
         foundation = Producer.produceFoundation(foundation, addCardToFoundation);
 
         RemainingCards remainingCards = state.getRemainingCards();
-        for(Card card : remainingCards){
-            RemainingCards copy = remainingCards.copy();
-            copy.removeCard(card);
-            results.add(new State(stock, tableau, foundation, copy));
+
+        Stack<Card> alteredStack = tableau.getStacks().get(tableauIndex);
+        if(alteredStack.isEmpty()){
+            results.add(new State(stock, tableau, foundation, remainingCards));
+            return results;
         }
 
+        Card check = tableau.getStacks().get(tableauIndex).peek();
+        if(check == null){
+            for(Card card : remainingCards){
+                assert card != null;
+                Consumer<Tableau> flipCard = t -> {
+                    t.remove(tableauIndex);
+                    t.add(card, tableauIndex);
+                };
+                Tableau randomTableau = Producer.produceTableau(tableau, flipCard);
+                RemainingCards copy = remainingCards.copy();
+                copy.removeCard(card);
+                results.add(new State(stock, randomTableau, foundation, copy));
+            }
+            return results;
+        }
+
+        results.add(new State(stock, tableau, foundation, remainingCards));
         return results;
     }
 
@@ -52,5 +72,19 @@ public class TableauToFoundation implements Action {
                 "tableauIndex=" + tableauIndex +
                 ", card=" + card +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableauToFoundation that = (TableauToFoundation) o;
+        return tableauIndex == that.tableauIndex &&
+                Objects.equals(card, that.card);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(card, tableauIndex);
     }
 }

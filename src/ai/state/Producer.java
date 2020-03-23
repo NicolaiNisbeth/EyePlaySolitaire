@@ -33,6 +33,9 @@ public class Producer {
                 .toArray(Card[][]::new);
 
         Tableau tableauProduced = new Tableau(cardsCopyDeep);
+        for(Stack<Card> stack : tableauProduced.getStacks()){
+            assert stack.peek() != null;
+        }
         consumer.accept(tableauProduced);
         return tableauProduced;
     }

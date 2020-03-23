@@ -9,6 +9,7 @@ import ai.state.Tableau;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class StockToFoundation implements Action {
@@ -40,5 +41,18 @@ public class StockToFoundation implements Action {
         return "StockToFoundation{" +
                 "card=" + card +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StockToFoundation that = (StockToFoundation) o;
+        return Objects.equals(card, that.card);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(card);
     }
 }

@@ -10,6 +10,7 @@ import ai.state.Tableau;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Consumer;
 
@@ -33,10 +34,22 @@ public class TableauToTableau implements Action {
         Tableau tableau = state.getTableau();
         Foundation foundation = state.getFoundation();
 
+        /*
+        Consumer<Tableau> moveCards = t -> {
+            Stack<Card> movedCards = new Stack<>();
+            Stack<Card> source = t.getStacks().get(from);
+            Stack<Card> target = t.getStacks().get(to);
+            do {
+                Card removedCard = source.pop();
+                target.push(removedCard);
+            } while(removedCard != card)
+        }
+         */
+
         final Stack<Card> movedCards = new Stack<>();
         Consumer<Tableau> takeCardsFromTableau = t -> {
             Card removedCard = null;
-            while(removedCard != card && !t.getStacks().get(from).isEmpty()){
+            while(!card.equals(removedCard) && !t.getStacks().get(from).isEmpty()){
                 removedCard = t.remove(from);
                 movedCards.push(removedCard);
             }
@@ -47,12 +60,30 @@ public class TableauToTableau implements Action {
         tableau = Producer.produceTableau(tableau, addCardsToTableau);
 
         RemainingCards remainingCards = state.getRemainingCards();
-        for(Card card : remainingCards){
-            RemainingCards copy = remainingCards.copy();
-            copy.removeCard(card);
-            results.add(new State(stock, tableau, foundation, copy));
+
+        Stack<Card> alteredStack = tableau.getStacks().get(from);
+        if(alteredStack.isEmpty()){
+            results.add(new State(stock, tableau, foundation, remainingCards));
+            return results;
         }
 
+        Card check = tableau.getStacks().get(from).peek();
+        if(check == null){
+            for(Card card : remainingCards){
+                assert card != null;
+                Consumer<Tableau> flipCard = t -> {
+                    t.remove(from);
+                    t.add(card, from);
+                };
+                Tableau randomTableau = Producer.produceTableau(tableau, flipCard);
+                RemainingCards copy = remainingCards.copy();
+                copy.removeCard(card);
+                results.add(new State(stock, randomTableau, foundation, copy));
+            }
+            return results;
+        }
+
+        results.add(new State(stock, tableau, foundation, remainingCards));
         return results;
     }
 
@@ -63,5 +94,20 @@ public class TableauToTableau implements Action {
                 ", to=" + to +
                 ", card=" + card +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableauToTableau that = (TableauToTableau) o;
+        return from == that.from &&
+                to == that.to &&
+                Objects.equals(card, that.card);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to, card);
     }
 }
