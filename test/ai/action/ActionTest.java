@@ -218,10 +218,10 @@ public class ActionTest {
         @BeforeEach
         void beforeEach(){
             Set<Card> cards = new HashSet<>();
-            cards.add(tableau[0][0]);
-            cards.add(tableau[1][1]);
-            cards.add(tableau[2][1]);
-            cards.add(tableau[2][2]);
+            cards.add(new Card(4, 0));
+            cards.add(new Card(5, 0));
+            cards.add(new Card(6, 0));
+            cards.add(new Card(7, 0));
 
             state = new State(null, new Tableau(tableau), new Foundation(), new RemainingCards(cards));
         }
@@ -275,7 +275,7 @@ public class ActionTest {
 
             // confirm result state
             Assertions.assertAll(
-                    () -> Assertions.assertNull(resultState.getTableau().getStacks().get(secondStack).peek()),
+                    () -> Assertions.assertNotEquals(cardToMove, resultState.getTableau().getStacks().get(secondStack).peek(), "Moved card is still in stock 2"),
                     () -> Assertions.assertEquals(cardToMove, resultState.getFoundation().peek(cardToMove.getSuit()))
             );
             System.out.println(resultState.getTableau());
