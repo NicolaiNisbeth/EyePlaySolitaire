@@ -23,7 +23,7 @@ public class TableauToFoundation implements Action {
     }
 
     @Override
-    public Collection<State> getResult(State state) {
+    public Collection<State> getResults(State state) {
         Collection<State> results = new HashSet<>();
 
         Stock stock = state.getStock();
