@@ -36,7 +36,7 @@ public class TableauToTableau implements Action {
         final Stack<Card> movedCards = new Stack<>();
         Consumer<Tableau> takeCardsFromTableau = t -> {
             Card removedCard = null;
-            while(removedCard != card){
+            while(removedCard != card && !t.getStacks().get(from).isEmpty()){
                 removedCard = t.remove(from);
                 movedCards.push(removedCard);
             }

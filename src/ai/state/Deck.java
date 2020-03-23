@@ -6,7 +6,7 @@ public class Deck {
     static {
         for (int suit = 0; suit < 4; suit++) {
             for (int value = 0; value < 13; value++) {
-                cards[suit * 13 + value] = new Card(suit, value);
+                cards[suit * 13 + value] = new Card(value, suit);
             }
         }
     }

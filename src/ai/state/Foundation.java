@@ -1,6 +1,7 @@
 package ai.state;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -50,5 +51,26 @@ public class Foundation {
 
     public void setStacks(List<Stack<Card>> stacks) {
         this.stacks = stacks;
+    }
+
+    public void setSizes(int[] sizes) {
+        this.sizes = sizes;
+    }
+
+    public int[] getSizes() {
+        return sizes;
+    }
+
+    public void setSum(int sum) {
+        this.sum = sum;
+    }
+
+    @Override
+    public String toString() {
+        return "Foundation{" +
+                "stacks=" + stacks +
+                ", sizes=" + Arrays.toString(sizes) +
+                ", sum=" + sum +
+                '}';
     }
 }

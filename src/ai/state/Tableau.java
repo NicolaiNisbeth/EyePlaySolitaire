@@ -33,6 +33,14 @@ public class Tableau {
         return card;
     }
 
+    @Override
+    public String toString() {
+        return "Tableau{" +
+                "stacks=" + stacks +
+                ", sum=" + sum +
+                '}';
+    }
+
     public int getSum() {
         return sum;
     }
