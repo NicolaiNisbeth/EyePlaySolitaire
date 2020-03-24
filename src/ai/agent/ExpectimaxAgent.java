@@ -13,11 +13,11 @@ import java.util.Collection;
  */
 public class ExpectimaxAgent implements Agent {
     private ActionFinder actionFinder = new ActionFinder();
-    private int depthLimit;
+    private int maxDepth;
     private Heuristic heuristic;
 
-    public ExpectimaxAgent(int depthLimit, Heuristic heuristic){
-        this.depthLimit = depthLimit;
+    public ExpectimaxAgent(int maxDepth, Heuristic heuristic){
+        this.maxDepth = maxDepth;
         this.heuristic = heuristic;
     }
 
@@ -39,20 +39,20 @@ public class ExpectimaxAgent implements Agent {
         double sum = 0;
         Collection<State> results = action.getResults(state);
         for(State result : results){
-            double value = stateValue(result, depth + 1);
+            double value = stateValue(result, depth);
             sum += value;
         }
         return sum / results.size();
     }
 
     private double stateValue(State state, int depth) {
-        if(depth > depthLimit)
+        if(depth >= maxDepth)
             return heuristic.evaluate(state);
 
         Collection<Action> actions = actionFinder.getActions(state);
         double maxValue = 0;
         for(Action action : actions){
-            double value = actionValue(state, action, depth);
+            double value = actionValue(state, action, depth+1);
             if(value > maxValue){
                 maxValue = value;
             }

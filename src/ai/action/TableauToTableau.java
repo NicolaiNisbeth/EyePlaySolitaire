@@ -8,8 +8,10 @@ import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Consumer;
@@ -34,27 +36,19 @@ public class TableauToTableau implements Action {
         Tableau tableau = state.getTableau();
         Foundation foundation = state.getFoundation();
 
-        /*
-        Consumer<Tableau> moveCards = t -> {
-            Stack<Card> movedCards = new Stack<>();
-            Stack<Card> source = t.getStacks().get(from);
-            Stack<Card> target = t.getStacks().get(to);
-            do {
-                Card removedCard = source.pop();
-                target.push(removedCard);
-            } while(removedCard != card)
-        }
-         */
-
-        final Stack<Card> movedCards = new Stack<>();
+        final List<Card> movedCards = new ArrayList<>();
         Consumer<Tableau> takeCardsFromTableau = t -> {
             Card removedCard = null;
             while(!card.equals(removedCard) && !t.getStacks().get(from).isEmpty()){
                 removedCard = t.remove(from);
-                movedCards.push(removedCard);
+                movedCards.add(removedCard);
             }
         };
-        Consumer<Tableau> addCardsToTableau = t -> movedCards.forEach(c -> t.add(c, to));
+        Consumer<Tableau> addCardsToTableau = t -> {
+            for (int i = movedCards.size()-1; i >= 0; i--){
+                t.add(movedCards.get(i), to);
+            }
+        };
 
         tableau = Producer.produceTableau(tableau, takeCardsFromTableau);
         tableau = Producer.produceTableau(tableau, addCardsToTableau);

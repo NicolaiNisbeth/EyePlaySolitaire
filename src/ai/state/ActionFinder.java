@@ -105,8 +105,25 @@ public class ActionFinder {
     }
 
     private boolean fitsOnTableauCard(Card card, Card target, Stack<Card> sourceStack, Stack<Card> targetStack) {
-        if(target == null && card.getValue() == 13)
-            return true;
+        if(target == null && card.getValue() == 13){
+            boolean flag = false;
+            List<Card> cardList = new ArrayList<>();
+            for (int i = 0; i < sourceStack.size(); i++){
+                Card s = sourceStack.pop();
+                cardList.add(s);
+                if (s.equals(card) & !sourceStack.isEmpty()){
+                    flag = true;
+                    break;
+                }
+            }
+
+            for (Card c : cardList)
+                sourceStack.push(c);
+
+            if (flag)
+                return true;
+
+        }
         if(target == null)
             return false;
         int maxValueInSource = sourceStack

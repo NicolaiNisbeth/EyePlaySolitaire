@@ -4,6 +4,7 @@ import ai.action.Action;
 import ai.agent.Agent;
 import ai.agent.ExpectimaxAgent;
 import ai.agent.MCTSAgent;
+import ai.agent.RandomAgent;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.Card;
@@ -21,13 +22,14 @@ public class Demo {
 
     public static void main(String[] args) {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 1, 1);
-        Agent agent = new ExpectimaxAgent(2, heuristic);
+        Agent agent = new ExpectimaxAgent(0, heuristic);
+        //Agent agent = new RandomAgent();
         int max = 0;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             State state = generateInitialState();
             while(true){
                 Action action = agent.getAction(state);
-                System.out.println(action);
+                //System.out.println(action);
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
             }
