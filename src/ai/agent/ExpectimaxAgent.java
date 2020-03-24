@@ -15,6 +15,7 @@ public class ExpectimaxAgent implements Agent {
     private ActionFinder actionFinder = new ActionFinder();
     private int maxDepth;
     private Heuristic heuristic;
+    private long counter = 0;
 
     public ExpectimaxAgent(int maxDepth, Heuristic heuristic){
         this.maxDepth = maxDepth;
@@ -46,8 +47,10 @@ public class ExpectimaxAgent implements Agent {
     }
 
     private double stateValue(State state, int depth) {
-        if(depth >= maxDepth)
+        if(depth >= maxDepth){
+            counter++;
             return heuristic.evaluate(state);
+        }
 
         Collection<Action> actions = actionFinder.getActions(state);
         double maxValue = 0;
@@ -60,4 +63,7 @@ public class ExpectimaxAgent implements Agent {
         return maxValue;
     }
 
+    public long getCounter() {
+        return counter;
+    }
 }

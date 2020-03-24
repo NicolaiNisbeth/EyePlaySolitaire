@@ -11,6 +11,7 @@ public class MiniMaxAgent implements Agent {
     private ActionFinder actionFinder = new ActionFinder();
     private int maxDepth;
     private Heuristic heuristic;
+    private long counter = 0;
 
     public MiniMaxAgent(int maxDepth, Heuristic heuristic){
         this.maxDepth = maxDepth;
@@ -35,26 +36,35 @@ public class MiniMaxAgent implements Agent {
         double min = Double.MAX_VALUE;
         Collection<State> results = action.getResults(state);
         for(State result : results){
-            double value = max(result, depth, alpha, beta);
-            if(value < min)
-                min = value;
+            min = Math.min(min, max(result, depth, alpha, beta));
+            beta = Math.min(min, beta);
+
+            // alpha-cut
+            if(min <= alpha)
+                break;
         }
         return min;
     }
 
     private double max(State state, int depth, double alpha, double beta) {
-        if(depth >= maxDepth)
+        if(depth >= maxDepth){
+            counter++;
             return heuristic.evaluate(state);
+        }
 
         Collection<Action> actions = actionFinder.getActions(state);
-        double maxValue = 0;
+        double maxValue = Double.MIN_VALUE;
         for(Action action : actions){
-            double value = min(state, action, depth+1, alpha, beta);
-            if(value > maxValue){
-                maxValue = value;
-            }
+            maxValue = Math.max(maxValue, min(state, action, depth+1, alpha, beta));
+            alpha = Math.max(maxValue, alpha);
+
+            if(maxValue >= beta)
+                break;
         }
         return maxValue;
     }
 
+    public long getCounter() {
+        return counter;
+    }
 }

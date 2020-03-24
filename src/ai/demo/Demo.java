@@ -23,12 +23,14 @@ public class Demo {
 
     public static void main(String[] args) {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 1, 1);
-        Agent agent = new MiniMaxAgent(1, heuristic);
+        MiniMaxAgent agent = new MiniMaxAgent(2, heuristic);
+
+        //ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
         //Agent agent = new RandomAgent();
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 1000;
+        int iterations = 1;
         for (int i = 0; i < iterations; i++) {
             State state = generateInitialState();
             while(true){
@@ -45,6 +47,7 @@ public class Demo {
             }
             sum += foundationCount;
         }
+        System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
     }
 
