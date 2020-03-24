@@ -8,6 +8,8 @@ import ai.action.TableauToTableau;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Stack;
 
 public class ActionFinder {
@@ -88,7 +90,7 @@ public class ActionFinder {
                 for (int j = 0; j < targets.size(); j++) {
                     if(j == i) continue;
                     Card target = targets.get(j);
-                    if(fitsOnTableauCard(card, target))
+                    if(fitsOnTableauCard(card, target, source, stacks.get(j)))
                         actions.add(new TableauToTableau(i, j, card));
                 }
             }
@@ -96,11 +98,28 @@ public class ActionFinder {
         }
     }
 
-    private boolean fitsOnTableauCard(Card card, Card target) {
+    private boolean fitsOnTableauCard(Card card, Card target, Stack<Card> sourceStack, Stack<Card> targetStack) {
         if(target == null && card.getValue() == 13)
             return true;
         if(target == null)
             return false;
+        int maxValueInSource = sourceStack
+                .stream()
+                .filter(Objects::nonNull)
+                .mapToInt(Card::getValue)
+                .max()
+                .orElseThrow(NoSuchElementException::new);
+
+        int minValueInTarget = targetStack
+                .stream()
+                .filter(Objects::nonNull)
+                .mapToInt(Card::getValue)
+                .min()
+                .orElseThrow(NoSuchElementException::new);
+
+        if(maxValueInSource >= minValueInTarget)
+            return false;
+
         return card.getValue() == target.getValue() - 1 && card.getColour() != target.getColour();
     }
 

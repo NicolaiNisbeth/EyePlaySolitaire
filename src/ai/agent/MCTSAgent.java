@@ -51,7 +51,7 @@ public class MCTSAgent implements Agent {
         Tree tree = new Tree(state);
 
         long start = System.currentTimeMillis();
-        long time = 0, goal = 1000 * 1;
+        long time = 0, goal = 1000 * 15;
         while(time < goal){
             Node selection = selectFrom(tree.root);
             expand(selection);
@@ -83,7 +83,7 @@ public class MCTSAgent implements Agent {
                 selection = child;
         }
 
-        return selection;
+        return selectFrom(selection);
     }
 
     private double ucb(Node parent, Node node) {
@@ -137,10 +137,6 @@ public class MCTSAgent implements Agent {
         } while (node != null);
     }
 
-    @Override
-    public void setHeuristic(Heuristic heuristic) {
-
-    }
 }
 
 

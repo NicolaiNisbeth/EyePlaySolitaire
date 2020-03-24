@@ -1,8 +1,10 @@
 package ai.demo;
 
 import ai.action.Action;
+import ai.agent.Agent;
 import ai.agent.MCTSAgent;
 import ai.agent.RandomAgent;
+import ai.agent.Simulator;
 import ai.state.ActionFinder;
 import ai.state.Card;
 import ai.state.Foundation;
@@ -14,12 +16,27 @@ import ai.state.Tableau;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public class Demo {
+
     public static void main(String[] args) {
+        Agent agent = new MCTSAgent();
+        int max = 0;
+        for (int i = 0; i < 1; i++) {
+            State state = generateInitialState();
+            while(true){
+                Action action = agent.getAction(state);
+                System.out.println(action);
+                if(action == null) break;
+                state = getRandom(action.getResults(state));
+            }
+            System.out.println(state.getFoundation().getSum());
+        }
+        System.out.println(max);
+    }
+
+    private static State generateInitialState() {
         DemoDeck deck = new DemoDeck();
 
         Card[][] board = createBoard(deck);
@@ -36,20 +53,15 @@ public class Demo {
             cards.add(deck.draw());
         RemainingCards remainingCards = new RemainingCards(cards);
 
-        ActionFinder actionFinder = new ActionFinder();
-        State state = new State(stock, tableau, foundation, remainingCards);
+        return new State(stock, tableau, foundation, remainingCards);
+    }
 
-        MCTSAgent monte = new MCTSAgent();
-        while(actionFinder.getActions(state).size() > 0){
-            Action action = monte.getAction(state);
-            Iterator<State> iterator = action.getResults(state).iterator();
-            state = iterator.next();
-            System.out.println(state.getFoundation().getSum());
-            System.out.println(action);
-
-        }
-
-
+    private static State getRandom(Collection<State> collection) {
+        return collection
+                .stream()
+                .skip((int)(Math.random() * collection.size()))
+                .findFirst()
+                .orElse(null);
     }
 
     private static Card[][] createBoard(DemoDeck deck) {

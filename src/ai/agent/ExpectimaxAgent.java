@@ -75,9 +75,4 @@ public class ExpectimaxAgent implements Agent {
         return -1;
     }
 
-
-    @Override
-    public void setHeuristic(Heuristic heuristic) {
-
-    }
 }

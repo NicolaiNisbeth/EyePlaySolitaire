@@ -49,7 +49,8 @@ public class TableauToFoundation implements Action {
         Card check = tableau.getStacks().get(tableauIndex).peek();
         if(check == null){
             for(Card card : remainingCards){
-                assert card != null;
+                if(card == null)
+                    throw new IllegalStateException();
                 Consumer<Tableau> flipCard = t -> {
                     t.remove(tableauIndex);
                     t.add(card, tableauIndex);

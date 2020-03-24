@@ -29,7 +29,7 @@ public class Tableau {
     public Card remove(int index) {
         Card card = stacks.get(index).pop();
         if(card != null)
-            sum += card.getValue();
+            sum -= card.getValue();
         return card;
     }
 

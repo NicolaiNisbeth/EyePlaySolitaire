@@ -70,7 +70,8 @@ public class TableauToTableau implements Action {
         Card check = tableau.getStacks().get(from).peek();
         if(check == null){
             for(Card card : remainingCards){
-                assert card != null;
+                if(card == null)
+                    throw new IllegalStateException();
                 Consumer<Tableau> flipCard = t -> {
                     t.remove(from);
                     t.add(card, from);

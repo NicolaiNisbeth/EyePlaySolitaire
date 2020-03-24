@@ -32,6 +32,8 @@ public class Stock {
 
     public List<Card> showOptions() {
         List<Card> availableCards = new ArrayList<>();
+        if(cards.length == 0)
+            return availableCards;
         int index = head;
 
         do {

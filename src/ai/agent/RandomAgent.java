@@ -13,13 +13,9 @@ public class RandomAgent implements Agent {
     public Action getAction(State state) {
         ActionFinder finder = new ActionFinder();
         List<Action> actionList = finder.getActions(state);
+        if(actionList.isEmpty()) return null;
         int count = actionList.size();
         int choice = (int) (Math.random() * count);
         return actionList.get(choice);
-    }
-
-    @Override
-    public void setHeuristic(Heuristic heuristic) {
-
     }
 }
