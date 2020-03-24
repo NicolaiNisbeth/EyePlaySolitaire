@@ -5,33 +5,52 @@ import ai.heuristic.Heuristic;
 import ai.state.ActionFinder;
 import ai.state.State;
 
+import java.util.Collection;
+
 /**
  * https://en.wikipedia.org/wiki/Expectiminimax
  * https://github.com/DanijelAskov/expectiminimax-backgammon/blob/master/src/main/java/askov/schoolprojects/ai/expectiminimaxbackgammon/gamelogic/player/ExpectiminimaxPlayer.java
  */
 public class ExpectimaxAgent implements Agent {
     private ActionFinder actionFinder = new ActionFinder();
+    private int depthLimit;
+
+    public ExpectimaxAgent(int depthLimit){
+        this.depthLimit = depthLimit;
+    }
 
     @Override
-    public Action getAction(State state) {
+    public Action getAction(State root) {
+        return returnMaxAction(root, 0);
+    }
+
+    private Action returnMaxAction(State state, int depth) {
         int maxValue = Integer.MIN_VALUE;
         Action maxAction = null;
 
-        //TODO: Collection!
-
 
         for(Action action : actionFinder.getActions(state)){
-            /*
-            State child = action.getResult(state);
-            int value = expectiminimax(child);
-            if(value > maxValue){
-                maxValue = value;
+            int averageValue = calculateAverageValue(state, action, depth);
+            if(averageValue > maxValue){
+                maxValue = averageValue;
                 maxAction = action;
             }
-             */
+        }
+        return maxAction;
+    }
+
+    private int calculateAverageValue(State state, Action action, int depth) {
+        int averageValue = 0;
+        Collection<State> results = action.getResults(state);
+        for (State result : results){
+            returnMaxAction(state, depth+1);
+
+
         }
 
-        return maxAction;
+
+
+        return 0;
     }
 
     private int expectiminimax(State state) {
