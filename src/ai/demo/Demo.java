@@ -21,11 +21,14 @@ import java.util.Set;
 public class Demo {
 
     public static void main(String[] args) {
-        Heuristic heuristic = new OptionsKnowledgeFoundation(1, 1, 1);
+        Heuristic heuristic = new OptionsKnowledgeFoundation(0, 1, 0);
         Agent agent = new ExpectimaxAgent(0, heuristic);
         //Agent agent = new RandomAgent();
+        int sum = 0;
         int max = 0;
-        for (int i = 0; i < 1000; i++) {
+        int wins = 0;
+        int iterations = 1000;
+        for (int i = 0; i < iterations; i++) {
             State state = generateInitialState();
             while(true){
                 Action action = agent.getAction(state);
@@ -34,11 +37,14 @@ public class Demo {
                 state = getRandom(action.getResults(state));
             }
             int foundationCount = state.getFoundation().getCount();
+            if (foundationCount == 52)
+                wins++;
             if(foundationCount > max){
                 max = foundationCount;
             }
+            sum += foundationCount;
         }
-        System.out.println(max);
+        System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
     }
 
     private static State generateInitialState() {
