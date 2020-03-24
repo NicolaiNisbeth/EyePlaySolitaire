@@ -85,8 +85,14 @@ public class ActionFinder {
 
         for (int i = 0; i < stacks.size(); i++) {
             Stack<Card> source = stacks.get(i);
-            for(Card card : source){
-                if(card == null) continue;
+
+            List<Card> cardList = new ArrayList<>();
+            while(source.size() > 0 && source.peek() != null)
+                cardList.add(source.pop());
+            for (int j = cardList.size()-1; j >= 0; j--)
+                source.push(cardList.get(j));
+
+            for(Card card : cardList){
                 for (int j = 0; j < targets.size(); j++) {
                     if(j == i) continue;
                     Card target = targets.get(j);

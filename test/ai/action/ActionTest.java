@@ -96,7 +96,7 @@ public class ActionTest {
                 Card topCardInFirstStack = resultState.getFoundation().peek(firstStack);
                 Assertions.assertAll(
                         () -> Assertions.assertEquals(cardToMove, topCardInFirstStack, "Card is not added to top of first stack in foundation"),
-                        () -> Assertions.assertEquals(numberOfCardsInFoundation, resultState.getFoundation().getSum(), "Number of cards in foundation is not correct")
+                        () -> Assertions.assertEquals(numberOfCardsInFoundation, resultState.getFoundation().getCount(), "Number of cards in foundation is not correct")
                 );
 
                 state = resultState;

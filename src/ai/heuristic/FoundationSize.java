@@ -4,7 +4,9 @@ import ai.state.State;
 
 public class FoundationSize implements Heuristic {
     @Override
-    public int evaluate(State state) {
-        return 0;
+    public double evaluate(State state) {
+        int maxFoundationSize = 52;
+        int foundationSize = state.getFoundation().getCount();
+        return (double) foundationSize / maxFoundationSize;
     }
 }

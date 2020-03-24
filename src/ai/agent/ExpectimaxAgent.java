@@ -14,84 +14,50 @@ import java.util.Collection;
 public class ExpectimaxAgent implements Agent {
     private ActionFinder actionFinder = new ActionFinder();
     private int depthLimit;
+    private Heuristic heuristic;
 
-    public ExpectimaxAgent(int depthLimit){
+    public ExpectimaxAgent(int depthLimit, Heuristic heuristic){
         this.depthLimit = depthLimit;
+        this.heuristic = heuristic;
     }
 
     @Override
     public Action getAction(State root) {
-        return returnMaxAction(root, 0);
-    }
-
-    private Action returnMaxAction(State state, int depth) {
-        int maxValue = Integer.MIN_VALUE;
+        double maxValue = 0;
         Action maxAction = null;
-
-
-        for(Action action : actionFinder.getActions(state)){
-            int averageValue = calculateAverageValue(state, action, depth);
-            if(averageValue > maxValue){
-                maxValue = averageValue;
+        for(Action action : actionFinder.getActions(root)){
+            double value = actionValue(root, action, 0);
+            if(value > maxValue){
+                maxValue = value;
                 maxAction = action;
             }
         }
         return maxAction;
     }
 
-    private int calculateAverageValue(State state, Action action, int depth) {
-        int averageValue = 0;
+    private double actionValue(State state, Action action, int depth) {
+        double sum = 0;
         Collection<State> results = action.getResults(state);
-        for (State result : results){
-            returnMaxAction(state, depth+1);
-
-
+        for(State result : results){
+            double value = stateValue(result, depth + 1);
+            sum += value;
         }
-
-
-
-        return 0;
+        return sum / results.size();
     }
 
-    private int expectiminimax(State state) {
-        int depthLimit = 3;
-        return max(state, depthLimit);
-    }
+    private double stateValue(State state, int depth) {
+        if(depth > depthLimit)
+            return heuristic.evaluate(state);
 
-    private int max(State state, int depthLimit) {
-        if (actionFinder.getActions(state).isEmpty() || depthLimit == 0)
-            return -1; // TODO calculate heuristic value
-
-        int value = Integer.MIN_VALUE;
-        for(Action action : actionFinder.getActions(state)){
-            /*
-            State child = action.getResult(state);
-            value = Math.max(value, chance(child, depthLimit-1));
-
-             */
+        Collection<Action> actions = actionFinder.getActions(state);
+        double maxValue = 0;
+        for(Action action : actions){
+            double value = actionValue(state, action, depth);
+            if(value > maxValue){
+                maxValue = value;
+            }
         }
-        return value;
-    }
-
-    private int chance(State state, int depthLimit) {
-        if (actionFinder.getActions(state).isEmpty() || depthLimit == 0)
-            return -1; // TODO calculate heuristic value
-
-        int value = 0;
-        for(Action action : actionFinder.getActions(state)){
-            /*
-            State child = action.getResult(state);
-            value += (probability(child) * max(child, depthLimit-1));
-
-             */
-        }
-
-        return value;
-    }
-
-    private int probability(State child) {
-        // TODO: probability of cards given state
-        return -1;
+        return maxValue;
     }
 
 }

@@ -2,10 +2,10 @@ package ai.demo;
 
 import ai.action.Action;
 import ai.agent.Agent;
+import ai.agent.ExpectimaxAgent;
 import ai.agent.MCTSAgent;
-import ai.agent.RandomAgent;
-import ai.agent.Simulator;
-import ai.state.ActionFinder;
+import ai.heuristic.Heuristic;
+import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.Card;
 import ai.state.Foundation;
 import ai.state.RemainingCards;
@@ -14,16 +14,16 @@ import ai.state.Stock;
 import ai.state.Tableau;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Demo {
 
     public static void main(String[] args) {
-        Agent agent = new MCTSAgent();
+        Heuristic heuristic = new OptionsKnowledgeFoundation(1, 1, 1);
+        Agent agent = new ExpectimaxAgent(2, heuristic);
         int max = 0;
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             State state = generateInitialState();
             while(true){
                 Action action = agent.getAction(state);
@@ -31,7 +31,10 @@ public class Demo {
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
             }
-            System.out.println(state.getFoundation().getSum());
+            int foundationCount = state.getFoundation().getCount();
+            if(foundationCount > max){
+                max = foundationCount;
+            }
         }
         System.out.println(max);
     }

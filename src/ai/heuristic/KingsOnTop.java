@@ -4,7 +4,7 @@ import ai.state.State;
 
 public class KingsOnTop implements Heuristic {
     @Override
-    public int evaluate(State state) {
+    public double evaluate(State state) {
         return 0;
     }
 }

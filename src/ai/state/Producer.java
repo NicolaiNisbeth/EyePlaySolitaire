@@ -2,7 +2,6 @@ package ai.state;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -57,7 +56,7 @@ public class Producer {
         Foundation foundationProduced = new Foundation();
         foundationProduced.setStacks(cardsCopyDeep);
         foundationProduced.setSizes(foundation.getSizes());
-        foundationProduced.setSum(foundation.getSum());
+        foundationProduced.setSum(foundation.getCount());
         consumer.accept(foundationProduced);
         return foundationProduced;
     }

@@ -30,7 +30,7 @@ public class Foundation {
         return stacks.get(index).peek();
     }
 
-    public int getSum() {
+    public int getCount() {
         return sum;
     }
 

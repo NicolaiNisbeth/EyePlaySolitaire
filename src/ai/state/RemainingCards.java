@@ -24,4 +24,8 @@ public class RemainingCards implements Iterable<Card> {
     public Iterator<Card> iterator() {
         return remainingCards.iterator();
     }
+
+    public int getSize() {
+        return remainingCards.size();
+    }
 }

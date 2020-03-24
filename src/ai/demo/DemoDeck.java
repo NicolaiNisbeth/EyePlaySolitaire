@@ -8,9 +8,9 @@ public class DemoDeck {
     private Card[] cards = new Card[52];
 
     public DemoDeck() {
-        for (int i = 0; i < 13; i++) {
+        for (int i = 1; i <= 13; i++) {
             for (int j = 0; j < 4; j++) {
-                cards[j*13+i] = new Card(i, j);
+                cards[j*13+i-1] = new Card(i, j);
             }
         }
         shuffle();

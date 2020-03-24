@@ -57,6 +57,6 @@ public class State {
     }
 
     public boolean isGoal() {
-        return foundation.getSum() == 52;
+        return foundation.getCount() == 52;
     }
 }
