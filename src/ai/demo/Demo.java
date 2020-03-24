@@ -4,6 +4,7 @@ import ai.action.Action;
 import ai.agent.Agent;
 import ai.agent.ExpectimaxAgent;
 import ai.agent.MCTSAgent;
+import ai.agent.MiniMaxAgent;
 import ai.agent.RandomAgent;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
@@ -21,8 +22,8 @@ import java.util.Set;
 public class Demo {
 
     public static void main(String[] args) {
-        Heuristic heuristic = new OptionsKnowledgeFoundation(0, 1, 0);
-        Agent agent = new ExpectimaxAgent(0, heuristic);
+        Heuristic heuristic = new OptionsKnowledgeFoundation(1, 1, 1);
+        Agent agent = new MiniMaxAgent(1, heuristic);
         //Agent agent = new RandomAgent();
         int sum = 0;
         int max = 0;

@@ -7,16 +7,12 @@ import ai.state.State;
 
 import java.util.Collection;
 
-/**
- * https://en.wikipedia.org/wiki/Expectiminimax
- * https://github.com/DanijelAskov/expectiminimax-backgammon/blob/master/src/main/java/askov/schoolprojects/ai/expectiminimaxbackgammon/gamelogic/player/ExpectiminimaxPlayer.java
- */
-public class ExpectimaxAgent implements Agent {
+public class MiniMaxAgent implements Agent {
     private ActionFinder actionFinder = new ActionFinder();
     private int maxDepth;
     private Heuristic heuristic;
 
-    public ExpectimaxAgent(int maxDepth, Heuristic heuristic){
+    public MiniMaxAgent(int maxDepth, Heuristic heuristic){
         this.maxDepth = maxDepth;
         this.heuristic = heuristic;
     }
@@ -26,7 +22,7 @@ public class ExpectimaxAgent implements Agent {
         double maxValue = 0;
         Action maxAction = null;
         for(Action action : actionFinder.getActions(root)){
-            double value = actionValue(root, action, 1);
+            double value = min(root, action, 1, Double.MIN_VALUE, Double.MAX_VALUE);
             if(value > maxValue){
                 maxValue = value;
                 maxAction = action;
@@ -35,24 +31,25 @@ public class ExpectimaxAgent implements Agent {
         return maxAction;
     }
 
-    private double actionValue(State state, Action action, int depth) {
-        double sum = 0;
+    private double min(State state, Action action, int depth, double alpha, double beta) {
+        double min = Double.MAX_VALUE;
         Collection<State> results = action.getResults(state);
         for(State result : results){
-            double value = stateValue(result, depth);
-            sum += value;
+            double value = max(result, depth, alpha, beta);
+            if(value < min)
+                min = value;
         }
-        return sum / results.size();
+        return min;
     }
 
-    private double stateValue(State state, int depth) {
+    private double max(State state, int depth, double alpha, double beta) {
         if(depth >= maxDepth)
             return heuristic.evaluate(state);
 
         Collection<Action> actions = actionFinder.getActions(state);
         double maxValue = 0;
         for(Action action : actions){
-            double value = actionValue(state, action, depth+1);
+            double value = min(state, action, depth+1, alpha, beta);
             if(value > maxValue){
                 maxValue = value;
             }
