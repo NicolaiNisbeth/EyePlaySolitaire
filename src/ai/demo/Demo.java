@@ -23,10 +23,10 @@ public class Demo {
 
     public static void main(String[] args) {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 1, 1);
-        MiniMaxAgent agent = new MiniMaxAgent(2, heuristic);
 
-        //ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
-        //Agent agent = new RandomAgent();
+        //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
+        ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+
         int sum = 0;
         int max = 0;
         int wins = 0;
@@ -35,7 +35,6 @@ public class Demo {
             State state = generateInitialState();
             while(true){
                 Action action = agent.getAction(state);
-                //System.out.println(action);
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
             }

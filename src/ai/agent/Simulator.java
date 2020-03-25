@@ -4,9 +4,7 @@ import ai.action.Action;
 import ai.state.ActionFinder;
 import ai.state.State;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 
 public class Simulator implements Agent {
