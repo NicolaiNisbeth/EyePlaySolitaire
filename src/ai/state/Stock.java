@@ -3,6 +3,7 @@ package ai.state;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Stock {
 
@@ -54,5 +55,27 @@ public class Stock {
                 "cards=" + Arrays.toString(cards) +
                 ", head=" + head +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock stock = (Stock) o;
+        boolean same = true;
+        for (int i = 0; i < cards.length; i++) {
+            if (!cards[i].equals(stock.cards[i])) {
+                same = false;
+                break;
+            }
+        }
+        return head == stock.head && same;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(head);
+        result = 31 * result + Arrays.hashCode(cards);
+        return result;
     }
 }

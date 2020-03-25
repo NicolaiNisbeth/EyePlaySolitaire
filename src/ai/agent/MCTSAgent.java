@@ -51,7 +51,7 @@ public class MCTSAgent implements Agent {
         Tree tree = new Tree(state);
 
         long start = System.currentTimeMillis();
-        long time = 0, goal = 1000 * 15;
+        long time = 0, goal = 1000 * 1;
         while(time < goal){
             Node selection = selectFrom(tree.root);
             expand(selection);

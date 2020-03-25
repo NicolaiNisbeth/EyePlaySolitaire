@@ -46,9 +46,9 @@ public class State {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         State state = (State) o;
-        return Objects.equals(stock, state.stock) &&
-                Objects.equals(tableau, state.tableau) &&
-                Objects.equals(foundation, state.foundation);
+        return stock.equals(state.stock) &&
+                tableau.equals(state.tableau) &&
+                foundation.equals(state.foundation);
     }
 
     @Override

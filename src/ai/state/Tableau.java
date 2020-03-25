@@ -2,6 +2,7 @@ package ai.state;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 public class Tableau {
@@ -49,4 +50,27 @@ public class Tableau {
         return stacks;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tableau tableau = (Tableau) o;
+        boolean flag = true;
+        for (int i = 0; i < stacks.size(); i++) {
+            Stack<Card> me = stacks.get(i);
+            Stack<Card> you = tableau.stacks.get(i);
+            for(Card card : me){
+                if(!you.contains(card)){
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        return flag && sum == tableau.sum;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stacks, sum);
+    }
 }
