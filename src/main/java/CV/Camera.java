@@ -32,7 +32,7 @@ public class Camera
     // the FXML button
     @FXML
     private Button button;
-    // the FXML image view
+    // the FXML image gui
     @FXML
     private ImageView currentFrame;
     // a timer for acquiring the video stream
