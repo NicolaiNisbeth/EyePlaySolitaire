@@ -1,46 +1,47 @@
 package gui.gamescene.consolecomponent;
 
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public class ScrollableTextField extends ScrollPane {
+/**
+ * UI component containing a textfield which can scroll
+ * when it gets too many message.
+ */
+class ScrollableTextField extends ScrollPane {
 
     private Text output = new Text();
-    private List<String> outputs = new LinkedList<String>();
+    private String outputMessage = "";
 
-    public ScrollableTextField(){
+    ScrollableTextField(){
 
-        StackPane stackPane = new StackPane(output);
-
+        // Auto scale the scroll pane
         setFitToHeight(true);
         setFitToWidth(true);
-        setContent(stackPane);
 
-        output.setTextAlignment(TextAlignment.CENTER);
+        // Align text to bottom left
+        StackPane.setAlignment(output, Pos.BOTTOM_LEFT);
 
+        // Margin of the textoutput
+        StackPane.setMargin(output, new Insets(10,10,10,10));
 
-        //prefWidthProperty().bind();
+        // Wrapping in stackpane Required for automatic scaling of the text field
+        StackPane outputContainer = new StackPane(output);
+        setContent(outputContainer);
+
+        // Scroll ScrollPane to button when new message is printed
+        outputContainer.heightProperty().addListener(observable -> setVvalue(1.0));
     }
 
 
+    /** Append a new some text to the textfield */
     void appendText(String text){
-
-        outputs.add(text);
-
-        StringBuilder outputString = new StringBuilder();
-        for( String str : outputs ){
-            outputString.append(str);
-            outputString.append('\n');
-        }
-
-        output.setText(outputString.toString());
+        // Add text to output list
+        outputMessage += text;
+        output.setText(outputMessage);
     }
-
-
 
 }
