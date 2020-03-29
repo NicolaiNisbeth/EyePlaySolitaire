@@ -1,20 +1,20 @@
-package CV;
+package cv_test;
 
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
-
-import CV.Utils;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.videoio.VideoCapture;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The controller for our application, where the application logic is
@@ -44,15 +44,11 @@ public class Camera
     // the id of the camera to be used
     private static int cameraId = 0;
 
-    /**
-     * The action triggered by pushing the button on the GUI
-     *
-     * @param event
-     *            the push button event
-     */
-    @FXML
-    protected void startCamera(ActionEvent event)
-    {
+
+    public void startCamera(ImageUpdateListener updateListener) {
+
+        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
         if (!this.cameraActive)
         {
             // start the video capture
@@ -73,15 +69,14 @@ public class Camera
                         Mat frame = grabFrame();
                         // convert and show the frame
                         Image imageToShow = Utils.mat2Image(frame);
-                        updateImageView(currentFrame, imageToShow);
+
+                        Platform.runLater( () -> updateListener.onImageUpdate(imageToShow));
                     }
                 };
 
                 this.timer = Executors.newSingleThreadScheduledExecutor();
                 this.timer.scheduleAtFixedRate(frameGrabber, 0, 33, TimeUnit.MILLISECONDS);
 
-                // update the button content
-                this.button.setText("Stop Camera");
             }
             else
             {
@@ -153,19 +148,6 @@ public class Camera
         }
     }
 
-    /**
-     * Update the {@link ImageView} in the JavaFX main thread
-     *
-     * @param view
-     *            the {@link ImageView} to update
-     * @param image
-     *            the {@link Image} to show
-     */
-    private void updateImageView(ImageView view, Image image)
-    {
-        System.out.println(image.getUrl());
-        Utils.onFXThread(view.imageProperty(), image);
-    }
 
     /**
      * On application close, stop the acquisition from the camera

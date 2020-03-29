@@ -25,13 +25,12 @@ public class ConsoleComponent implements IComponent {
                 if( input != null && input.length() > 0 ){
                     print(input);
                     inputField.setText("");
-                    inputListener.onInput(input);
+                    inputListener.onConsoleInput(input);
                     event.consume();
                 }
             }
         });
 
-        // Make container use the entirety of parent
         VBox.setVgrow(outputField, Priority.ALWAYS);
         VBox.setVgrow(inputField, Priority.ALWAYS);
 
@@ -59,7 +58,7 @@ public class ConsoleComponent implements IComponent {
     /**
      * Callback interface for user input in the console */
     public interface InputListener{
-        void onInput(String input);
+        void onConsoleInput(String input);
     }
 
 }

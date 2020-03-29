@@ -11,8 +11,7 @@ public class Capture extends Application {
 
 
     public void start(Stage primaryStage) throws Exception {
-        try
-        {
+        try {
             // load the FXML resource
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/window.fxml"));
             // store the root element so that the controllers can use it
