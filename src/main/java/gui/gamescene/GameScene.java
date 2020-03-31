@@ -4,7 +4,6 @@ import cv_test.Camera;
 import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.gamecomponent.GameComponent;
-import gui.gamescene.gamecomponent.GameComponentTest;
 import gui.gamescene.gamecomponent.IGameComponent;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;

@@ -87,9 +87,9 @@ public class Card {
     }
 
     public enum Suit{
-        HEART,
-        DIAMOND,
-        SPADE,
+        HEARTS,
+        DIAMONDS,
+        SPADES,
         CLUBS;
 
         @Override
