@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
+
 /**
  * GUI Componeent to display an arbitrary image (used to display
  * computer vision image).

@@ -9,7 +9,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
-import CV.Utils;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -163,7 +163,7 @@ public class Camera
      */
     private void updateImageView(ImageView view, Image image)
     {
-        System.out.println(image.getUrl());
+        //System.out.println(image.getUrl());
         Utils.onFXThread(view.imageProperty(), image);
     }
 

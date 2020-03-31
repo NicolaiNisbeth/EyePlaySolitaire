@@ -3,6 +3,7 @@ package gui.gamescene;
 import cv_test.Camera;
 import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
+import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.GameComponentTest;
 import gui.gamescene.gamecomponent.IGameComponent;
 import javafx.geometry.HPos;
@@ -48,7 +49,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
 
         // Add Game Component
-        gameComponent = new GameComponentTest();
+        gameComponent = new GameComponent();
         Node gameNode = gameComponent.getNode();
         grid.add(gameNode, 0, 1, 2, 1);
         GridPane.setHgrow(gameNode, Priority.ALWAYS);
@@ -73,7 +74,6 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         camera.startCamera( (img) -> {
             cameraComponent.updateImage(img);
         });*/
-
     }
 
     @Override
