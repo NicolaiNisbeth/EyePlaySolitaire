@@ -1,8 +1,7 @@
 package ai.agent;
 
 import ai.action.Action;
-import ai.heuristic.Heuristic;
-import ai.state.ActionFinder;
+import ai.state.ActionFinder51;
 import ai.state.State;
 
 import java.util.Collection;
@@ -40,10 +39,10 @@ public class MCTSAgent implements Agent {
     }
 
     private static final int WIN = 1, LOSS = 0;
-    private ActionFinder actionFinder;
+    private ActionFinder51 actionFinder;
 
     public MCTSAgent() {
-        actionFinder = new ActionFinder();
+        actionFinder = new ActionFinder51();
     }
 
     @Override

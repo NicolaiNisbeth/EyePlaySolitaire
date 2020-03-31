@@ -12,8 +12,9 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Stack;
 
-public class ActionFinder {
+public class ActionFinder51 implements IActionFinder {
 
+    @Override
     public List<Action> getActions(State state) {
         List<Action> actions = new ArrayList<>();
         addStockActions(state, actions);
@@ -29,14 +30,16 @@ public class ActionFinder {
         addStockToTableauActions(options, tableau, actions);
     }
 
-    private void addStockToFoundationActions(List<Card> options, Foundation foundation, List<Action> actions) {
+    @Override
+    public void addStockToFoundationActions(List<Card> options, Foundation foundation, List<Action> actions) {
         for (Card card : options) {
             if(fitsOnFoundation(card, foundation))
                 actions.add(new StockToFoundation(card));
         }
     }
 
-    private void addStockToTableauActions(List<Card> options, Tableau tableau, List<Action> actions) {
+    @Override
+    public void addStockToTableauActions(List<Card> options, Tableau tableau, List<Action> actions) {
         List<Stack<Card>> stacks = tableau.getStacks();
         for (int i = 0; i < stacks.size(); i++) {
             Stack<Card> stack = stacks.get(i);
@@ -62,7 +65,8 @@ public class ActionFinder {
         addTableauToTableauActions(tableau, actions);
     }
 
-    private void addTableauToFoundationActions(Tableau tableau, Foundation foundation, List<Action> actions) {
+    @Override
+    public void addTableauToFoundationActions(Tableau tableau, Foundation foundation, List<Action> actions) {
         List<Stack<Card>> stacks = tableau.getStacks();
         for (int i = 0; i < stacks.size(); i++) {
             Stack<Card> stack = stacks.get(i);
@@ -73,7 +77,8 @@ public class ActionFinder {
         }
     }
 
-    private void addTableauToTableauActions(Tableau tableau, List<Action> actions) {
+    @Override
+    public void addTableauToTableauActions(Tableau tableau, List<Action> actions) {
         List<Stack<Card>> stacks = tableau.getStacks();
         List<Card> targets = new ArrayList<>();
         for(Stack<Card> stack : stacks) {

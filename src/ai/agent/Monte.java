@@ -1,17 +1,16 @@
 package ai.agent;
 
 import ai.action.Action;
-import ai.state.ActionFinder;
+import ai.state.ActionFinder51;
 import ai.state.State;
 
-import java.util.Collection;
 import java.util.List;
 
 public class Monte implements Agent {
 
     private Node root;
     private int iterations;
-    private ActionFinder actionFinder = new ActionFinder();
+    private ActionFinder51 actionFinder = new ActionFinder51();
 
     private static class Node {
         int visits;

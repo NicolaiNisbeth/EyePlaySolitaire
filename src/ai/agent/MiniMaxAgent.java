@@ -2,13 +2,13 @@ package ai.agent;
 
 import ai.action.Action;
 import ai.heuristic.Heuristic;
-import ai.state.ActionFinder;
+import ai.state.ActionFinder51;
 import ai.state.State;
 
 import java.util.Collection;
 
 public class MiniMaxAgent implements Agent {
-    private ActionFinder actionFinder = new ActionFinder();
+    private ActionFinder51 actionFinder = new ActionFinder51();
     private int maxDepth;
     private Heuristic heuristic;
     private long counter = 0;

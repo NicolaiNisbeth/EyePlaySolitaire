@@ -1,6 +1,6 @@
 package ai.heuristic;
 
-import ai.state.ActionFinder;
+import ai.state.ActionFinder51;
 import ai.state.State;
 
 public class MoreOptions implements Heuristic {
@@ -9,7 +9,7 @@ public class MoreOptions implements Heuristic {
 
     @Override
     public double evaluate(State state) {
-        ActionFinder actionFinder = new ActionFinder();
+        ActionFinder51 actionFinder = new ActionFinder51();
         int actionCount = actionFinder.getActions(state).size();
         if(actionCount == 0 && !state.isGoal())
             return -1;
