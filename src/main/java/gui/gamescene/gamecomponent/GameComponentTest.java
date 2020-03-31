@@ -14,10 +14,11 @@ import javafx.stage.Stage;
 public class GameComponentTest implements IGameComponent {
 
     private Pane imagePane = new Pane();
+    private GridPane grid;
 
     public GameComponentTest(){
 
-        GridPane grid = new GridPane();
+        grid = new GridPane();
         StackPane stackPane = new StackPane();
         grid.setPadding(new Insets(10,10,10,10));
         grid.setVgap(8);
@@ -90,7 +91,7 @@ public class GameComponentTest implements IGameComponent {
 
     @Override
     public Node getNode() {
-        return imagePane;
+        return grid;
     }
 
     @Override
