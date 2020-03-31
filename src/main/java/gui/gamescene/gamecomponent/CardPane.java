@@ -1,35 +1,32 @@
 package gui.gamescene.gamecomponent;
 
+import gui.util.MarginContainer;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 
-public class CardPane extends GridPane {
+public class CardPane extends Pane {
 
-    private Pane card = new Pane();
+    public CardPane(Image cardImage){
 
-    public CardPane(Image cardImage, double topMargin){
-
-        // Not sure why the background size is requred.
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(cardImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
+        setBackground(background);
 
-
-
-
+        // Add card drop shadow
         DropShadow shadow = new DropShadow(2, new Color(0,0,0,0.5));
         shadow.setWidth(0);
         shadow.setOffsetY(-2);
-        card.setEffect(shadow);
+        setEffect(shadow);
 
-        card.setBackground(background);
 /*
         BackgroundFill fill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
         Background gridBackgound = new Background(fill);
         setBackground(gridBackgound);*/
+/*
 
         ColumnConstraints columnConstraint;
 
@@ -44,6 +41,7 @@ public class CardPane extends GridPane {
         columnConstraint = new ColumnConstraints();
         columnConstraint.setPercentWidth(10);
         getColumnConstraints().add(columnConstraint);
+
 
 
         RowConstraints rowConstraint;
@@ -61,6 +59,7 @@ public class CardPane extends GridPane {
         getRowConstraints().add(rowConstraint);
         add(card, 1,1);
 
+*/
 
     }
 
