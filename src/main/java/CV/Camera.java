@@ -163,7 +163,7 @@ public class Camera
      */
     private void updateImageView(ImageView view, Image image)
     {
-        System.out.println(image.getUrl());
+        //System.out.println(image.getUrl());
         Utils.onFXThread(view.imageProperty(), image);
     }
 

@@ -46,7 +46,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
         GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
 
-
+//TODO
         // Add Game Component
         gameComponent = new GameComponentTest();
         Node gameNode = gameComponent.getNode();
