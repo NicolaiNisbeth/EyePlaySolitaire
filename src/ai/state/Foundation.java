@@ -90,7 +90,7 @@ public class Foundation {
                 }
             }
         }
-        return flag && sum == that.sum && Arrays.equals(sizes, that.sizes);
+        return flag && sum == that.sum;
     }
 
     @Override

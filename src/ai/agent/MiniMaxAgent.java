@@ -20,7 +20,7 @@ public class MiniMaxAgent implements Agent {
 
     @Override
     public Action getAction(State root) {
-        double maxValue = 0;
+        double maxValue = Double.MIN_VALUE;
         Action maxAction = null;
         for(Action action : actionFinder.getActions(root)){
             double value = min(root, action, 1, Double.MIN_VALUE, Double.MAX_VALUE);
@@ -47,12 +47,12 @@ public class MiniMaxAgent implements Agent {
     }
 
     private double max(State state, int depth, double alpha, double beta) {
-        if(depth >= maxDepth){
+        Collection<Action> actions = actionFinder.getActions(state);
+        if(depth >= maxDepth || actions.isEmpty()){
             counter++;
             return heuristic.evaluate(state);
         }
 
-        Collection<Action> actions = actionFinder.getActions(state);
         double maxValue = Double.MIN_VALUE;
         for(Action action : actions){
             maxValue = Math.max(maxValue, min(state, action, depth+1, alpha, beta));

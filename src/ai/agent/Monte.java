@@ -1,7 +1,8 @@
 package ai.agent;
 
 import ai.action.Action;
-import ai.state.ActionFinder;
+import ai.state.ActionFinder52;
+import ai.state.IActionFinder;
 import ai.state.State;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class Monte implements Agent {
     private static final int WIN = 1, LOSS = 0;
     private Node root;
     private int iterations;
-    private ActionFinder actionFinder = new ActionFinder();
+    private IActionFinder actionFinder = new ActionFinder52();
 
     private static class Node {
         int depth;

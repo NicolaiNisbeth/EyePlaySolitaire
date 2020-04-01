@@ -8,6 +8,7 @@ import ai.state.IActionFinder;
 import ai.state.State;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * https://en.wikipedia.org/wiki/Expectiminimax
@@ -26,9 +27,10 @@ public class ExpectimaxAgent implements Agent {
 
     @Override
     public Action getAction(State root) {
-        double maxValue = 0;
+        double maxValue = Double.MIN_VALUE;
         Action maxAction = null;
-        for(Action action : actionFinder.getActions(root)){
+        List<Action> actions = actionFinder.getActions(root);
+        for(Action action : actions){
             double value = actionValue(root, action, 1);
             if(value > maxValue){
                 maxValue = value;
@@ -49,13 +51,13 @@ public class ExpectimaxAgent implements Agent {
     }
 
     private double stateValue(State state, int depth) {
-        if(depth >= maxDepth){
+        Collection<Action> actions = actionFinder.getActions(state);
+        if(depth >= maxDepth || actions.isEmpty()){
             counter++;
             return heuristic.evaluate(state);
         }
 
-        Collection<Action> actions = actionFinder.getActions(state);
-        double maxValue = 0;
+        double maxValue = Double.MIN_VALUE;
         for(Action action : actions){
             double value = actionValue(state, action, depth+1);
             if(value > maxValue){

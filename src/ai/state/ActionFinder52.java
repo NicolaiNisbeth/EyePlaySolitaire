@@ -83,6 +83,7 @@ public class ActionFinder52 implements IActionFinder {
             for (Card card : stack){
                 if (card == null) continue;
                 for (int j = 0; j < tableau.getStacks().size(); j++) {
+                    //if(i == j) continue;
                     if (tableau.getStacks().get(j).isEmpty()){
                         if (card.getValue() == 13 && stack.contains(null)){
                             actions.add(new TableauToTableau(i, j, card));
@@ -96,7 +97,6 @@ public class ActionFinder52 implements IActionFinder {
                     }
                 }
             }
-
         }
     }
 }
