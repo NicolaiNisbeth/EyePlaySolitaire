@@ -78,12 +78,4 @@ class GameStateGenerator {
 
         return game;
     }
-
-    public static void main(String[] args) {
-        System.out.println("Generating game state");
-        GameState state = GameStateGenerator.generateGameState();
-
-        System.out.println("Finished generating");
-        System.out.println(state);
-    }
 }
