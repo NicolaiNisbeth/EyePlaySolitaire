@@ -40,9 +40,43 @@ public class GameComponent implements IGameComponent {
         BackgroundFill fill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(fill);
         grid.setBackground(background);
+        grid.setGridLinesVisible(true);
 
 
 
+        //Set row
+        for (int i = 0; i < 3; i++) {
+            RowConstraints constraints = new RowConstraints();
+
+            if (i==0) {
+                constraints.setPercentHeight(25);
+                grid.getRowConstraints().add(constraints);
+            }
+
+            if (i==1) {
+                constraints.setPercentHeight(10);
+                grid.getRowConstraints().add(constraints);
+            }
+
+            if (i==2) {
+                constraints.setPercentHeight(25);
+                grid.getRowConstraints().add(constraints);
+            }
+
+
+        }
+
+
+        //Set Colonner
+        for (int i = 0; i < 8; i++) {
+            ColumnConstraints constraintss = new ColumnConstraints();
+
+            constraintss.setPercentWidth(100);
+            grid.getColumnConstraints().add(constraintss);
+
+        }
+
+/*
         for(int i=0; i<13; i++){
             ColumnConstraints constraints = new ColumnConstraints();
             constraints.setPercentWidth(100./13);
@@ -70,6 +104,26 @@ public class GameComponent implements IGameComponent {
 
 
 
+
+        for (int row = 0; row < 3; row++) {
+            if (row == 0) {
+                for (Suit suit : cardPanesMap.keySet()) {
+                    int value = 0;
+                    for (CardPane pane : cardPanesMap.get(suit)) {
+                        CardContainer container = new CardContainer(0.05);
+                        container.setCard(pane);
+                        grid.add(container, value, row);
+                        value++;
+                    }
+                }
+            }
+
+        }
+*/
+
+
+
+
     }
 
     /**
@@ -81,7 +135,7 @@ public class GameComponent implements IGameComponent {
 
     @Override
     public void updateGameState(GameState gameState) {
-
+        //System.out.printf();
     }
 
     @Override
