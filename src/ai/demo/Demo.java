@@ -35,7 +35,7 @@ public class Demo {
             State state = generateInitialState();
             while(true){
                 Action action = agent.getAction(state);
-                //System.out.println(action);
+                System.out.println(action);
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
             }

@@ -10,18 +10,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ActionFinder51Test {
 
-    private ActionFinder51 actionFinder51;
+    private IActionFinder actionFinder;
     private List<Action> actions;
 
     @BeforeEach
     public void setup(){
-        actionFinder51 = new ActionFinder51();
+        actionFinder = new ActionFinder52();
         actions = new ArrayList<>();
     }
 
     @AfterEach
     public void tearDown(){
-        actionFinder51 = null;
+        actionFinder = null;
         actions = null;
     }
 
@@ -34,7 +34,7 @@ class ActionFinder51Test {
             options.add(new Card(1, i));
         }
         assertEquals(0, actions.size());
-        actionFinder51.addStockToFoundationActions(options, foundation, actions);
+        actionFinder.addStockToFoundationActions(options, foundation, actions);
         assertEquals(4, actions.stream().filter(StockToFoundation.class::isInstance).count());
     }
 
@@ -50,7 +50,7 @@ class ActionFinder51Test {
             options.add(new Card(2, i));
 
         assertEquals(0, actions.size());
-        actionFinder51.addStockToFoundationActions(options, foundation, actions);
+        actionFinder.addStockToFoundationActions(options, foundation, actions);
         assertEquals(4, actions.stream().filter(StockToFoundation.class::isInstance).count());
     }
 
@@ -65,7 +65,7 @@ class ActionFinder51Test {
         options.add(new Card(13, 0));
 
         assertEquals(0, actions.size());
-        actionFinder51.addStockToFoundationActions(options, foundation, actions);
+        actionFinder.addStockToFoundationActions(options, foundation, actions);
         assertEquals(1, actions.stream().filter(StockToFoundation.class::isInstance).count());
     }
 
@@ -89,7 +89,7 @@ class ActionFinder51Test {
         options.add(new Card(13, 0));
 
         assertEquals(0, actions.size());
-        actionFinder51.addStockToFoundationActions(options, foundation, actions);
+        actionFinder.addStockToFoundationActions(options, foundation, actions);
         assertEquals(1, actions.stream().filter(StockToFoundation.class::isInstance).count());
     }
 
@@ -105,7 +105,7 @@ class ActionFinder51Test {
         options.add(new Card(1,0));
 
         assertEquals(0, actions.size());
-        actionFinder51.addStockToTableauActions(options,tableau, actions);
+        actionFinder.addStockToTableauActions(options,tableau, actions);
         assertEquals(1, actions.stream().filter(StockToTableau.class::isInstance).count());
     }
 
@@ -121,7 +121,7 @@ class ActionFinder51Test {
         options.add(new Card(1,1));
 
         assertEquals(0, actions.size());
-        actionFinder51.addStockToTableauActions(options,tableau, actions);
+        actionFinder.addStockToTableauActions(options,tableau, actions);
         assertEquals(1, actions.stream().filter(StockToTableau.class::isInstance).count());
     }
 
@@ -137,7 +137,7 @@ class ActionFinder51Test {
         Tableau tableau = new Tableau(board);
 
         assertEquals(0, actions.size());
-        actionFinder51.addTableauToFoundationActions(tableau, foundation, actions);
+        actionFinder.addTableauToFoundationActions(tableau, foundation, actions);
         assertEquals(1, actions.stream().filter(TableauToFoundation.class::isInstance).count());
     }
 
@@ -154,7 +154,7 @@ class ActionFinder51Test {
 
 
         assertEquals(0, actions.size());
-        actionFinder51.addTableauToFoundationActions(tableau, foundation, actions);
+        actionFinder.addTableauToFoundationActions(tableau, foundation, actions);
         assertEquals(1, actions.stream().filter(TableauToFoundation.class::isInstance).count());
     }
 
@@ -173,7 +173,7 @@ class ActionFinder51Test {
 
 
         assertEquals(0, actions.size());
-        actionFinder51.addTableauToFoundationActions(tableau, foundation, actions);
+        actionFinder.addTableauToFoundationActions(tableau, foundation, actions);
         assertEquals(1, actions.stream().filter(TableauToFoundation.class::isInstance).count());
     }
 
@@ -200,7 +200,7 @@ class ActionFinder51Test {
 
 
         assertEquals(0, actions.size());
-        actionFinder51.addTableauToFoundationActions(tableau, foundation, actions);
+        actionFinder.addTableauToFoundationActions(tableau, foundation, actions);
         assertEquals(1, actions.stream().filter(TableauToFoundation.class::isInstance).count());
     }
 
@@ -222,7 +222,7 @@ class ActionFinder51Test {
         Tableau tableau = new Tableau(board);
 
         assertEquals(0, actions.size());
-        actionFinder51.addTableauToTableauActions(tableau, actions);
+        actionFinder.addTableauToTableauActions(tableau, actions);
         assertEquals(1, actions.stream().filter(TableauToTableau.class::isInstance).count());
     }
 
@@ -245,7 +245,7 @@ class ActionFinder51Test {
         Tableau tableau = new Tableau(board);
 
         assertEquals(0, actions.size());
-        actionFinder51.addTableauToTableauActions(tableau, actions);
+        actionFinder.addTableauToTableauActions(tableau, actions);
         assertEquals(1, actions.stream().filter(TableauToTableau.class::isInstance).count());
     }
 }
