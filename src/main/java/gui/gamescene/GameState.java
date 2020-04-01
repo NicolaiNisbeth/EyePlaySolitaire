@@ -1,6 +1,8 @@
 package gui.gamescene;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -10,15 +12,37 @@ import java.util.Collection;
  */
 public class GameState {
 
-    private Collection stock;
-    private Collection flipped;
-    private Collection<Collection<Card>> tableaus;
-    private Collection<Collection<Card>> foundations;
+    private List<Card> stock;
+    private List<Card> flipped;
+    private List<List<Card>> tableaus;
+    private List<List<Card>> foundations;
 
 
     /**
-     * Creates a new game state from a series of arbitrary Collection
-     * objects of {@link Card} objects.
+     * Creates a new game state where the List objects
+     * are initialized as ArrayLists.
+     */
+    public GameState() {
+        this.stock = new ArrayList<>();
+        this.flipped = new ArrayList<>();
+
+        this.tableaus = new ArrayList<>();
+        for( int i=0; i<7; i++){
+            tableaus.add(new ArrayList<>());
+        }
+
+        this.foundations = new ArrayList<>();
+        for( int i=0; i<4; i++){
+            foundations.add(new ArrayList<>());
+        }
+    }
+
+
+    /**
+     * Creates a new game state from a series of arbitrary List
+     * objects of {@link Card} objects. The lists may be empty
+     * and cards may be added later.
+     *
      * No game logic is tested when creating the game state - this
      * is up to the user.
      *
@@ -27,27 +51,109 @@ public class GameState {
      * @param tableaus  The (usually 7) stacks of cards you may move cards between
      * @param foundations The (usually 4) stacks you aim to get all cards into
      */
-    public GameState(Collection stock, Collection flipped,
-                     Collection<Collection<Card>> tableaus, Collection<Collection<Card>> foundations) {
+    public GameState(List stock, List flipped,
+                     List<List<Card>> tableaus, List<List<Card>> foundations) {
         this.stock = stock;
         this.flipped = flipped;
         this.tableaus = tableaus;
         this.foundations = foundations;
     }
 
-    public Collection getStock() {
+    public void addToStock(Card ... card) {
+        stock.addAll(Arrays.asList(card));
+    }
+
+    public void addToFlipped(Card card) {
+        flipped.add(card);
+    }
+
+    /**
+     * Add a card to a tableau with a given index.
+     * Index ranges from 0 (left most) to 6 (right most)
+     */
+    public void addToTableau(int tableauIndex, Card card) {
+        tableaus.get(tableauIndex).add(card);
+    }
+
+    /**
+     * Add a card to a foundation pile with a given index.
+     * Index ranges from 0 (left most) to 3 (right most)
+     */
+    public void addToFoundations(int foundationIndex, Card card) {
+        foundations.get(foundationIndex).add(card);
+    }
+
+    public List getStock() {
         return stock;
     }
 
-    public Collection getFlipped() {
+    public List getFlipped() {
         return flipped;
     }
 
-    public Collection<Collection<Card>> getTableaus() {
+    public List<List<Card>> getTableaus() {
         return tableaus;
     }
 
-    public Collection<Collection<Card>> getFoundations() {
+    public List<List<Card>> getFoundations() {
         return foundations;
+    }
+
+
+
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+
+        str.append("GameState { ");
+
+        // Stock
+        if( stock == null || stock.size() == 0){
+            str.append("\nstock: empty");
+        }else{
+            str.append("\nstock: ");
+            for( Card card : stock ){
+                str.append( card.toStringShort()).append(" ");
+            }
+        }
+
+        // Flipped cards
+        if( flipped == null || flipped.size() == 0){
+            str.append("\nflipped: empty");
+        }else{
+            str.append("\nflipped: ");
+            for( Card card : flipped ){
+                str.append( card.toStringShort()).append(" ");
+            }
+        }
+
+
+        for(int i=0; i<7; i++){
+            List<Card> tableau = tableaus.get(i);
+            if( tableau == null || tableau.size() == 0){
+                str.append("\ntableau ").append(i).append(": empty");
+            }else{
+                str.append("\ntableau ").append(i).append(": ");
+                for( Card card : tableau ){
+                    str.append( card.toStringShort()).append(" ");
+                }
+            }
+        }
+
+        for(int i=0; i<4; i++){
+            List<Card> foundation = foundations.get(i);
+            if( foundation == null || foundation.size() == 0){
+                str.append("\nfoundation ").append(i).append(": empty");
+            }else{
+                str.append("\nfoundation ").append(i).append(": ");
+                for( Card card : foundation ){
+                    str.append( card.toStringShort()).append(" ");
+                }
+            }
+        }
+
+        str.append("\n}");
+        return str.toString();
     }
 }

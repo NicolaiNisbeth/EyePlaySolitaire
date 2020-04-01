@@ -86,11 +86,16 @@ public class Card {
                 '}';
     }
 
+    public String toStringShort(){
+        return suit.toString().substring(0, 1).toUpperCase() + value;
+    }
+
     public enum Suit{
         HEARTS,
         DIAMONDS,
         SPADES,
         CLUBS;
+
 
         @Override
         public String toString() {

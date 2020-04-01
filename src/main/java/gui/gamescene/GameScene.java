@@ -5,8 +5,6 @@ import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -14,6 +12,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+
 
 public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
@@ -68,8 +67,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
 
         // Testing camera
-        /*
-        camera = new Camera();
+/*        camera = new Camera();
         camera.startCamera( (img) -> {
             cameraComponent.updateImage(img);
         });*/

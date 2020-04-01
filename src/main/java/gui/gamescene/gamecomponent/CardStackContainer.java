@@ -62,7 +62,7 @@ public class CardStackContainer extends StackPane {
      * Removes all cards from the stack.
      * This doesn't reset size or margins.
      */
-    public void clear(){
+    public void clearCards(){
         for( MarginContainer container : containers ){
             container.removeNode();
         }

@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.opencv.core.Core;
 
+
 public class SceneController extends Application {
     private Stage stage;
 
@@ -18,14 +19,13 @@ public class SceneController extends Application {
     }
 
     /** Sets the current scene of the window. The scene controls
-     * what is displayed and control the different logic components. */
-    public void setScene( Scene scene) {
+     * what is displayed and control the different logic components. */public void setScene( Scene scene) {
         stage.setScene(scene);
     }
 
     // Main method HAVE to be in same class as the extender of Application
     public static void main(String[] args) {
-        //TODO: Not sure if this should be here (ask Michael)
+        //TODO: Move this to OpenCV module at some point
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         launch();
