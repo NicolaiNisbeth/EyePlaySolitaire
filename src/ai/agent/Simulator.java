@@ -1,7 +1,7 @@
 package ai.agent;
 
 import ai.action.Action;
-import ai.state.ActionFinder;
+import ai.state.ActionFinder51;
 import ai.state.State;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class Simulator implements Agent {
 
     @Override
     public Action getAction(State state) {
-        ActionFinder finder = new ActionFinder();
+        ActionFinder51 finder = new ActionFinder51();
         Collection<Action> actions = finder.getActions(state);
         int max = Integer.MIN_VALUE;
         Action selected = null;

@@ -2,7 +2,9 @@ package ai.agent;
 
 import ai.action.Action;
 import ai.heuristic.Heuristic;
-import ai.state.ActionFinder;
+import ai.state.ActionFinder51;
+import ai.state.ActionFinder52;
+import ai.state.IActionFinder;
 import ai.state.State;
 
 import java.util.Collection;
@@ -12,7 +14,7 @@ import java.util.Collection;
  * https://github.com/DanijelAskov/expectiminimax-backgammon/blob/master/src/main/java/askov/schoolprojects/ai/expectiminimaxbackgammon/gamelogic/player/ExpectiminimaxPlayer.java
  */
 public class ExpectimaxAgent implements Agent {
-    private ActionFinder actionFinder = new ActionFinder();
+    private IActionFinder actionFinder = new ActionFinder52();
     private int maxDepth;
     private Heuristic heuristic;
     private long counter = 0;
