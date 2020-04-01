@@ -9,12 +9,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+import java.awt.*;
 import java.util.HashMap;
 
 public class GameComponent implements IGameComponent {
 
     private GridPane grid = new GridPane();
-
+    private GameState gameState = new GameState();
     private HashMap<Suit, CardPane[]> cardPanesMap = new HashMap<>();
     private CardPane cardBackPane;
     private CardImageLoader imageLoader = new CardImageLoader();
@@ -75,6 +76,53 @@ public class GameComponent implements IGameComponent {
             grid.getColumnConstraints().add(constraintss);
 
         }
+/*
+        for (Card card : gameState.getTableaus().get(0)) {
+            CardPane pane = getCardPane(card);
+        }
+
+        CardContainer stackContainer = new CardContainer(0.05);
+        stackContainer.setCard(gameState.);
+        grid.add(stackContainer, 1, 0);
+*/
+
+            //Card container
+            CardContainer deck = new CardContainer(0.05);
+            deck.setCard(cardBackPane);
+            grid.add(deck, 0, 0);
+
+            CardContainer setHeart = new CardContainer(0.05);
+            setHeart.setCard(getCardPane(new Card(Suit.HEARTS, 1)));
+            grid.add(setHeart, 4, 0);
+
+            CardContainer setDiamonds = new CardContainer(0.05);
+            setDiamonds.setCard(getCardPane(new Card(Suit.DIAMONDS, 1)));
+            grid.add(setDiamonds, 5, 0);
+
+            CardContainer setClubs = new CardContainer(0.05);
+            setClubs.setCard(getCardPane(new Card(Suit.CLUBS, 1)));
+            grid.add(setClubs, 6, 0);
+
+            CardContainer setSpade = new CardContainer(0.05);
+            setSpade.setCard(getCardPane(new Card(Suit.SPADES, 1)));
+            grid.add(setSpade, 7, 0);
+
+
+            //Card stack container
+            CardContainer setFive = new CardContainer(0.05);
+            setFive.setCard(getCardPane(new Card(Suit.DIAMONDS, 5)));
+            grid.add(setFive, 3, 2);
+
+            for (Card card : gameState.getTableaus().get(0)) {
+                CardPane pane = getCardPane(card);
+            }
+
+            CardStackContainer cardStackContainer = new CardStackContainer(1,0.5,0.5);
+            //cardStackContainer.addCard();
+            grid.add(setFive, 3, 2);
+
+
+
 
 /*
         for(int i=0; i<13; i++){
@@ -90,17 +138,22 @@ public class GameComponent implements IGameComponent {
         }
 
 
-        int row=0;
-        for( Suit suit : cardPanesMap.keySet() ){
-            int value = 0;
-            for( CardPane pane : cardPanesMap.get(suit)){
-                CardContainer container = new CardContainer(0.05);
-                container.setCard(pane);
-                grid.add(container, value, row);
-                value++;
+        int row = 1;
+            for (Suit suit : cardPanesMap.keySet()) {
+                int value = 7;
+                for (CardPane pane : cardPanesMap.get(suit)) {
+                    CardContainer container = new CardContainer(0.05);
+                    container.setCard(pane);
+                    grid.add(container, value, row);
+                    value++;
+                }
+                row++;
+
             }
-            row++;
-        }
+
+
+
+
 
 
 
