@@ -115,12 +115,11 @@ public class GameComponent implements IGameComponent {
 
             for (Card card : gameState.getTableaus().get(0)) {
                 CardPane pane = getCardPane(card);
+
+                CardStackContainer cardStackContainer = new CardStackContainer(1, 0.5, 0.5);
+                cardStackContainer.addCard(pane);
+                grid.add(setFive, 4, 2);
             }
-
-            CardStackContainer cardStackContainer = new CardStackContainer(1,0.5,0.5);
-            //cardStackContainer.addCard();
-            grid.add(setFive, 3, 2);
-
 
 
 
