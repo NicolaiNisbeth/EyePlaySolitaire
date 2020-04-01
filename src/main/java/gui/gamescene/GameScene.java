@@ -53,6 +53,8 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(gameNode, Priority.ALWAYS);
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
+        gameComponent.updateGameState(GameStateGenerator.generateGameState(1000));
+
 
         // Add Camera Component
         cameraComponent = new CameraComponent();

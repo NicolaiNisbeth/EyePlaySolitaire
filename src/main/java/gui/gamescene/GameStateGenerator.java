@@ -1,19 +1,18 @@
-package gui.gamescene.gamecomponent;
+package gui.gamescene;
 
 import gui.gamescene.Card;
 import gui.gamescene.Card.Suit;
 import gui.gamescene.GameState;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
+
 
 /**
  * >> TEMPORARY CLASS <<
  * Random State generator for testing
  */
 class GameStateGenerator {
-
 
     /**
      * Generate game state from random seed
@@ -23,7 +22,6 @@ class GameStateGenerator {
     static GameState generateGameState() {
         return generateGameState(System.currentTimeMillis());
     }
-
 
     /**
      * Generate game state from specific seed
