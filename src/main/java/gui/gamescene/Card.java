@@ -110,7 +110,6 @@ public class Card {
         SPADES,
         CLUBS;
 
-
         @Override
         public String toString() {
             return this.name().toLowerCase();

@@ -23,6 +23,8 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private ConsoleComponent consoleComponent;
     private CameraComponent cameraComponent;
     private IGameComponent gameComponent;
+    private IGamePrompter prompter;
+    private ISolitaireAI ai;
     private Camera camera;
 
     public GameScene() {
@@ -45,6 +47,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
         GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
 
+        prompter = consoleComponent;
 
         // Add Game Component
         gameComponent = new GameComponent();
@@ -81,4 +84,21 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         // TODO: Implement meaningful functionality here
         System.out.println("Input from console: " + input);
     }
+
+
+    /**
+     * Sends an asynchronous computation request to the AI on a new non-UI thread.
+     */
+    public void computeNextAction(GameState state){
+        new Thread(() -> {
+            // TODO: Implement this with better error message system in the GUI
+            try{
+                ai.computeAction(state, prompter);
+            }catch(ISolitaireAI.IllegalGameStateException e){
+                e.printStackTrace();
+                System.out.println(state);
+            }
+        }).start();
+    }
+
 }
