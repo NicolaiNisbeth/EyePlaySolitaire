@@ -1,6 +1,7 @@
 package cv_test;
 
 
+import gui.gamescene.cvinterface.ISolitaireCV;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,7 +46,7 @@ public class Camera
     private static int cameraId = 0;
 
 
-    public void startCamera(ImageUpdateListener updateListener) {
+    public void startCamera(ISolitaireCV.ImageUpdateListener updateListener) {
 
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 

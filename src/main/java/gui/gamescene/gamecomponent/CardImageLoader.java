@@ -1,8 +1,8 @@
 package gui.gamescene.gamecomponent;
 
-import static gui.gamescene.Card.Suit;
+import static gui.gamescene.gamestate.Card.Suit;
 
-import gui.gamescene.Card;
+import gui.gamescene.gamestate.Card;
 import javafx.scene.image.Image;
 
 import java.util.HashMap;

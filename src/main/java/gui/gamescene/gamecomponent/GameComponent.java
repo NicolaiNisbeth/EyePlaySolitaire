@@ -1,8 +1,8 @@
 package gui.gamescene.gamecomponent;
 
-import gui.gamescene.Card;
-import gui.gamescene.Card.Suit;
-import gui.gamescene.GameState;
+import gui.gamescene.gamestate.Card;
+import gui.gamescene.gamestate.Card.Suit;
+import gui.gamescene.gamestate.GameState;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.*;

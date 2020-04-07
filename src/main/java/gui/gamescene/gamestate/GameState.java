@@ -1,4 +1,4 @@
-package gui.gamescene;
+package gui.gamescene.gamestate;
 
 import java.util.ArrayList;
 import java.util.Arrays;

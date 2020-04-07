@@ -1,6 +1,6 @@
 package gui.gamescene.gamecomponent;
 
-import gui.gamescene.GameState;
+import gui.gamescene.gamestate.GameState;
 import gui.gamescene.IComponent;
 
 public interface IGameComponent extends IComponent {

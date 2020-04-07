@@ -1,6 +1,6 @@
-package gui.gamescene;
+package gui.gamescene.gamestate;
 
-import gui.gamescene.Card.Suit;
+import gui.gamescene.gamestate.Card.Suit;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,14 +9,14 @@ import java.util.Random;
  * >> TEMPORARY CLASS <<
  * Random State generator for testing
  */
-class GameStateGenerator {
+public class GameStateGenerator {
 
     /**
      * Generate game state from random seed
      * The state does not adhere to the game rules
      * (the cards in the different piles are completely random)
      */
-    static GameState generateGameState() {
+    public static GameState generateGameState() {
         return generateGameState(System.currentTimeMillis());
     }
 
@@ -25,7 +25,7 @@ class GameStateGenerator {
      * The state does not adhere to the game rules
      * (the cards in the different piles are completely random)
      */
-    static GameState generateGameState(long seed) {
+    public static GameState generateGameState(long seed) {
         Random rand = new Random(seed);
 
         // Generate Deck

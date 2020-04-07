@@ -2,7 +2,7 @@ package gui.gamescene.consolecomponent;
 
 
 import gui.gamescene.IComponent;
-import gui.gamescene.IGamePrompter;
+import gui.gamescene.aiinterface.IGamePrompter;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;

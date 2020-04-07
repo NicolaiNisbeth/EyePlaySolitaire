@@ -1,5 +1,7 @@
-package gui.gamescene;
+package gui.gamescene.aiinterface;
 
+
+import gui.gamescene.gamestate.GameState;
 
 public interface ISolitaireAI {
 

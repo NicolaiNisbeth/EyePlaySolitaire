@@ -1,10 +1,14 @@
 package gui.gamescene;
 
 import cv_test.Camera;
+import gui.gamescene.aiinterface.IGamePrompter;
+import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
+import gui.gamescene.gamestate.GameState;
+import gui.gamescene.gamestate.GameStateGenerator;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -73,10 +77,10 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
 
         // Testing camera
-/*        camera = new Camera();
+        camera = new Camera();
         camera.startCamera( (img) -> {
             cameraComponent.updateImage(img);
-        });*/
+        });
     }
 
     @Override
