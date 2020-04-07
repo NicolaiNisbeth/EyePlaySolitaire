@@ -17,6 +17,8 @@ public class GameComponent implements IGameComponent {
     private GridPane grid = new GridPane();
     private GameState gameState = new GameState();
     private CardImageLoader imageLoader = new CardImageLoader();
+    private CardContainer stock;
+    private CardStackContainer flipped;
     private List<CardStackContainer> tableaus;
     private List<CardContainer> foundations;
 
@@ -36,17 +38,17 @@ public class GameComponent implements IGameComponent {
             RowConstraints constraints = new RowConstraints();
 
             if (i==0) {
-                constraints.setPercentHeight(30);
-                grid.getRowConstraints().add(constraints);
-            }
-
-            if (i==1) {
                 constraints.setPercentHeight(10);
                 grid.getRowConstraints().add(constraints);
             }
 
+            if (i==1) {
+                constraints.setPercentHeight(5);
+                grid.getRowConstraints().add(constraints);
+            }
+
             if (i==2) {
-                constraints.setPercentHeight(30);
+                constraints.setPercentHeight(85);
                 grid.getRowConstraints().add(constraints);
             }
 
@@ -93,26 +95,25 @@ public class GameComponent implements IGameComponent {
 
 */
 
+        this.stock = new CardContainer(0.04);
+        grid.add(stock, 0, 0);
+
+        this.flipped = new CardStackContainer(3, 0.05, 0.04);
+        grid.add(flipped,1,0);
+
         this.tableaus = new ArrayList<>();
         for( int i=0; i<7; i++){
-            tableaus.add(new CardStackContainer(19, 0.05, 0.05));
-            grid.add(tableaus.get(i), i+2, 2);
+            tableaus.add(new CardStackContainer(19, 0.05, 0.04));
+            grid.add(tableaus.get(i), i+1, 2);
         }
 
         this.foundations = new ArrayList<>();
         for( int i=0; i<4; i++){
             foundations.add(new CardContainer(0.05));
+            grid.add(foundations.get(i), i+4, 0);
         }
 
     }
-/*
-    public List<List<Card>> getTableaus() {
-        return tableaus;
-    }
-    public List<List<Card>> getFoundations() {
-        return foundations;
-    }
-*/
 
     /**
      * Return the Card Pane matching the given card.
@@ -134,6 +135,18 @@ public class GameComponent implements IGameComponent {
         System.out.println(gameState);
         // TODO: Setup board according to game state
 
+        if (gameState.getStock().size() != 0) {
+            stock.setCard(createCardBackPane());
+        }
+
+        List<Card> flipped = gameState.getFlipped();
+
+        for (Card card : flipped) {
+            CardPane pane = createCardPane(card);
+            this.flipped.addCard(pane);
+        }
+
+
         for (int i = 0; i < gameState.getTableaus().size(); i++) {
 
             List<Card> tableau = gameState.getTableaus().get(i);
@@ -142,6 +155,17 @@ public class GameComponent implements IGameComponent {
                 CardPane pane = createCardPane(card);
                 tableaus.get(i).addCard(pane);
             }
+        }
+
+        for (int i = 0; i < gameState.getFoundations().size(); i++) {
+
+            List<Card> foundation = gameState.getFoundations().get(i);
+            int getLastIndex = foundation.size()-1;
+            Card lastIndex = foundation.get(getLastIndex);
+
+            CardPane pane = createCardPane(lastIndex);
+            foundations.get(i).setCard(pane);
+
         }
     }
 

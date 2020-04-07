@@ -83,11 +83,11 @@ public class GameState {
         foundations.get(foundationIndex).add(card);
     }
 
-    public List getStock() {
+    public List<Card> getStock() {
         return stock;
     }
 
-    public List getFlipped() {
+    public List<Card> getFlipped() {
         return flipped;
     }
 
