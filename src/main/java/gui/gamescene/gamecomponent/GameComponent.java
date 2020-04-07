@@ -31,14 +31,12 @@ public class GameComponent implements IGameComponent {
         grid.setBackground(background);
         grid.setGridLinesVisible(true);
 
-
-
         //Set row
         for (int i = 0; i < 3; i++) {
             RowConstraints constraints = new RowConstraints();
 
             if (i==0) {
-                constraints.setPercentHeight(10);
+                constraints.setPercentHeight(20);
                 grid.getRowConstraints().add(constraints);
             }
 
@@ -48,7 +46,7 @@ public class GameComponent implements IGameComponent {
             }
 
             if (i==2) {
-                constraints.setPercentHeight(85);
+                constraints.setPercentHeight(75);
                 grid.getRowConstraints().add(constraints);
             }
 
@@ -62,48 +60,16 @@ public class GameComponent implements IGameComponent {
             grid.getColumnConstraints().add(constraintss);
 
         }
-/*
-        //Card container
-        CardContainer deck = new CardContainer(0.05);
-        deck.setCard(createCardBackPane());
-        grid.add(deck, 0, 0);
-
-        CardContainer setHeart = new CardContainer(0.05);
-        setHeart.setCard(createCardPane(new Card(Suit.HEARTS, 1)));
-        grid.add(setHeart, 4, 0);
-
-        CardContainer setDiamonds = new CardContainer(0.05);
-        setDiamonds.setCard(createCardPane(new Card(Suit.DIAMONDS, 1)));
-        grid.add(setDiamonds, 5, 0);
-
-        CardContainer setClubs = new CardContainer(0.05);
-        setClubs.setCard(createCardPane(new Card(Suit.CLUBS, 1)));
-        grid.add(setClubs, 6, 0);
-
-        CardContainer setSpade = new CardContainer(0.05);
-        setSpade.setCard(createCardPane(new Card(Suit.SPADES, 1)));
-        grid.add(setSpade, 7, 0);
-
-
-        //Card stack container
-
-        CardContainer setFive = new CardContainer(0.05);
-        setFive.setCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
-        grid.add(setFive, 3, 2);
-
-        //CardStackContainer cardStackContainer = new CardStackContainer(14, 0.05, 0.05);
-
-*/
 
         this.stock = new CardContainer(0.04);
         grid.add(stock, 0, 0);
 
-        this.flipped = new CardStackContainer(3, 0.05, 0.04);
+        this.flipped = new CardStackContainer(3, 0.05, 0.10, Orientation.HORIZONTAL);
         grid.add(flipped,1,0);
 
         this.tableaus = new ArrayList<>();
         for( int i=0; i<7; i++){
-            tableaus.add(new CardStackContainer(19, 0.05, 0.05, Orientation.HORIZONTAL));
+            tableaus.add(new CardStackContainer(19, 0.02, 0.04, Orientation.VERTICAL));
             grid.add(tableaus.get(i), i+1, 2);
         }
 
@@ -133,11 +99,14 @@ public class GameComponent implements IGameComponent {
     public void updateGameState(GameState gameState) {
         System.out.println("GameComponenet: New GameState recieved");
         System.out.println(gameState);
-        // TODO: Setup board according to game state
 
         if (gameState.getStock().size() != 0) {
             stock.setCard(createCardBackPane());
+        } else {
+            stock.clearCard();
         }
+
+        flipped.clearCards();
 
         List<Card> flipped = gameState.getFlipped();
 
@@ -151,6 +120,8 @@ public class GameComponent implements IGameComponent {
 
             List<Card> tableau = gameState.getTableaus().get(i);
 
+            tableaus.get(i).clearCards();
+
             for (Card card : tableau) {
                 CardPane pane = createCardPane(card);
                 tableaus.get(i).addCard(pane);
@@ -158,6 +129,8 @@ public class GameComponent implements IGameComponent {
         }
 
         for (int i = 0; i < gameState.getFoundations().size(); i++) {
+
+            foundations.get(i).clearCard();
 
             List<Card> foundation = gameState.getFoundations().get(i);
             int getLastIndex = foundation.size()-1;

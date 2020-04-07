@@ -37,7 +37,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
         // Setup Row constraints
         RowConstraints row1 = new RowConstraints();
-        row1.setPercentHeight(40);
+        row1.setPercentHeight(30);
         grid.getRowConstraints().add(row1);
 
         ColumnConstraints column1 = new ColumnConstraints();
