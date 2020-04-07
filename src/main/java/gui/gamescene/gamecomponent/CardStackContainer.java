@@ -27,19 +27,28 @@ public class CardStackContainer extends StackPane {
      * @param stackMargin The decimal percentage margin added between each card
      *                    added to the stack (for the cascading effect).
      */
-    public CardStackContainer(int size, double generalMargin, double stackMargin ) {
-
+    public CardStackContainer(int size, double generalMargin, double stackMargin, Orientation orientation ) {
         this.size = size;
         containers = new MarginContainer[size];
 
+
+        // Create a margin container for each card slot (meaning
+        // 'size' containers').
         for( int i=0; i<size; i++ ){
             MarginContainer container = new MarginContainer();
             container.setMargin(generalMargin);
-            container.setMarginTop(generalMargin + stackMargin*i);
-            container.setMarginBottom(generalMargin + stackMargin*(size-1-i));
+
+            // Adjust top and bottom margin to create "cascade" effect
+            if( orientation == Orientation.VERTICAL ){
+                container.setMarginTop(generalMargin + stackMargin*i);
+                container.setMarginBottom(generalMargin + stackMargin*(size-1-i));
+            }else{
+                container.setMarginLeft(generalMargin + stackMargin*i);
+                container.setMarginRight(generalMargin + stackMargin*(size-1-i));
+            }
+
             containers[i] = container;
             getChildren().add(container);
-
         }
     }
 
@@ -68,4 +77,8 @@ public class CardStackContainer extends StackPane {
         }
     }
 
+    public enum Orientation {
+        HORIZONTAL,
+        VERTICAL
+    }
 }

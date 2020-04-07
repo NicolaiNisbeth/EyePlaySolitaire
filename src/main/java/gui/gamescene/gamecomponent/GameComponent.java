@@ -3,6 +3,7 @@ package gui.gamescene.gamecomponent;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.Card.Suit;
 import gui.gamescene.gamestate.GameState;
+import static gui.gamescene.gamecomponent.CardStackContainer.Orientation;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -14,7 +15,6 @@ public class GameComponent implements IGameComponent {
     private GridPane grid = new GridPane();
     private GameState gameState = new GameState();
     private CardImageLoader imageLoader = new CardImageLoader();
-
 
     public GameComponent(){
 
@@ -94,15 +94,25 @@ public class GameComponent implements IGameComponent {
             setFive.setCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
             grid.add(setFive, 3, 2);
 
+
             for (Card card : gameState.getTableaus().get(0)) {
                 CardPane pane = createCardPane(card);
 
-                CardStackContainer cardStackContainer = new CardStackContainer(14, 0.05, 0.05);
+                CardStackContainer cardStackContainer = new CardStackContainer(14, 0.05, 0.05, Orientation.VERTICAL);
                 cardStackContainer.addCard(pane);
                 grid.add(setFive, 4, 2);
             }
 
 
+
+            //Card stack container
+            CardStackContainer hStack = new CardStackContainer(5, 0.05, 0.05, Orientation.HORIZONTAL);
+            hStack.addCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
+            hStack.addCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
+            hStack.addCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
+            hStack.addCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
+            hStack.addCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
+            grid.add(hStack, 2, 0);
 
 /*
         for(int i=0; i<13; i++){
@@ -153,8 +163,6 @@ public class GameComponent implements IGameComponent {
 
         }
 */
-
-
     }
 
 
@@ -168,12 +176,15 @@ public class GameComponent implements IGameComponent {
             return new CardPane(imageLoader.getCard(card));
     }
 
+
     private CardPane createCardBackPane(){
         return new CardPane(imageLoader.getCardBack());
     }
 
     @Override
     public void updateGameState(GameState gameState) {
+
+
         System.out.println("GameComponenet: New GameState recieved");
         System.out.println(gameState);
         // TODO: Setup board according to game state

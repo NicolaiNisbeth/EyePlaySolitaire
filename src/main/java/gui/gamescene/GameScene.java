@@ -76,11 +76,11 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         cameraComponent.updateImage(image);
 
 
-        // Testing camera
+      /*  // Testing camera
         camera = new Camera();
         camera.startCamera( (img) -> {
             cameraComponent.updateImage(img);
-        });
+        });*/
     }
 
     @Override
