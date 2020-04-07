@@ -1,8 +1,8 @@
 package gui.gamescene.gamecomponent;
 
 import gui.gamescene.gamestate.Card;
-import gui.gamescene.gamestate.Card.Suit;
 import gui.gamescene.gamestate.GameState;
+import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -103,7 +103,7 @@ public class GameComponent implements IGameComponent {
 
         this.tableaus = new ArrayList<>();
         for( int i=0; i<7; i++){
-            tableaus.add(new CardStackContainer(19, 0.05, 0.04));
+            tableaus.add(new CardStackContainer(19, 0.05, 0.05, Orientation.HORIZONTAL));
             grid.add(tableaus.get(i), i+1, 2);
         }
 
