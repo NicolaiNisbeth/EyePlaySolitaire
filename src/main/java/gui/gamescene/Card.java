@@ -1,16 +1,18 @@
 package gui.gamescene;
 
 
+import java.text.NumberFormat;
+
 /** Class to represent a playing card with a suit and a value */
 public class Card {
 
     private Suit suit;
     private int value; // Ranges from 1 (ace) to 13 (king)
-    private boolean hidden = false;
 
     /**
      * Create a new card from a suit (heart, diamond, spades or clubs), and
-     * a value between 1 (ace) - 13 (king).
+     * a value between 1 (ace) - 13 (king). You may also give the value 0
+     * the card is unknown.
      * The card defaults to not hidden.
      *
      * @throws IllegalArgumentException If the value is not within the correct interval
@@ -18,6 +20,20 @@ public class Card {
     public Card(Suit suit, int value){
         this.suit = suit;
         setValue(value);
+
+        // Ensure that its' correctly set as unknown card
+        if( this.suit == Suit.UNKNOWN || this.value == 0 ){
+            this.suit = Suit.UNKNOWN;
+            this.value = 0;
+        }
+    }
+
+    /**
+     * Create a card which is unknown (suit == UNKNOWN and
+     * value == 0).
+     */
+    public static Card createUnknown(){
+        return new Card(Suit.UNKNOWN, 0);
     }
 
     /**
@@ -45,31 +61,20 @@ public class Card {
      * @throws IllegalArgumentException If the value is not within the correct interva
      * */
     public void setValue(int value) {
-        if( value < 1  || value > 13 ){
-            throw new IllegalArgumentException("Card value must be between 1 and 13");
+        if( value < 0  || value > 13 ){
+            throw new IllegalArgumentException("Card value must be between 0 and 13");
         }
         this.value = value;
     }
 
-    /**
-     * Checks whether or not the card is hidden.
-     *
-     * Any logic that may be affected whether or not the card is hidden,
-     * is defined externally (not within this class).
-     */
-    public boolean isHidden() {
-        return hidden;
-    }
 
     /**
-     * Sets whether or not the card should be hidden.
-     *
-     * Any logic that may be affected whether or not the card is hidden,
-     * is defined externally (not within this class).
+     * Tests whether the card is unknown (suit == UNKNOWN and value == 0)
      */
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
+    public boolean isUnknown() {
+        return suit == Suit.UNKNOWN && value == 0;
     }
+
 
     public boolean equals(Card other) {
         if( other == null )           return false;
@@ -79,18 +84,27 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card{" +
+        return "Card{ " +
                 "suit=" + suit +
                 ", value=" + value +
-                ", hidden=" + hidden +
-                '}';
+                " }";
     }
 
+    /**
+     * Generate String representation of card in the format
+     * [SUITLETTER][VALUE]. Queen of Hearts would be H12,
+     * and Ace of Spades S01.
+     * Unknown card is represented as '???'
+     */
     public String toStringShort(){
-        return suit.toString().substring(0, 1).toUpperCase() + value;
+        if( isUnknown() ) return "???";
+        NumberFormat format = NumberFormat.getInstance();
+        format.setMinimumIntegerDigits(2);
+        return suit.toString().substring(0, 1).toUpperCase() + format.format(value);
     }
 
     public enum Suit{
+        UNKNOWN,
         HEARTS,
         DIAMONDS,
         SPADES,

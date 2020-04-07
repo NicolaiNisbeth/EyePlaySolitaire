@@ -5,37 +5,18 @@ import gui.gamescene.Card.Suit;
 import gui.gamescene.GameState;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
-import java.util.HashMap;
 
 public class GameComponent implements IGameComponent {
 
     private GridPane grid = new GridPane();
     private GameState gameState = new GameState();
-    private HashMap<Suit, CardPane[]> cardPanesMap = new HashMap<>();
-    private CardPane cardBackPane;
     private CardImageLoader imageLoader = new CardImageLoader();
 
 
     public GameComponent(){
-
-        // Load Card Images
-        HashMap<Suit, Image[]> suitImages = imageLoader.getAllSuits();
-        for( Suit suit : suitImages.keySet() ){
-            CardPane[] cardPanes = new CardPane[13];
-            Image[] images = suitImages.get(suit);
-            for( int i=0; i<13; i++ ){
-                cardPanes[i] = new CardPane(images[i]);
-            }
-            cardPanesMap.put(suit, cardPanes);
-        }
-        cardBackPane = new CardPane(imageLoader.getCardBack());
-
-
 
         // Set background color
         BackgroundFill fill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
@@ -78,7 +59,7 @@ public class GameComponent implements IGameComponent {
         }
 /*
         for (Card card : gameState.getTableaus().get(0)) {
-            CardPane pane = getCardPane(card);
+            CardPane pane = createCardPane(card);
         }
 
         CardContainer stackContainer = new CardContainer(0.05);
@@ -88,33 +69,33 @@ public class GameComponent implements IGameComponent {
 
             //Card container
             CardContainer deck = new CardContainer(0.05);
-            deck.setCard(cardBackPane);
+            deck.setCard(createCardBackPane());
             grid.add(deck, 0, 0);
 
             CardContainer setHeart = new CardContainer(0.05);
-            setHeart.setCard(getCardPane(new Card(Suit.HEARTS, 1)));
+            setHeart.setCard(createCardPane(new Card(Suit.HEARTS, 1)));
             grid.add(setHeart, 4, 0);
 
             CardContainer setDiamonds = new CardContainer(0.05);
-            setDiamonds.setCard(getCardPane(new Card(Suit.DIAMONDS, 1)));
+            setDiamonds.setCard(createCardPane(new Card(Suit.DIAMONDS, 1)));
             grid.add(setDiamonds, 5, 0);
 
             CardContainer setClubs = new CardContainer(0.05);
-            setClubs.setCard(getCardPane(new Card(Suit.CLUBS, 1)));
+            setClubs.setCard(createCardPane(new Card(Suit.CLUBS, 1)));
             grid.add(setClubs, 6, 0);
 
             CardContainer setSpade = new CardContainer(0.05);
-            setSpade.setCard(getCardPane(new Card(Suit.SPADES, 1)));
+            setSpade.setCard(createCardPane(new Card(Suit.SPADES, 1)));
             grid.add(setSpade, 7, 0);
 
 
             //Card stack container
             CardContainer setFive = new CardContainer(0.05);
-            setFive.setCard(getCardPane(new Card(Suit.DIAMONDS, 5)));
+            setFive.setCard(createCardPane(new Card(Suit.DIAMONDS, 5)));
             grid.add(setFive, 3, 2);
 
             for (Card card : gameState.getTableaus().get(0)) {
-                CardPane pane = getCardPane(card);
+                CardPane pane = createCardPane(card);
 
                 CardStackContainer cardStackContainer = new CardStackContainer(14, 0.05, 0.05);
                 cardStackContainer.addCard(pane);
@@ -174,20 +155,28 @@ public class GameComponent implements IGameComponent {
 */
 
 
-
-
     }
+
 
     /**
      * Return the Card Pane matching the given card.
      */
-    private CardPane getCardPane(Card card){
-        return cardPanesMap.get(card.getSuit())[card.getValue()-1];
+    private CardPane createCardPane(Card card){
+        if( card.isUnknown() )
+            return createCardBackPane();
+        else
+            return new CardPane(imageLoader.getCard(card));
+    }
+
+    private CardPane createCardBackPane(){
+        return new CardPane(imageLoader.getCardBack());
     }
 
     @Override
     public void updateGameState(GameState gameState) {
-        //System.out.printf();
+        System.out.println("GameComponenet: New GameState recieved");
+        System.out.println(gameState);
+        // TODO: Setup board according to game state
     }
 
     @Override

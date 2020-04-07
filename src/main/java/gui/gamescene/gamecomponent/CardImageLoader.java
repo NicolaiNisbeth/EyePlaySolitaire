@@ -1,6 +1,8 @@
 package gui.gamescene.gamecomponent;
 
 import static gui.gamescene.Card.Suit;
+
+import gui.gamescene.Card;
 import javafx.scene.image.Image;
 
 import java.util.HashMap;
@@ -19,7 +21,18 @@ class CardImageLoader {
     private HashMap<Suit, Image[]> suitImageMap = new HashMap<>();
     private Image cardBack = null;
 
-    public Image getCardBack(){
+    /**
+     * Returns the image of the given card
+     */
+    Image getCard(Card card){
+        if( card.isUnknown() ) return getCardBack();
+        return getSuit(card.getSuit())[card.getValue()-1];
+    }
+
+    /**
+     * Returns the image of the back of the cards.
+     */
+    Image getCardBack(){
         if( cardBack == null )
             cardBack = loadCardImage("back");
         return cardBack;
@@ -34,7 +47,7 @@ class CardImageLoader {
         return suitImageMap;
     }
 
-    private Image[] getSuit(Suit suit){
+    Image[] getSuit(Suit suit){
         Image[] suitImages = suitImageMap.get(suit);
 
         // Suit exists, so we just return image

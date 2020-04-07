@@ -132,9 +132,9 @@ public class GameState {
         for(int i=0; i<7; i++){
             List<Card> tableau = tableaus.get(i);
             if( tableau == null || tableau.size() == 0){
-                str.append("\ntableau ").append(i).append(": empty");
+                str.append("\n\ttableau ").append(i).append(": empty");
             }else{
-                str.append("\ntableau ").append(i).append(": ");
+                str.append("\n\ttableau ").append(i).append(": ");
                 for( Card card : tableau ){
                     str.append( card.toStringShort()).append(" ");
                 }
@@ -144,9 +144,9 @@ public class GameState {
         for(int i=0; i<4; i++){
             List<Card> foundation = foundations.get(i);
             if( foundation == null || foundation.size() == 0){
-                str.append("\nfoundation ").append(i).append(": empty");
+                str.append("\n\tfoundation ").append(i).append(": empty");
             }else{
-                str.append("\nfoundation ").append(i).append(": ");
+                str.append("\n\tfoundation ").append(i).append(": ");
                 for( Card card : foundation ){
                     str.append( card.toStringShort()).append(" ");
                 }

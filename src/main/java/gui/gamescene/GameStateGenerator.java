@@ -1,9 +1,6 @@
 package gui.gamescene;
 
-import gui.gamescene.Card;
 import gui.gamescene.Card.Suit;
-import gui.gamescene.GameState;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -26,7 +23,7 @@ class GameStateGenerator {
     /**
      * Generate game state from specific seed
      * The state does not adhere to the game rules
-     *      * (the cards in the different piles are completely random)
+     * (the cards in the different piles are completely random)
      */
     static GameState generateGameState(long seed) {
         Random rand = new Random(seed);
@@ -34,6 +31,7 @@ class GameStateGenerator {
         // Generate Deck
         ArrayList<Card> cards = new ArrayList<>();
         for( Suit suit : Suit.values() ){
+            if( suit == Suit.UNKNOWN ) continue;
             for( int i=1; i<=13; i++ ){
                 cards.add(new Card(suit, i));
             }
@@ -51,6 +49,10 @@ class GameStateGenerator {
 
             // Pick and remove random card
             Card card = cards.remove(rand.nextInt(cards.size()));
+
+            // Small chance of the card being replaced by unknown
+            if( rand.nextInt(8) == 1 )
+                card = Card.createUnknown();
 
             // Add to random tableau
             if( i < 2 ) {

@@ -45,7 +45,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
         GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
 
-//TODO
+
         // Add Game Component
         gameComponent = new GameComponent();
         Node gameNode = gameComponent.getNode();
@@ -53,6 +53,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(gameNode, Priority.ALWAYS);
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
+        // TODO: Remove this after testing
         gameComponent.updateGameState(GameStateGenerator.generateGameState(1000));
 
 
