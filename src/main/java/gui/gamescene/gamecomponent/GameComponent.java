@@ -29,7 +29,7 @@ public class GameComponent implements IGameComponent {
         BackgroundFill fill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(fill);
         grid.setBackground(background);
-        grid.setGridLinesVisible(true);
+
 
         //Set row
         for (int i = 0; i < 3; i++) {
@@ -53,7 +53,7 @@ public class GameComponent implements IGameComponent {
         }
 
         //Set Colonner
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 7; i++) {
             ColumnConstraints constraintss = new ColumnConstraints();
 
             constraintss.setPercentWidth(100);
@@ -70,13 +70,13 @@ public class GameComponent implements IGameComponent {
         this.tableaus = new ArrayList<>();
         for( int i=0; i<7; i++){
             tableaus.add(new CardStackContainer(19, 0.02, 0.04, Orientation.VERTICAL));
-            grid.add(tableaus.get(i), i+1, 2);
+            grid.add(tableaus.get(i), i, 2);
         }
 
         this.foundations = new ArrayList<>();
         for( int i=0; i<4; i++){
             foundations.add(new CardContainer(0.05));
-            grid.add(foundations.get(i), i+4, 0);
+            grid.add(foundations.get(i), i+3, 0);
         }
 
     }

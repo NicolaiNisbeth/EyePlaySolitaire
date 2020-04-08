@@ -7,6 +7,7 @@ import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
+import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamestate.GameStateGenerator;
 import javafx.scene.Node;
@@ -20,7 +21,7 @@ import javafx.scene.layout.RowConstraints;
 
 public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
-    private static final int WINDOW_WIDTH = 1080;
+    private static final int WINDOW_WIDTH = 1400;
     private static final int WINDOW_HEIGHT = 720;
 
     private GridPane grid;
@@ -37,31 +38,36 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
         // Setup Row constraints
         RowConstraints row1 = new RowConstraints();
-        row1.setPercentHeight(30);
+        row1.setPercentHeight(40);
         grid.getRowConstraints().add(row1);
 
         ColumnConstraints column1 = new ColumnConstraints();
-        column1.setPercentWidth(50);
+        column1.setPercentWidth(35);
         grid.getColumnConstraints().add(column1);
 
 
         // Add Console component
         consoleComponent = new ConsoleComponent(this);
-        grid.add(consoleComponent.getNode(), 1,0 );
+        grid.add(consoleComponent.getNode(), 0,1 );
         GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
         GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
 
         prompter = consoleComponent;
 
+
         // Add Game Component
         gameComponent = new GameComponent();
         Node gameNode = gameComponent.getNode();
-        grid.add(gameNode, 0, 1, 2, 1);
+        grid.add(gameNode, 1, 0, 1, 2);
         GridPane.setHgrow(gameNode, Priority.ALWAYS);
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
         // TODO: Remove this after testing
-        gameComponent.updateGameState(GameStateGenerator.generateGameState(1000));
+        GameState state = GameStateGenerator.generateGameState(1000);
+        while( state.getTableaus().get(0).size() < 19 ){
+            state.getTableaus().get(0).add(Card.createUnknown());
+        }
+        gameComponent.updateGameState(state);
 
 
         // Add Camera Component
@@ -74,6 +80,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         // Just a temporary image
         Image image = new Image("images/solitaire_irl.jpg", false);
         cameraComponent.updateImage(image);
+
 
 /*
         // Testing camera
