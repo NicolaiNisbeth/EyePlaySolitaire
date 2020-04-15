@@ -49,9 +49,9 @@ public class Demo {
                 max = foundationCount;
             }
             sum += foundationCount;
-            System.out.println(i);
+            System.out.println(i + "\t" + (foundationCount == 52 ? "W" : ""));
         }
-        //System.out.println("Leaf nodes " + agent.getCounter());
+        System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
     }
 
