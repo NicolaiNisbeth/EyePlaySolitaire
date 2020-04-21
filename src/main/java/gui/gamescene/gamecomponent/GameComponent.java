@@ -1,6 +1,6 @@
 package gui.gamescene.gamecomponent;
 
-import gui.gamescene.gamestate.Card;
+import gui.gamescene.gamestate.UICard;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
 import javafx.geometry.Insets;
@@ -84,11 +84,11 @@ public class GameComponent implements IGameComponent {
     /**
      * Return the Card Pane matching the given card.
      */
-    private CardPane createCardPane(Card card){
-        if( card.isUnknown() )
+    private CardPane createCardPane(UICard UICard){
+        if( UICard.isUnknown() )
             return createCardBackPane();
         else
-            return new CardPane(imageLoader.getCard(card));
+            return new CardPane(imageLoader.getCard(UICard));
     }
 
     private CardPane createCardBackPane(){
@@ -108,22 +108,22 @@ public class GameComponent implements IGameComponent {
 
         flipped.clearCards();
 
-        List<Card> flipped = gameState.getFlipped();
+        List<UICard> flipped = gameState.getFlipped();
 
-        for (Card card : flipped) {
-            CardPane pane = createCardPane(card);
+        for (UICard UICard : flipped) {
+            CardPane pane = createCardPane(UICard);
             this.flipped.addCard(pane);
         }
 
 
         for (int i = 0; i < gameState.getTableaus().size(); i++) {
 
-            List<Card> tableau = gameState.getTableaus().get(i);
+            List<UICard> tableau = gameState.getTableaus().get(i);
 
             tableaus.get(i).clearCards();
 
-            for (Card card : tableau) {
-                CardPane pane = createCardPane(card);
+            for (UICard UICard : tableau) {
+                CardPane pane = createCardPane(UICard);
                 tableaus.get(i).addCard(pane);
             }
         }
@@ -132,9 +132,13 @@ public class GameComponent implements IGameComponent {
 
             foundations.get(i).clearCard();
 
-            List<Card> foundation = gameState.getFoundations().get(i);
+            List<UICard> foundation = gameState.getFoundations().get(i);
             int getLastIndex = foundation.size()-1;
-            Card lastIndex = foundation.get(getLastIndex);
+            UICard lastIndex;
+            if(getLastIndex == -1)
+                lastIndex = new UICard(UICard.Suit.UNKNOWN, 5);
+            else
+                lastIndex = foundation.get(getLastIndex);
 
             CardPane pane = createCardPane(lastIndex);
             foundations.get(i).setCard(pane);

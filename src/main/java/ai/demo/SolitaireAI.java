@@ -12,7 +12,7 @@ import ai.state.Stock;
 import ai.state.Tableau;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
-import gui.gamescene.gamestate.Card;
+import gui.gamescene.gamestate.UICard;
 import gui.gamescene.gamestate.GameState;
 
 import java.util.ArrayList;
@@ -49,12 +49,12 @@ public class SolitaireAI implements ISolitaireAI {
 
     /**
      *
-     * @param uiFlippedCards
+     * @param uiFlippedUICards
      * @return
      */
-    private RemainingCards remainingCardsConverter(List<Card> uiFlippedCards) {
-        for (Card flippedCard : uiFlippedCards){
-            deck.remove(cardConverter(flippedCard));
+    private RemainingCards remainingCardsConverter(List<UICard> uiFlippedUICards) {
+        for (UICard flippedUICard : uiFlippedUICards){
+            deck.remove(cardConverter(flippedUICard));
         }
         return new RemainingCards(deck);
     }
@@ -64,14 +64,14 @@ public class SolitaireAI implements ISolitaireAI {
      * @param uiTableau
      * @return AI tableau
      */
-    private Tableau tableauConverter(List<List<Card>> uiTableau) {
+    private Tableau tableauConverter(List<List<UICard>> uiTableau) {
         int size = uiTableau.size();
         ai.state.Card[][] cards = new ai.state.Card[size][];
         for (int i = 0; i < size; i++) {
-            List<Card> stack = uiTableau.get(i);
+            List<UICard> stack = uiTableau.get(i);
             ai.state.Card[] cc = new ai.state.Card[stack.size()];
             for (int j = 0; j < stack.size(); j++){
-                Card c = stack.get(j);
+                UICard c = stack.get(j);
                 cc[j] = cardConverter(c);
             }
             cards[i] = cc;
@@ -84,11 +84,11 @@ public class SolitaireAI implements ISolitaireAI {
      * @param uiFoundation
      * @return AI foundation
      */
-    private Foundation foundationConverter(List<List<Card>> uiFoundation) {
+    private Foundation foundationConverter(List<List<UICard>> uiFoundation) {
         List<Stack<ai.state.Card>> stacks = new ArrayList<>();
-        for (List<Card> f : uiFoundation){
+        for (List<UICard> f : uiFoundation){
             Stack<ai.state.Card> stack = new Stack<>();
-            for (Card c : f){
+            for (UICard c : f){
                 stack.add(cardConverter(c));
             }
             stacks.add(stack);
@@ -101,11 +101,11 @@ public class SolitaireAI implements ISolitaireAI {
      * @param uiStock
      * @return AI stock
      */
-    private Stock stockConverter(List<Card> uiStock) {
+    private Stock stockConverter(List<UICard> uiStock) {
         int size = uiStock.size();
         ai.state.Card[] cards = new ai.state.Card[size];
         for (int i = 0; i < size; i++){
-            Card c = uiStock.get(i);
+            UICard c = uiStock.get(i);
             cards[i] = cardConverter(c);
         }
         return new Stock(cards);
@@ -113,12 +113,12 @@ public class SolitaireAI implements ISolitaireAI {
 
     /**
      * Converts UI card to AI card
-     * @param aiCard
+     * @param aiUICard
      * @return AI card
      */
-    private ai.state.Card cardConverter(Card aiCard) {
-        int value = aiCard.getValue();
-        int suit = aiCard.getSuit().ordinal()-1;
+    private ai.state.Card cardConverter(UICard aiUICard) {
+        int value = aiUICard.getValue();
+        int suit = aiUICard.getSuit().ordinal()-1;
         return suit >= 0  ? new ai.state.Card(value, suit) : null;
     }
 }

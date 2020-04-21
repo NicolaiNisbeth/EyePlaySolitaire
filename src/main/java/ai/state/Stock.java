@@ -2,8 +2,10 @@ package ai.state;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class Stock {
 
@@ -35,12 +37,23 @@ public class Stock {
         List<Card> availableCards = new ArrayList<>();
         if(cards.length == 0)
             return availableCards;
+        if(cards.length <= 2){
+            availableCards.add(cards[cards.length-1]);
+            return availableCards;
+        }
+
+        Set<Integer> visited = new HashSet<>();
         int index = head;
 
-        do {
+        while(!visited.contains(index)){
             availableCards.add(cards[index]);
-            index = (index + 3) % cards.length;
-        } while (index != head);
+            visited.add(index);
+
+            index = (index + 3);
+
+            if(index >= cards.length)
+                index = 2;
+        }
 
         return availableCards;
     }

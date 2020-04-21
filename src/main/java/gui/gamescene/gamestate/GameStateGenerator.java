@@ -1,6 +1,6 @@
 package gui.gamescene.gamestate;
 
-import gui.gamescene.gamestate.Card.Suit;
+import gui.gamescene.gamestate.UICard.Suit;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -29,36 +29,36 @@ public class GameStateGenerator {
         Random rand = new Random(seed);
 
         // Generate Deck
-        ArrayList<Card> cards = new ArrayList<>();
+        ArrayList<UICard> UICards = new ArrayList<>();
         for( Suit suit : Suit.values() ){
             if( suit == Suit.UNKNOWN ) continue;
             for( int i=1; i<=13; i++ ){
-                cards.add(new Card(suit, i));
+                UICards.add(new UICard(suit, i));
             }
         }
 
         GameState game = new GameState();
 
         // Add 3 cards to flipped:
-        game.addToFlipped(cards.remove(rand.nextInt(cards.size())));
-        game.addToFlipped(cards.remove(rand.nextInt(cards.size())));
-        game.addToFlipped(cards.remove(rand.nextInt(cards.size())));
+        game.addToFlipped(UICards.remove(rand.nextInt(UICards.size())));
+        game.addToFlipped(UICards.remove(rand.nextInt(UICards.size())));
+        game.addToFlipped(UICards.remove(rand.nextInt(UICards.size())));
 
-        while( cards.size() > 15 ){
+        while( UICards.size() > 15 ){
             int i = rand.nextInt(3);
 
             // Pick and remove random card
-            Card card = cards.remove(rand.nextInt(cards.size()));
+            UICard UICard = UICards.remove(rand.nextInt(UICards.size()));
 
             // Small chance of the card being replaced by unknown
             if( rand.nextInt(8) == 1 )
-                card = Card.createUnknown();
+                UICard = UICard.createUnknown();
 
             // Add to random tableau
             if( i < 2 ) {
                 int tableauIndex = rand.nextInt(7);
                 if (game.getTableaus().get(tableauIndex).size() < 13) {
-                    game.addToTableau(tableauIndex, card);
+                    game.addToTableau(tableauIndex, UICard);
                     continue;
                 }
             }
@@ -66,15 +66,15 @@ public class GameStateGenerator {
             // Add to random foundation
             int foundationIndex = rand.nextInt(4);
             if (game.getFoundations().get(foundationIndex).size() < 13) {
-                game.addToFoundations(foundationIndex, card);
+                game.addToFoundations(foundationIndex, UICard);
                 continue;
             }
 
             // Couldn't add card (readd it to the stack)
-            cards.add(card);
+            UICards.add(UICard);
         }
 
-        for( Card card : cards) game.addToStock(card);
+        for( UICard UICard : UICards) game.addToStock(UICard);
 
         return game;
     }

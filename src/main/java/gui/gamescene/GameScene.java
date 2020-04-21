@@ -7,7 +7,9 @@ import ai.demo.SolitaireAI;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.Card;
+import ai.state.Deck;
 import ai.state.Foundation;
+import ai.state.Producer;
 import ai.state.RemainingCards;
 import ai.state.State;
 import ai.state.Stock;
@@ -21,6 +23,7 @@ import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamestate.GameStateGenerator;
+import gui.gamescene.gamestate.UICard;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -30,9 +33,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 
 public class GameScene extends Scene implements ConsoleComponent.InputListener {
@@ -150,7 +156,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 100;
+        int iterations = 1;
         for (int i = 0; i < iterations; i++) {
             State state = generateInitialState();
             HashSet<Action> repetitions = new HashSet<>();
@@ -160,9 +166,22 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
                 repetitions.add(action);
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
+                final GameState gameState = convertState(state);
+                final int count = state.getStock().showOptions().size();
                 Platform.runLater(() -> {
-                    gameComponent.updateGameState(state);
+                    System.out.println("Available cards from stock count: " + count);
+                    gameComponent = new GameComponent();
+                    Node gameNode = gameComponent.getNode();
+                    grid.add(gameNode, 1, 0, 1, 2);
+                    GridPane.setHgrow(gameNode, Priority.ALWAYS);
+                    GridPane.setVgrow(gameNode, Priority.ALWAYS);
+                    gameComponent.updateGameState(gameState);
                 });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             int foundationCount = state.getFoundation().getCount();
             if (foundationCount == 52)
@@ -184,6 +203,67 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
 
     }
+
+    private static GameState convertState(State state){
+
+        Stock stock = Producer.produceStock(state.getStock(), lol -> {});
+        List<UICard> stockList = new ArrayList<>();
+        for(Card card : stock.getCards())
+            stockList.add(convertCard(card));
+
+        Foundation foundation = Producer.produceFoundation(state.getFoundation(), lol -> {});
+        List<List<UICard>> foundationList = new ArrayList<>();
+        for(Stack<Card> stack : foundation.getStacks()){
+            List<UICard> convertedStack = new ArrayList<>();
+            List<UICard> temp = new ArrayList<>();
+            while(!stack.isEmpty()){
+                temp.add(convertCard(stack.pop()));
+            }
+            for (int i = temp.size()-1; i >= 0; i--) {
+                convertedStack.add(temp.get(i));
+            }
+            foundationList.add(convertedStack);
+        }
+
+        Tableau tableau = Producer.produceTableau(state.getTableau(), lol -> {});
+        List<List<UICard>> tableauList = new ArrayList<>();
+        for(Stack<Card> stack : tableau.getStacks()){
+            List<UICard> convertedStack = new ArrayList<>();
+            List<UICard> temp = new ArrayList<>();
+            while(!stack.isEmpty()){
+                temp.add(convertCard(stack.pop()));
+            }
+            for (int i = temp.size()-1; i >= 0; i--) {
+                convertedStack.add(temp.get(i));
+            }
+            tableauList.add(convertedStack);
+        }
+
+        List<UICard> flipped = new ArrayList<>();
+
+
+
+        return new GameState(stockList, flipped, tableauList, foundationList);
+    }
+
+    private static UICard convertCard(Card card){
+        UICard.Suit suit;
+        if(card == null)
+            return new UICard(UICard.Suit.UNKNOWN, 2);
+        switch(card.getSuit()){
+            case 0: suit = UICard.Suit.CLUBS;
+                break;
+            case 1: suit = UICard.Suit.DIAMONDS;
+                break;
+            case 2: suit = UICard.Suit.HEARTS;
+                break;
+            case 3: suit = UICard.Suit.SPADES;
+                break;
+            default: suit = UICard.Suit.UNKNOWN;
+        }
+        return new UICard(suit, card.getValue());
+    }
+
 
     private static State generateInitialState() {
         DemoDeck deck = new DemoDeck();

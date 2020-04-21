@@ -1,8 +1,8 @@
 package gui.gamescene.gamecomponent;
 
-import static gui.gamescene.gamestate.Card.Suit;
+import static gui.gamescene.gamestate.UICard.Suit;
 
-import gui.gamescene.gamestate.Card;
+import gui.gamescene.gamestate.UICard;
 import javafx.scene.image.Image;
 
 import java.util.HashMap;
@@ -24,9 +24,9 @@ class CardImageLoader {
     /**
      * Returns the image of the given card
      */
-    Image getCard(Card card){
-        if( card.isUnknown() ) return getCardBack();
-        return getSuit(card.getSuit())[card.getValue()-1];
+    Image getCard(UICard UICard){
+        if( UICard.isUnknown() ) return getCardBack();
+        return getSuit(UICard.getSuit())[UICard.getValue()-1];
     }
 
     /**
