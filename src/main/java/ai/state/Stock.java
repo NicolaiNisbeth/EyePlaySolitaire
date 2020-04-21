@@ -49,6 +49,14 @@ public class Stock {
         return cards;
     }
 
+
+    public int getCardIndex(Card card){
+        for (int i = 0; i < cards.length; i++) if (cards[i].equals(card))
+            return i;
+
+        return -1;
+    }
+
     @Override
     public String toString() {
         return "Stockpile{" +

@@ -7,6 +7,7 @@ import ai.state.RemainingCards;
 import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
+import gui.gamescene.aiinterface.IGamePrompter;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -65,6 +66,11 @@ public class TableauToFoundation implements Action {
 
         results.add(new State(stock, tableau, foundation, remainingCards));
         return results;
+    }
+
+    @Override
+    public void prompt(IGamePrompter prompter, State state) {
+        prompter.promptTableauToFoundation(tableauIndex, card.getSuit());
     }
 
     @Override

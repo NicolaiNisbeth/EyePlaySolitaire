@@ -5,21 +5,19 @@ import ai.state.Foundation;
 import ai.state.Producer;
 import ai.state.State;
 import ai.state.Stock;
-import ai.state.Tableau;
+import gui.gamescene.aiinterface.IGamePrompter;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class StockToTableau implements Action {
+public class StockToFoundation implements Action {
 
     private Card card;
-    private int tableauIndex;
 
-    public StockToTableau(Card card, int tableauIndex) {
+    public StockToFoundation(Card card) {
         this.card = card;
-        this.tableauIndex = tableauIndex;
     }
 
     @Override
@@ -30,19 +28,25 @@ public class StockToTableau implements Action {
         Consumer<Stock> removeCardFromStock = s -> s.removeCard(card);
         stock = Producer.produceStock(stock, removeCardFromStock);
 
-        Tableau tableau = state.getTableau();
-        Consumer<Tableau> addCardToTableau = t -> t.add(card, tableauIndex);
-        tableau = Producer.produceTableau(tableau, addCardToTableau);
+        Foundation foundation = state.getFoundation();
+        Consumer<Foundation> addCardToFoundation = f -> f.add(card);
+        foundation = Producer.produceFoundation(foundation, addCardToFoundation);
 
-        results.add(new State(stock, tableau, state.getFoundation(), state.getRemainingCards()));
+        results.add(new State(stock, state.getTableau(), foundation, state.getRemainingCards()));
         return results;
     }
 
     @Override
+    public void prompt(IGamePrompter prompter, State state) {
+        Stock stock = state.getStock();
+        int index = stock.getCardIndex(card);
+        prompter.promptStockToFoundation(index, card.getSuit());
+    }
+
+    @Override
     public String toString() {
-        return "StockToTableau{" +
+        return "StockToFoundation{" +
                 "card=" + card +
-                ", tableauIndex=" + tableauIndex +
                 '}';
     }
 
@@ -50,13 +54,12 @@ public class StockToTableau implements Action {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StockToTableau that = (StockToTableau) o;
-        return tableauIndex == that.tableauIndex &&
-                Objects.equals(card, that.card);
+        StockToFoundation that = (StockToFoundation) o;
+        return Objects.equals(card, that.card);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(card, tableauIndex);
+        return Objects.hash(card);
     }
 }

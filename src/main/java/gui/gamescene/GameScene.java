@@ -1,5 +1,6 @@
 package gui.gamescene;
 
+import ai.demo.SolitaireAI;
 import cv_test.Camera;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
@@ -29,7 +30,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private CameraComponent cameraComponent;
     private IGameComponent gameComponent;
     private IGamePrompter prompter;
-    private ISolitaireAI ai;
+    private final ISolitaireAI ai = new SolitaireAI();
     private Camera camera;
 
     public GameScene() {
@@ -63,11 +64,19 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
         // TODO: Remove this after testing
+
+        /*
         GameState state = GameStateGenerator.generateGameState(1000);
         while( state.getTableaus().get(0).size() < 19 ){
             state.getTableaus().get(0).add(Card.createUnknown());
         }
         gameComponent.updateGameState(state);
+
+         */
+
+
+        GameState state = GameStateGenerator.generateGameState(1000);
+        computeNextAction(state);
 
 
         // Add Camera Component

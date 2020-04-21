@@ -19,6 +19,10 @@ public class Foundation {
 
     }
 
+    public Foundation(List<Stack<Card>> stacks){
+        this.stacks = stacks;
+    }
+
     public void add(Card card){
         int index = card.getSuit();
         stacks.get(index).add(card);

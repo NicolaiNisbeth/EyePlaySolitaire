@@ -7,6 +7,7 @@ import ai.state.RemainingCards;
 import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
+import gui.gamescene.aiinterface.IGamePrompter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,6 +81,11 @@ public class TableauToTableau implements Action {
 
         results.add(new State(stock, tableau, foundation, remainingCards));
         return results;
+    }
+
+    @Override
+    public void prompt(IGamePrompter prompter, State state) {
+        prompter.promptTableauToTableau(from, to);
     }
 
     @Override
