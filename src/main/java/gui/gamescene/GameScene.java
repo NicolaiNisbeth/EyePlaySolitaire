@@ -71,12 +71,8 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
             state.getTableaus().get(0).add(Card.createUnknown());
         }
         gameComponent.updateGameState(state);
-
          */
 
-
-        GameState state = GameStateGenerator.generateGameState(1000);
-        computeNextAction(state);
 
 
         // Add Camera Component

@@ -33,7 +33,6 @@ public class ActionFinder52 implements IActionFinder {
         for (Card option : options){
             for (int i=0; i<foundation.getStacks().size(); i++){
                 Stack<Card> stack = foundation.getStacks().get(i);
-                Card c = stack.peek();
                 int requiredValue = stack.isEmpty() ? 1 : stack.peek().getValue() + 1;
                 if (option.getValue() == requiredValue && option.getSuit() == i)
                     actions.add(new StockToFoundation(option));
