@@ -62,11 +62,15 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(gameNode, Priority.ALWAYS);
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
+
         // TODO: Remove this after testing
         GameState state = GameStateGenerator.generateGameState(1000);
         while( state.getTableaus().get(0).size() < 19 ){
             state.getTableaus().get(0).add(Card.createUnknown());
         }
+
+
+
         gameComponent.updateGameState(state);
 
 
@@ -81,6 +85,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         Image image = new Image("images/solitaire_irl.jpg", false);
         cameraComponent.updateImage(image);
 
+        new Thread(this::aiTest).start();
 
 /*
         // Testing camera
@@ -111,6 +116,17 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
                 System.out.println(state);
             }
         }).start();
+    }
+
+
+
+    private void aiTest(){
+        // TODO: JD og Nicolai implementer jeres AI shit her
+        /*
+        Brug denne her til at opdatere spillet i GUI'en
+        Platform.runLater(() -> {
+            gameComponent.updateState(state);
+        });*/
     }
 
 }
