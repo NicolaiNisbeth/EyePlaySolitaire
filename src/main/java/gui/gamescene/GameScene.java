@@ -7,9 +7,9 @@ import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
-import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamestate.GameStateGenerator;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -31,6 +31,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private IGamePrompter prompter;
     private ISolitaireAI ai;
     private Camera camera;
+
 
     public GameScene() {
         super(new GridPane(), WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -63,17 +64,6 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
 
-        // TODO: Remove this after testing
-        GameState state = GameStateGenerator.generateGameState(1000);
-        while( state.getTableaus().get(0).size() < 19 ){
-            state.getTableaus().get(0).add(Card.createUnknown());
-        }
-
-
-
-        gameComponent.updateGameState(state);
-
-
         // Add Camera Component
         cameraComponent = new CameraComponent();
         Node cameraNode = cameraComponent.getNode();
@@ -81,13 +71,24 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
 
+
         // Just a temporary image
         Image image = new Image("images/solitaire_irl.jpg", false);
         cameraComponent.updateImage(image);
 
 
+        // TODO: Remove this once CV has been implemented
+        // Display a randomized Game State
+        GameState state = GameStateGenerator.generateGameState(1000);
+        gameComponent.updateGameState(state);
+
+        // TODO: Remove this once CV has been implemented
+        // Starts a Thread for testing AI
         new Thread(this::aiTest).start();
-/*
+
+
+        // TODO: Remove this when camera is implemented corretly
+        /*
         // Testing camera
         camera = new Camera();
         camera.startCamera( (img) -> {
@@ -96,10 +97,16 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         */
     }
 
+
     @Override
     public void onConsoleInput(String input) {
-        // TODO: Implement meaningful functionality here
         System.out.println("Input from console: " + input);
+
+        // Generates a random state of cards and updates the game component
+        if( input.equals("newstate")) {
+            GameState state = GameStateGenerator.generateGameState(System.currentTimeMillis());
+            gameComponent.updateGameState(state);
+        }
     }
 
 

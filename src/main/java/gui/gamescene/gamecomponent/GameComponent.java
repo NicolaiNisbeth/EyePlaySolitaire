@@ -3,6 +3,7 @@ package gui.gamescene.gamecomponent;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -95,51 +96,56 @@ public class GameComponent implements IGameComponent {
         return new CardPane(imageLoader.getCardBack());
     }
 
+
     @Override
     public void updateGameState(GameState gameState) {
-        System.out.println("GameComponenet: New GameState recieved");
-        System.out.println(gameState);
+        // Make sure it's run on the ui thread
+        Platform.runLater(() -> {
 
-        if (gameState.getStock().size() != 0) {
-            stock.setCard(createCardBackPane());
-        } else {
-            stock.clearCard();
-        }
+            System.out.println("GameComponenet: New GameState recieved");
+            System.out.println(gameState);
 
-        flipped.clearCards();
-
-        List<Card> flipped = gameState.getFlipped();
-
-        for (Card card : flipped) {
-            CardPane pane = createCardPane(card);
-            this.flipped.addCard(pane);
-        }
-
-
-        for (int i = 0; i < gameState.getTableaus().size(); i++) {
-
-            List<Card> tableau = gameState.getTableaus().get(i);
-
-            tableaus.get(i).clearCards();
-
-            for (Card card : tableau) {
-                CardPane pane = createCardPane(card);
-                tableaus.get(i).addCard(pane);
+            if (gameState.getStock().size() != 0) {
+                stock.setCard(createCardBackPane());
+            } else {
+                stock.clearCard();
             }
-        }
 
-        for (int i = 0; i < gameState.getFoundations().size(); i++) {
+            flipped.clearCards();
 
-            foundations.get(i).clearCard();
+            List<Card> flipped = gameState.getFlipped();
 
-            List<Card> foundation = gameState.getFoundations().get(i);
-            int getLastIndex = foundation.size()-1;
-            Card lastIndex = foundation.get(getLastIndex);
+            for (Card card : flipped) {
+                CardPane pane = createCardPane(card);
+                this.flipped.addCard(pane);
+            }
 
-            CardPane pane = createCardPane(lastIndex);
-            foundations.get(i).setCard(pane);
 
-        }
+            for (int i = 0; i < gameState.getTableaus().size(); i++) {
+
+                List<Card> tableau = gameState.getTableaus().get(i);
+
+                tableaus.get(i).clearCards();
+
+                for (Card card : tableau) {
+                    CardPane pane = createCardPane(card);
+                    tableaus.get(i).addCard(pane);
+                }
+            }
+
+            for (int i = 0; i < gameState.getFoundations().size(); i++) {
+
+                foundations.get(i).clearCard();
+
+                List<Card> foundation = gameState.getFoundations().get(i);
+                int getLastIndex = foundation.size()-1;
+                Card lastIndex = foundation.get(getLastIndex);
+
+                CardPane pane = createCardPane(lastIndex);
+                foundations.get(i).setCard(pane);
+
+            }
+        });
     }
 
     @Override
