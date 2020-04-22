@@ -85,8 +85,8 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         Image image = new Image("images/solitaire_irl.jpg", false);
         cameraComponent.updateImage(image);
 
-        new Thread(this::aiTest).start();
 
+        new Thread(this::aiTest).start();
 /*
         // Testing camera
         camera = new Camera();
