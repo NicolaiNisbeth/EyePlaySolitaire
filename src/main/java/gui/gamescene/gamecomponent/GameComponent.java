@@ -1,8 +1,9 @@
 package gui.gamescene.gamecomponent;
 
-import gui.gamescene.gamestate.Card;
+
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
+import gui.gamescene.gamestate.UICard;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -10,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -85,7 +87,7 @@ public class GameComponent implements IGameComponent {
     /**
      * Return the Card Pane matching the given card.
      */
-    private CardPane createCardPane(Card card){
+    private CardPane createCardPane(UICard card){
         if( card.isUnknown() )
             return createCardBackPane();
         else
@@ -105,45 +107,43 @@ public class GameComponent implements IGameComponent {
             System.out.println("GameComponenet: New GameState recieved");
             System.out.println(gameState);
 
-            if (gameState.getStock().size() != 0) {
+            // Update stock
+            stock.clearCard();
+            if (gameState.getStock().size() > 0) {
                 stock.setCard(createCardBackPane());
-            } else {
-                stock.clearCard();
             }
 
+            // Update Flipped cards
             flipped.clearCards();
-
-            List<Card> flipped = gameState.getFlipped();
-
-            for (Card card : flipped) {
+            List<UICard> flipped = gameState.getFlipped();
+            for (UICard card : flipped) {
                 CardPane pane = createCardPane(card);
                 this.flipped.addCard(pane);
             }
 
 
+            // Update tableaus
             for (int i = 0; i < gameState.getTableaus().size(); i++) {
-
-                List<Card> tableau = gameState.getTableaus().get(i);
+                List<UICard> tableau = gameState.getTableaus().get(i);
 
                 tableaus.get(i).clearCards();
 
-                for (Card card : tableau) {
+                for (UICard card : tableau) {
                     CardPane pane = createCardPane(card);
                     tableaus.get(i).addCard(pane);
                 }
             }
 
+            // Update Foundations
             for (int i = 0; i < gameState.getFoundations().size(); i++) {
-
                 foundations.get(i).clearCard();
 
-                List<Card> foundation = gameState.getFoundations().get(i);
-                int getLastIndex = foundation.size()-1;
-                Card lastIndex = foundation.get(getLastIndex);
-
-                CardPane pane = createCardPane(lastIndex);
-                foundations.get(i).setCard(pane);
-
+                // Only display the top card, if foundation is not empty
+                List<UICard> foundation = gameState.getFoundations().get(i);
+                if( foundation.size() > 0 ){
+                    UICard topCard = foundation.get(foundation.size()-1);
+                    foundations.get(i).setCard(createCardPane(topCard));
+                }
             }
         });
     }
