@@ -9,6 +9,7 @@
 # Python
 .vscode
 __pycache__/
+venv/
 
 # User-specific stuff
 .idea/**/workspace.xml
