@@ -14,7 +14,6 @@ import ai.state.RemainingCards;
 import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
-import cv_test.Camera;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.cameracomponent.CameraComponent;
@@ -52,7 +51,6 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private IGameComponent gameComponent;
     private IGamePrompter prompter;
     private final ISolitaireAI ai = new SolitaireAI();
-    private Camera camera;
 
 
     public GameScene() {

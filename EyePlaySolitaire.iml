@@ -33,5 +33,6 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:win:12" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:12" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:win:12" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20180813" level="project" />
   </component>
 </module>

@@ -26,11 +26,6 @@ public class SceneController extends Application {
 
     // Main method HAVE to be in same class as the extender of Application
     public static void main(String[] args) {
-        //TODO: Move this to OpenCV module at some point
-
-
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
         launch();
         /* The window launch takes over the main thread ,
         *  so any code below, won't be run before window is closed. */
