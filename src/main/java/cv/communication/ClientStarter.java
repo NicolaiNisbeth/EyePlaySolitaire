@@ -29,6 +29,7 @@ public class ClientStarter {
         // Run the process
         String arguments[] = {
                 "python",
+                "-u", // Makes stdout unbuffered
                 getClientPath(),
                 Integer.toString(port)
         };

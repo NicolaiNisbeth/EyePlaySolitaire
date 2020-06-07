@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Server {
     private int port = 0;
@@ -29,7 +30,7 @@ public class Server {
      * @param messageListener Listener to be notified when a message is received from the client
      * @param clientConnectCallback Called when the client connects to the server (only called once)
      */
-    Server( MessageListener messageListener, ClientConnectCallback clientConnectCallback  ) {
+    public Server( MessageListener messageListener, ClientConnectCallback clientConnectCallback  ) {
         this.messageListener = messageListener;
         this.clientConnectCallback = clientConnectCallback;
     }
@@ -92,12 +93,17 @@ public class Server {
     private void listenForMessages(){
         while(true){
             String input = "";
-            try{
+            try {
                 input = inputStream.readLine();
+                if (input == null) break;
                 JSONObject jsonMessage = new JSONObject(input);
                 Message message = Message.fromJSON(jsonMessage);
-                if( messageListener != null )
+                if (messageListener != null)
                     messageListener.onMessage(message);
+            }catch(SocketException e){
+                e.printStackTrace();
+                notifyError("Error occured when listening for messages from client: " + e.getMessage());
+                break;
             }catch(IOException e) {
                 e.printStackTrace();
                 notifyError("Error occured when listening for messages from client: " + e.getMessage());
@@ -120,6 +126,7 @@ public class Server {
         for( char c : message.toJSON().toString().toCharArray() )
             outputStream.write(c);
         outputStream.newLine();
+        outputStream.flush();
     }
 
 
