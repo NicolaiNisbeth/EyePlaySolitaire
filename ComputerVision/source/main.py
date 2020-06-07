@@ -1,3 +1,4 @@
-import pymongo
+from hello import hello
 
-print("Hello world!")
+print("Starting main.py")
+hello.say_hello()

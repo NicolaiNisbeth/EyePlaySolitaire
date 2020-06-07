@@ -1,4 +1,4 @@
-package cv;
+package cv.communication;
 
 import org.json.JSONException;
 import org.json.JSONObject;

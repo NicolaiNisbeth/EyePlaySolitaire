@@ -1,4 +1,4 @@
-package cv;
+package cv.communication;
 
 
 import org.json.JSONException;
@@ -43,8 +43,9 @@ public class Server {
      */
     public int start() throws IOException {
         server = new ServerSocket(0);
+        port = server.getLocalPort();
         awaitClient();
-        return server.getLocalPort();
+        return port;
     }
 
 
@@ -61,6 +62,7 @@ public class Server {
         });
         clientThread.start();
     }
+
 
     // Setup communication with newly connected client
     private void setupClientCommunication(Socket newClient){
@@ -95,7 +97,6 @@ public class Server {
                 JSONObject jsonMessage = new JSONObject(input);
                 Message message = Message.fromJSON(jsonMessage);
                 if( messageListener != null )
-                    // TODO: (IMPORTANT) Call message listener on a new thread!
                     messageListener.onMessage(message);
             }catch(IOException e) {
                 e.printStackTrace();
@@ -121,6 +122,7 @@ public class Server {
         outputStream.newLine();
     }
 
+
     /**
      * @return The port number on which the server has started, or 0 if the server hasn't been started yet
      */
@@ -128,12 +130,14 @@ public class Server {
         return port;
     }
 
+
     /** Set an error listener which will be notified for any asynchronous
      *  errors which may occur
      */
     public void setErrorListener(ErrorListener errorListener) {
         this.errorListener = errorListener;
     }
+
 
     // Notifies the error listeners than an error has occured
     private void notifyError(String errorMessage){
@@ -155,7 +159,6 @@ public class Server {
     public interface MessageListener {
         void onMessage(Message message);
     }
-
 
     /** Listens for errors happening within the Server */
     public interface ErrorListener {
