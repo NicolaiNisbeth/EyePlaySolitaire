@@ -3,11 +3,12 @@ import queue
 import threading
 import json
 
+from PIL import Image
 from message import Message
 
 class Connector:
 
-    def __init__(self, port: int):
+    def __init__(self, port: int, message_listener):
         self._queued_messages = queue.Queue()
         self._dequeue_event_map = {}
 
@@ -15,6 +16,8 @@ class Connector:
         self._connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._connection.connect(("localhost", port))
         print("Connected successfully!")
+
+        self._message_listener = message_listener
 
         threading._start_new_thread(self._send_messages, ())
         threading._start_new_thread(self._recieve_messages, ())
@@ -62,11 +65,15 @@ class Connector:
         connection_file = self._connection.makefile()
         while True:
             str_msg = connection_file.readline()
+            msg = None
             try:
                 msg = Message.from_json(str_msg)
                 print("Received message: ", msg )
-            except json.JSONDecodeError:
-                print(f"Couldn't deserialize message {str_msg} as JSON")
+            except json.JSONDecodeError as e:
+                print(f"Couldn't deserialize message {str_msg} as JSON {e.msg}")
+
+            if msg is not None:
+                self._message_listener(msg)
 
                 
                 

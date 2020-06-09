@@ -14,10 +14,12 @@ import ai.state.RemainingCards;
 import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
+import cv.SolitaireCV;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
+import gui.gamescene.cvinterface.ISolitaireCV;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
 import gui.gamescene.gamestate.GameState;
@@ -32,6 +34,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -51,6 +54,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private IGameComponent gameComponent;
     private IGamePrompter prompter;
     private final ISolitaireAI ai = new SolitaireAI();
+    private final ISolitaireCV cv = new SolitaireCV();
 
 
     public GameScene() {
@@ -97,6 +101,10 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         cameraComponent.updateImage(image);
 
 
+        // Start Computer Vision
+        cv.setImageUpdateListener((newImage) -> cameraComponent.updateImage(newImage));
+        cv.start();
+
         // TODO: Remove this once CV has been implemented
         // Display a randomized Game State
         GameState state = GameStateGenerator.generateGameState(1000);
@@ -104,17 +112,9 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
         // TODO: Remove this once CV has been implemented
         // Starts a Thread for testing AI
-        new Thread(this::aiTest).start();
+        // new Thread(this::aiTest).start();
 
 
-        // TODO: Remove this when camera is implemented corretly
-        /*
-        // Testing camera
-        camera = new Camera();
-        camera.startCamera( (img) -> {
-            cameraComponent.updateImage(img);
-        });
-        */
     }
 
 

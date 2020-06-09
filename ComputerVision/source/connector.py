@@ -3,6 +3,7 @@ import queue
 import threading
 import json
 
+from PIL import Image
 from message import Message
 
 class Connector:

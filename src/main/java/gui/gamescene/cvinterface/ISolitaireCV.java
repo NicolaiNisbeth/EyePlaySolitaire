@@ -7,16 +7,22 @@ import javafx.scene.image.Image;
 public interface ISolitaireCV {
 
     /**
+     * Start registering information from camera, and analyze
+     * the input.
+     */
+    void start();
+
+    /**
      * Add an listener, to listen for an update on the image
      * which the computer vision uses.
      */
-    void addImageUpdateListener();
+    void setImageUpdateListener(ImageUpdateListener imageUpdateListener);
 
     /**
      * Add an listener, to listen for new GameState to be
      * detected by the computer vision.
      */
-    void addGameStateUpdateListener();
+    void setGameStateUpdateListener(GameStateUpdateListener gameStateUpdateListener);
 
 
     interface ImageUpdateListener{
