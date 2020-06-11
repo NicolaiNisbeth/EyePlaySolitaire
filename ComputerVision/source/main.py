@@ -36,9 +36,6 @@ def main():
     # Start Detector
     detector = Detector(detection_started, new_detection)
 
-    # Notify server that the client has started
-    connector.send_message(Message(100, {}))
-
     print("Started camera")
     
     # TODO: FIx this
@@ -53,6 +50,8 @@ def new_detection():
 
 
 def detection_started():
+    # Notify server that the client has started
+    connector.send_message(Message(100, {}))
     send_image()    
 
 
@@ -76,15 +75,13 @@ def send_image():
         encoded_image = base64.b64encode(image).decode('ascii')
         data = {"image": encoded_image, "width":1280, "height":720}
 
-    if image is not None:
-        # First encode into base64 bytes, and then into ascii string
-        connector.send_message(Message(
-            102,
-            json.dumps(data)
-            ), True
-        )
-    else:
-        print("WARNING: Image was None!")    
+
+    # First encode into bxase64 bytes, and then into ascii string
+    connector.send_message(Message(
+        102,
+        json.dumps(data)
+        ), True
+    )
 
 
 if __name__ == "__main__":
