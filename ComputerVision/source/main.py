@@ -6,8 +6,6 @@ import base64
 import io
 import cv2
 
-from PIL import Image
-
 from message import Message
 from connector import Connector
 from detector import Detector
@@ -36,8 +34,9 @@ def main():
     # Start Detector
     detector = Detector(detection_started, new_detection)
 
+
     # Notify server that the client has started
-    connector.send_message(Message(100, {}))
+    connector.send_message(Message(100, "{}"))
 
     print("Started camera")
     
@@ -51,8 +50,8 @@ def new_detection():
     pass
     # Send message to saserver
 
-
-def detection_started():
+    # TODO: FIx this
+def detection_started(a,b):
     send_image()    
 
 

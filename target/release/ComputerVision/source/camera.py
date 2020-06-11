@@ -80,8 +80,6 @@ def _read_input():
             print(type(frame))
             #print("Frame length: ", None if frame is None else len(frame))
             #print(frame[20])
-    
-
 
 if __name__ == "__main__":
     cam = Camera()
