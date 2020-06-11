@@ -24,6 +24,7 @@ class Detector:
         self._thread.start()
 
 
+
     def _detect_loop(self):
         while self._run:
             frame = self._camera.get_current_frame()
@@ -31,9 +32,13 @@ class Detector:
                 continue
         
             # TODO: Perform Detection here
+            
 
+            #TODO: Set Frame with detection boxes here
+            with self._frame_lock:
+                self._latest_frame = frame
 
-            # Notify detection here:
+            #TODO: Notify detection here:
             #   self._detection_callback(<arguments>)
 
             # Limits the framerate

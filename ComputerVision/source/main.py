@@ -36,6 +36,9 @@ def main():
     # Start Detector
     detector = Detector(detection_started, new_detection)
 
+    # Notify server that the client has started
+    connector.send_message(Message(100, {}))
+
     print("Started camera")
     
     # TODO: FIx this
@@ -54,12 +57,8 @@ def detection_started():
 
 
 def message_received(msg: Message):
-
-    # Start client
-    if msg._code is 200:
-        print("Client was told to start, but it hasn't been implemented yet")
     
-    # Request image
+    # Image requesed
     if msg._code is 201:
         send_image()
 
@@ -69,6 +68,7 @@ def send_image():
     global connector
     global detector
     image = detector.get_latest_frame()
+    
     if image is not None:
         # First encode into base64 bytes, and then into ascii string
         encodedImage = base64.b64encode(image).decode('ascii')

@@ -14,7 +14,7 @@ class Camera:
     and the latest frame may be retrieved using the
     'get_current_frame()' method
     """
-    
+
     def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0, startup_callback: Callable = None):
         self._resolution = resolution
         self._width, self._height = resolution
@@ -80,8 +80,6 @@ def _read_input():
             print(type(frame))
             #print("Frame length: ", None if frame is None else len(frame))
             #print(frame[20])
-    
-
 
 if __name__ == "__main__":
     cam = Camera()
