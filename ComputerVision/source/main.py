@@ -67,15 +67,21 @@ def send_image():
     global connector
     global detector
     image = detector.get_latest_frame()
-    
+
+    data = None
+    if image is None:
+        data = {}
+    else:
+        encoded_image = base64.b64encode(image).decode('ascii')
+        data = {"image": encoded_image, "width":1280, "height":720}
+
     if image is not None:
         # First encode into base64 bytes, and then into ascii string
-        encodedImage = base64.b64encode(image).decode('ascii')
         connector.send_message(Message(
             102,
-            json.dumps(
-                {"image": encodedImage, "width":1280, "height":720}
-        )), True)
+            json.dumps(data)
+            ), True
+        )
     else:
         print("WARNING: Image was None!")    
 

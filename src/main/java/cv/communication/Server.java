@@ -164,7 +164,7 @@ public class Server {
     /** Listens for messages received from the client,
      *  connected to the Server */
     public interface MessageListener {
-        void onMessage(Message message);
+        void onMessage(Message message) throws IOException;
     }
 
     /** Listens for errors happening within the Server */
