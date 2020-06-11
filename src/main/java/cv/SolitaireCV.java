@@ -65,17 +65,23 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
     // Handles incoming messages from client
     @Override
-    public void onMessage(Message message) {
+    public void onMessage(Message message) throws IOException { // TODO: Fix exception in method signature
 
         switch(message.getCode()){
             case 100:
                 // Client is ready
+                System.out.println("Client is ready!");
+                server.sendMessage(new Message(201, null));
                 break;
             case 101: // New Game State
                 break;
             case 102: // New Image
                 JSONObject data = message.getData();
-                decodeImageMessage(data.getString("image"), data.getInt("width"), data.getInt("height"));
+                if( data.names().length() == 0 ){
+                    server.sendMessage(new Message(201, null));
+                }else{
+                    decodeImageMessage(data.getString("image"), data.getInt("width"), data.getInt("height"));
+                }
                 break;
 
             default:
@@ -99,13 +105,6 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
             final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
             System.arraycopy(imageData, 0, targetPixels, 0, imageData.length);
-
-/*
-            for(int y=0; y < height; y++){
-                for(int x=0; x < width; x++){
-                    image.setRGB(x, y, imageData[y*width + x]);
-                }
-            }*/
 
             // Convert to JavaFX image and notify
             Image fxImage = SwingFXUtils.toFXImage(image, null);
