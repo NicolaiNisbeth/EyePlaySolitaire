@@ -1,7 +1,10 @@
 
 import threading
+import timeit
 import cv2
 import numpy
+from typing import Callable
+
 
 class Camera:
     """
@@ -12,13 +15,14 @@ class Camera:
     'get_current_frame()' method
     """
 
-    def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0):
+    def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0, startup_callback: Callable = None):
         self._resolution = resolution
         self._width, self._height = resolution
 
         self._camera_id = camera_id
 
         self._current_frame: numpy.ndarray = None
+        self._startup_callback = startup_callback
 
         # Whether or not the camera is running
         self._run = True
@@ -32,9 +36,14 @@ class Camera:
 
 
     def _capture_loop(self):
+        start = timeit.default_timer()
         cap = cv2.VideoCapture(self._camera_id)
         cap.set(3, self._width)
         cap.set(4, self._height)
+        startup_time = timeit.default_timer() - start
+
+        if self._startup_callback is not None:
+            self._startup_callback(startup_time, self._resolution)
 
         while self._run:
             ret, frame_read = cap.read()
@@ -62,9 +71,9 @@ cam = None
 def _read_input():
     global cam
     while cam._run:
-        cmd = input(">")
+        cmd = input("\n>")
         if cmd == "exit":
-            _run = False
+            cam._run = False
 
         if cmd == "img":
             frame = cam.get_current_frame()

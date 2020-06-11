@@ -9,9 +9,11 @@ package gui.gamescene.aiinterface;
  */
 public interface IGamePrompter {
 
+
     /**
      *  Prompt the user to traverse the entire stock. */
     void promptTraverseStock();
+
 
     /**
      *  Prompts the user to move the card from the top of the source tableau
@@ -21,6 +23,7 @@ public interface IGamePrompter {
      * @param targetTableauIndex Ranges from 0-6, where 0 is the leftmost tableau.
      */
     void promptTableauToTableau(int sourceTableauIndex, int targetTableauIndex);
+
 
     /**
      * Prompts the user move the a card from the stock to one of the tableaus.

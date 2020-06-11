@@ -39,7 +39,6 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <!-- TODO: Change to correct main -->
                             <mainClass>cv.communication.ClientStarter</mainClass>
                         </manifest>
                     </archive>

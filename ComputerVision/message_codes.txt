@@ -1,0 +1,22 @@
+
+
+
+From Client (code 1xx)
+
+    100 -> Client is running (camera has been loaded)
+
+    101 -> New detection
+        { detections : ... }
+
+    102 -> New Image
+        {image : raw_data, width : int, height : int}:
+
+    
+
+From Server (code 2xx)
+
+    200 -> Start
+    
+    201 -> Request image    
+
+    

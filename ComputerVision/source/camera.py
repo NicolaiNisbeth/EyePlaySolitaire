@@ -1,8 +1,10 @@
 
 import threading
+import timeit
 import cv2
 import numpy
-import timeit
+from typing import Callable
+
 
 class Camera:
     """
@@ -12,14 +14,15 @@ class Camera:
     and the latest frame may be retrieved using the
     'get_current_frame()' method
     """
-
-    def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0):
+    
+    def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0, startup_callback: Callable = None):
         self._resolution = resolution
         self._width, self._height = resolution
 
         self._camera_id = camera_id
 
         self._current_frame: numpy.ndarray = None
+        self._startup_callback = startup_callback
 
         # Whether or not the camera is running
         self._run = True
@@ -33,13 +36,14 @@ class Camera:
 
 
     def _capture_loop(self):
-        print("Starting capture loop")
         start = timeit.default_timer()
         cap = cv2.VideoCapture(self._camera_id)
         cap.set(3, self._width)
         cap.set(4, self._height)
-        duration = timeit.default_timer() - start
-        print(f"Capture started in {duration:.2} seconds")
+        startup_time = timeit.default_timer() - start
+
+        if self._startup_callback is not None:
+            self._startup_callback(startup_time, self._resolution)
 
         while self._run:
             ret, frame_read = cap.read()

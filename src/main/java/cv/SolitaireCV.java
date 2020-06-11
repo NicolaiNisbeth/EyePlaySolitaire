@@ -7,11 +7,8 @@ import gui.gamescene.cvinterface.ISolitaireCV;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.json.JSONObject;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -71,17 +68,23 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     public void onMessage(Message message) {
 
         switch(message.getCode()){
+            case 100:
+                // Client is ready
+                break;
             case 101: // New Game State
                 break;
             case 102: // New Image
                 JSONObject data = message.getData();
                 decodeImageMessage(data.getString("image"), data.getInt("width"), data.getInt("height"));
                 break;
+
             default:
                 System.out.printf("CV: Recieved message with unknown code %d from client\n", message.getCode());
 
         }
     }
+
+
 
 
     /*  Decodes an image encoded as base64 into a JavaFX image and notify
