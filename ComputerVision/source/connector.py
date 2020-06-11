@@ -15,7 +15,6 @@ class Connector:
         # Connect to server
         self._connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._connection.connect(("localhost", port))
-        print("Connected successfully!")
 
         self._message_listener = message_listener
 
@@ -75,6 +74,5 @@ class Connector:
             if msg is not None:
                 self._message_listener(msg)
 
-                
                 
             

@@ -4,10 +4,13 @@ import json
 import time
 import base64
 import io
+import cv2
+
 from PIL import Image
 
 from message import Message
 from connector import Connector
+import camera
 
 
 def loadImage(image):
@@ -20,11 +23,11 @@ def loadImage(image):
 
 
 
-images = [
-    loadImage("testimage1.png"),
-    loadImage("testimage2.jpg"),
-    loadImage("testimage3.jpg")
-]
+# images = [
+#     loadImage("testimage1.png"),
+#     loadImage("testimage2.jpg"),
+#     loadImage("testimage3.jpg")
+# ]
 
 connector = None
 
@@ -43,6 +46,9 @@ def main():
         raise TypeError("Port argument but be integer larger between 1 and 65535")
 
     connector = Connector(port, message_received)
+    camera.start_camera()
+    print("Started camera")
+
     # f =  open("C:/Users/malte/IdeaProjects/EyePlaySolitaire/ComputerVision/testfile.txt", "r")
     # data = f.read()
     # f.close()
@@ -52,11 +58,14 @@ def main():
     #print("Sent first message")
 
     # connector.send_message(Message(101, json.dumps({"num" : 19})), True)
+    time.sleep(5)
     send_image()
+
     
     # print("Sent third message")
 
-    time.sleep(200)
+    # (Temporary solution): Waiting for camera thread to finish (meaning never)
+    camera._thread.join()
     
     
 
@@ -71,12 +80,13 @@ def message_received(msg: Message):
 image_counter = 0
 
 def send_image():
-    global images
-    global image_counter
     global connector
-    connector.send_message(Message(102, json.dumps({"image" : images[image_counter].decode('ascii')})), True)
-    print("Sent image ", image_counter)
-    image_counter = (image_counter+1) % len(images)
+    image = camera.get_current_frame()
+    if image is not None:
+        connector.send_message(Message(102, json.dumps({"image": image.decode('ascii'), "width":1280, "height":720})), True)
+        print(f"Sent {len(image)} bytes")
+    else:
+        print("WARNING: Image was None!")    
 
 if __name__ == "__main__":
     main()

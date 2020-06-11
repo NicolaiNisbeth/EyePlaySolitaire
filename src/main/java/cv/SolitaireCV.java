@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
@@ -73,7 +74,8 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
             case 101: // New Game State
                 break;
             case 102: // New Image
-                decodeImageMessage(message.getData().getString("image"));
+                JSONObject data = message.getData();
+                decodeImageMessage(data.getString("image"), data.getInt("width"), data.getInt("height"));
                 break;
             default:
                 System.out.printf("CV: Recieved message with unknown code %d from client\n", message.getCode());
@@ -84,16 +86,23 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
     /*  Decodes an image encoded as base64 into a JavaFX image and notify
     *   the ImageUpdateListener that a new image has been received */
-    private void decodeImageMessage(String imageStringData){
+    private void decodeImageMessage(String imageStringData, int width, int height){
 
         try {
             // Convert from base64 string to byte array
             byte[] imageData = Base64.getDecoder().decode(imageStringData);
 
-            // Read in bytes as image
-            ByteArrayInputStream byteStream = new ByteArrayInputStream(imageData);
-            BufferedImage image = ImageIO.read(byteStream);
-            System.out.println("IMAGE IS NULL: " + (image == null));
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+
+            final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+            System.arraycopy(imageData, 0, targetPixels, 0, imageData.length);
+
+/*
+            for(int y=0; y < height; y++){
+                for(int x=0; x < width; x++){
+                    image.setRGB(x, y, imageData[y*width + x]);
+                }
+            }*/
 
             // Convert to JavaFX image and notify
             Image fxImage = SwingFXUtils.toFXImage(image, null);
@@ -105,7 +114,6 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
