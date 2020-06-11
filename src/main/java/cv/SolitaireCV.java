@@ -77,7 +77,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
                 break;
             case 102: // New Image
                 JSONObject data = message.getData();
-                if( data.names().length() == 0 ){
+                if( data.length() == 0 ){
                     server.sendMessage(new Message(201, null));
                 }else{
                     decodeImageMessage(data.getString("image"), data.getInt("width"), data.getInt("height"));
