@@ -43,9 +43,12 @@ def main():
         if type(port) is not int or port < 1 or port > 65535:
             raise Exception()
     except:
-        raise TypeError("Port argument but be integer larger between 1 and 65535")
+        raise TypeError("Port argument must be an integer between 1 and 65535 (inclusive)")
 
+    # Connect to server
     connector = Connector(port, message_received)
+    
+    
     camera.start_camera()
     print("Started camera")
 
@@ -60,12 +63,6 @@ def main():
     # connector.send_message(Message(101, json.dumps({"num" : 19})), True)
     time.sleep(5)
     send_image()
-
-    
-    # print("Sent third message")
-
-    # (Temporary solution): Waiting for camera thread to finish (meaning never)
-    camera._thread.join()
     
     
 

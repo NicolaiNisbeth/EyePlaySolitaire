@@ -1,77 +1,86 @@
 
 import threading
 import cv2
-import time
-import base64
+import numpy
+import timeit
+
+class Camera:
+    """
+    Represents a recording instance of a camera using OpenCV.
+
+    It starts a new thread on which it makes the recordings,
+    and the latest frame may be retrieved using the
+    'get_current_frame()' method
+    """
+
+    def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0):
+        self._resolution = resolution
+        self._width, self._height = resolution
+
+        self._camera_id = camera_id
+
+        self._current_frame: numpy.ndarray = None
+
+        # Whether or not the camera is running
+        self._run = True
+
+        # To secure only one has access to current frame
+        self._lock = threading.Lock()
+
+        # Thread to make the recordings on
+        self._thread = threading.Thread(target=self._capture_loop)
+        self._thread.start()       
 
 
-current_frame = None
+    def _capture_loop(self):
+        print("Starting capture loop")
+        start = timeit.default_timer()
+        cap = cv2.VideoCapture(self._camera_id)
+        cap.set(3, self._width)
+        cap.set(4, self._height)
+        duration = timeit.default_timer() - start
+        print(f"Capture started in {duration:.2} seconds")
 
-_thread: threading.Thread = None
-_lock = threading.Lock()
-_run = True
+        while self._run:
+            ret, frame_read = cap.read()
+            with self._lock:
+                self._current_frame = frame_read
 
-
-def get_current_frame():
-    with _lock:
-        if current_frame is None:
-            return None
-        print(type(current_frame))
-        return base64.b64encode(current_frame)
-        # return current_frame
-
-
-def start_camera():
-    global _thread
-    _thread = threading.Thread(target=_camera_loop)
-    _thread.start()
+        cap.release()
 
 
-def _camera_loop():
-    resolution = (1280, 720)
-    width, height = resolution
+    def get_current_frame(self) -> numpy.ndarray: 
+        """
+        Returns the camera's last captured frame as a numpy.ndarray
+        """
+        with self._lock:
+            return self._current_frame
+            #return base64.b64encode(self._current_frame)
 
-    cap = cv2.VideoCapture(0)
-    cap.set(3, width)
-    cap.set(4, height)
 
-    global current_frame
 
-    #print("Starting camera loop...")
-    global _run
-    while _run:
-        ret, frame_read = cap.read()
 
-        # frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
 
-        # frame_recolored = cv2.resize(
-        #     frame_read,
-        #     resolution,
-        #     interpolation=cv2.INTER_LINEAR
-        # )
-        
-        with _lock:
-            current_frame = frame_read
-
-    cap.release()
-
+cam = None
 
 def _read_input():
-    global _run
-    while _run:
-        cmd = input(">")
+    global cam
+    while cam._run:
+        cmd = input("\n>")
         if cmd == "exit":
-            _run = False
+            cam._run = False
 
         if cmd == "img":
-            frame = get_current_frame()
+            frame = cam.get_current_frame()
+            print(type(frame))
             #print("Frame length: ", None if frame is None else len(frame))
             #print(frame[20])
     
 
 
 if __name__ == "__main__":
-    start_camera()
+    cam = Camera()
     _read_input()
     
     #threading._start_new_thread(_read_input, ())

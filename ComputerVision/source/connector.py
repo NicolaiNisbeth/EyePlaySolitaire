@@ -19,7 +19,7 @@ class Connector:
         self._message_listener = message_listener
 
         threading._start_new_thread(self._send_messages, ())
-        threading._start_new_thread(self._recieve_messages, ())
+        threading._start_new_thread(self.receive_messages, ())
 
 
     def send_message(self, msg: Message, wait=False):
@@ -60,7 +60,7 @@ class Connector:
                 self._dequeue_event_map[msg].set()
 
 
-    def _recieve_messages(self):
+    def receive_messages(self):
         connection_file = self._connection.makefile()
         while True:
             str_msg = connection_file.readline()
