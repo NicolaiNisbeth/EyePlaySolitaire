@@ -21,7 +21,6 @@ public class OptionsKnowledgeFoundation implements Heuristic {
         double knowledgeValue = knowledgeWeight * knowledge.evaluate(state);
         double optionsValue = optionsWeight * options.evaluate(state);
         double foundationValue = foundationWeight * foundation.evaluate(state);
-        double noise = Math.random() * 0.001;
-        return knowledgeValue + optionsValue + foundationValue + noise;
+        return knowledgeValue + optionsValue + foundationValue;
     }
 }

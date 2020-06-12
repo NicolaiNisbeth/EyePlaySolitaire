@@ -19,13 +19,15 @@ public class Demo {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+        //ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+        MCTSAgent agent = new MCTSAgent(10, heuristic);
+
 
         //Agent agent = new RandomAgent();
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 1000;
+        int iterations = 100;
         for (int i = 0; i < iterations; i++) {
             State state = generateInitialState();
             //HashSet<Action> repetitions = new HashSet<>();

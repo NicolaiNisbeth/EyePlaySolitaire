@@ -1,6 +1,8 @@
 package ai.agent;
 
 import ai.action.Action;
+import ai.heuristic.Heuristic;
+import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.ActionFinder51;
 import ai.state.State;
 
@@ -11,6 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MCTSAgent implements Agent {
+
+    private final int seconds;
+    private Heuristic heuristic;
 
     private class Tree {
         Node root;
@@ -41,7 +46,9 @@ public class MCTSAgent implements Agent {
     private static final int WIN = 1, LOSS = 0;
     private ActionFinder51 actionFinder;
 
-    public MCTSAgent() {
+    public MCTSAgent(int seconds, Heuristic heuristic) {
+        this.heuristic = heuristic;
+        this.seconds = seconds;
         actionFinder = new ActionFinder51();
     }
 
@@ -50,15 +57,13 @@ public class MCTSAgent implements Agent {
         Tree tree = new Tree(state);
 
         long start = System.currentTimeMillis();
-        long time = 0, goal = 1000 * 1;
-        while(time < goal){
+        while(System.currentTimeMillis() < start + seconds * 1000){
             Node selection = selectFrom(tree.root);
             expand(selection);
             for (Node child : selection.children) {
                 int outcome = simulate(child);
                 backpropagate(child, outcome);
             }
-            time = System.currentTimeMillis() - start;
         }
 
         int max = Integer.MIN_VALUE;
@@ -102,28 +107,15 @@ public class MCTSAgent implements Agent {
 
     private int simulate(Node node) {
         State state = node.state;
-        List<Action> actions = actionFinder.getActions(state);
-        HashMap<Action, Integer> repetitions = new HashMap<>();
-        while (actions.size() > 0) {
-            int random = (int) (Math.random() * actions.size());
-            Action action = actions.get(random);
-            //System.out.println(action);
-            Integer count = repetitions.get(action);
-            if(count == null){
-                repetitions.put(action, 1);
-            } else {
-                if(count >= 100)
-                    return LOSS;
-                repetitions.put(action, ++count);
+        ExpectimaxAgent simulator = new ExpectimaxAgent(0, heuristic);
+        Action action = null;
+        do{
+            action = simulator.getAction(state);
+            if(action != null){
+                state = getRandom(action.getResults(state));
             }
-            Collection<State> results = action.getResults(state);
-            random = (int) (Math.random() * results.size());
-            Iterator<State> resultIterator = results.iterator();
-            for (int i = 0; i <= random; i++) {
-                state = resultIterator.next();
-            }
-            actions = actionFinder.getActions(state);
-        }
+        } while (action != null);
+
         return state.isGoal() ? WIN : LOSS;
     }
 
@@ -134,6 +126,14 @@ public class MCTSAgent implements Agent {
             node.visited++;
             node = node.parent;
         } while (node != null);
+    }
+
+    private static State getRandom(Collection<State> collection) {
+        return collection
+                .stream()
+                .skip((int)(Math.random() * collection.size()))
+                .findFirst()
+                .orElse(null);
     }
 
 }
