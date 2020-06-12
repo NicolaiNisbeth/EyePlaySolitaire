@@ -45,6 +45,17 @@ def main():
 
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+<<<<<<< HEAD
+=======
+
+def detection_started(a,b):
+    # Notify server that the client has started
+    connector.send_message(Message(100, "{}"))
+    send_image()    
+
+
+def message_received(msg: Message):
+>>>>>>> 4e4dc57a758db50c59770f7d9f39ac2a3b2cb117
     
 def message_received(msg: Message):
     # Image requesed
@@ -77,7 +88,12 @@ def send_image():
     else:
         # First encode into bxase64 bytes, and then into ascii string
         encoded_image = base64.b64encode(image).decode('ascii')
+<<<<<<< HEAD
         data = {"image": encoded_image, "width": width, "height": height}
+=======
+        data = {"image": encoded_image, "width":416, "height":416}
+
+>>>>>>> 4e4dc57a758db50c59770f7d9f39ac2a3b2cb117
 
     connector.send_message(Message(102, json.dumps(data)), True)
 
