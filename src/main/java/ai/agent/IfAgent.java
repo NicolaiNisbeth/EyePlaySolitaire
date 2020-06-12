@@ -1,17 +1,16 @@
 package ai.agent;
 
 import ai.action.Action;
+import ai.action.StockToTableau;
 import ai.action.TableauToFoundation;
 import ai.action.TableauToTableau;
-import ai.state.ActionFinder52;
-import ai.state.Card;
-import ai.state.IActionFinder;
-import ai.state.State;
+import ai.state.*;
 
 import java.util.*;
 
 public class IfAgent implements Agent {
     private IActionFinder actionFinder = new ActionFinder52();
+    HashSet<State> visitedStates = new HashSet<>();
 
     @Override
     public Action getAction(State state) {
@@ -19,25 +18,86 @@ public class IfAgent implements Agent {
         List<Action> actions = actionFinder.getActions(state);
 
         // TODO: return list of actions that satisfies the condition
-        Action easier = kingToEmptyTableau(state, actions);
-        Action easy = easyFoundationAction(state, actions);
-        Action medium = exposeHiddenCards(state, actions);
-        Action hard = exposeTableauIfKingCanMove(state, actions);
-        Action harder = redOrBlack(state, actions);
+        List<Action> easier = kingToEmptyTableau(state, actions);
+        List<Action> easy = easyTableauToFoundationAction(state, actions);
+        List<Action> medium = exposeHiddenCards(state, actions);
+        List<Action> hard = exposeTableauIfKingCanMove(state, actions);
+        List<Action> harder = redOrBlack(state, actions);
         //Action hardest = findOptimalAction();
+
+
+
 
         // TODO: traverse action list and decide optimal action
 
+        visitedStates.add(state);
         return null;
     }
 
-    private Action redOrBlack(State state, List<Action> actions) {
+    private List<Action> redOrBlack(State state, List<Action> actions) {
+        List<Action> results = new ArrayList<>();
+        List<Action> blackKingActions = new ArrayList<>();
+        List<Action> redKingActions = new ArrayList<>();
+        for(Action action : actions) {
+            boolean kingAction = false;
+            Card kingCard = null;
+            if(action instanceof StockToTableau) {
+                StockToTableau cast = (StockToTableau) action;
+                boolean king = cast.getCard().getValue() == 13;
+                if(king){
+                    kingAction = true;
+                    kingCard = cast.getCard();
+                }
+            }
+            if(action instanceof TableauToTableau) {
+                TableauToTableau cast = (TableauToTableau) action;
+                boolean king = cast.getCard().getValue() == 13;
+                if(king){
+                    kingAction = true;
+                    kingCard = cast.getCard();
+                }
+            }
+            if(kingAction){
+                if(kingCard.getColour() == Card.RED){
+                    redKingActions.add(action);
+                } else {
+                    blackKingActions.add(action);
+                }
+            }
+        }
 
+        int blacks = 0, reds = 0;
+        List<Stack<Card>> lol = state.getTableau().getStacks();
+        for(Stack<Card> stack : lol){
+            Card topCard = null;
+            int i = 0;
+            while(topCard == null && i < stack.size()){
+                topCard = stack.get(i++);
+            }
+            if(topCard == null) continue;
+            if(topCard.getValue() == 13) continue;
+            for(Card card : stack) {
+                if(card.getValue() == 11) {
+                    if(card.getColour() == Card.RED)
+                        reds++;
+                    else
+                        blacks++;
+                }
+            }
+        }
 
-        return null;
+        if(blacks > reds){
+            results.addAll(blackKingActions);
+            results.addAll(redKingActions);
+        } else {
+            results.addAll(redKingActions);
+            results.addAll(blackKingActions);
+        }
+        return results;
     }
 
-    private Action exposeTableauIfKingCanMove(State state, List<Action> actions) {
+    private List<Action> exposeTableauIfKingCanMove(State state, List<Action> actions) {
+        List<Action> results = new ArrayList<>();
         boolean kingCanMove = false;
         for (Stack<Card> stack : state.getTableau().getStacks()){
             for(int i = stack.size()-1; i >= 0; i--){
@@ -56,30 +116,27 @@ public class IfAgent implements Agent {
                     TableauToTableau tToT = (TableauToTableau) action;
                     Stack<Card> stack = state.getTableau().getStacks().get(tToT.getFrom());
                     Card cardToMove = tToT.getCard();
-                    for(int i = stack.size()-1; i >= 0; i--){
-                        Card cardInStack = stack.get(i);
-                        if (cardToMove.equals(cardInStack) && i == stack.size()-1){
-                            return action;
-                        }
+                    boolean cardIsTopOfStack =  cardToMove.equals(stack.get(0));
+                    if(cardIsTopOfStack){
+                        results.add(action);
                     }
                 }
                 else if (action instanceof TableauToFoundation){
                     TableauToFoundation tToF = (TableauToFoundation) action;
                     Stack<Card> stack = state.getTableau().getStacks().get(tToF.getTableauIndex());
                     Card cardToMove = tToF.getCard();
-                    for(int i = stack.size()-1; i >= 0; i--){
-                        Card cardInStack = stack.get(i);
-                        if (cardToMove.equals(cardInStack) && i == stack.size()-1){
-                            return action;
-                        }
+                    boolean cardIsTopOfStack =  cardToMove.equals(stack.get(0));
+                    if(cardIsTopOfStack){
+                        results.add(action);
                     }
                 }
             }
         }
-        return null;
+        return results;
     }
 
-    private Action exposeHiddenCards(State state, List<Action> actions) {
+    private List<Action> exposeHiddenCards(State state, List<Action> actions) {
+        List<Action> results = new ArrayList<>();
         HashMap<Action, Integer> map = new HashMap<>();
 
         for (Action action : actions){
@@ -90,8 +147,7 @@ public class IfAgent implements Agent {
                 for(int i = stack.size()-1; i > 0; i--){
                     Card cardBelow = stack.get(i-1);
                     if (stack.get(i).equals(cardToMove) && cardBelow == null){
-                        int hiddenCards = stack.size()-1-i;
-                        map.put(action, hiddenCards);
+                        map.put(action, i);
                     }
                 }
             }
@@ -102,41 +158,41 @@ public class IfAgent implements Agent {
                 for(int i = stack.size()-1; i > 0; i--){
                     Card cardBelow = stack.get(i-1);
                     if (stack.get(i).equals(cardToMove) && cardBelow == null){
-                        int hiddenCards = stack.size()-1-i;
-                        map.put(action, hiddenCards);
+                        map.put(action, i);
                     }
                 }
             }
         }
 
-        int maxHidden = Integer.MIN_VALUE;
-        Action maxAction = null;
-        for (Map.Entry<Action, Integer> entry : map.entrySet()){
-            int hiddenCards = entry.getValue();
-            if (hiddenCards > maxHidden){
-                maxHidden = hiddenCards;
-                maxAction = entry.getKey();
+        int index = 10;
+        while(index-- > 0){
+            for (Map.Entry<Action, Integer> entry : map.entrySet()) {
+                if (entry.getValue() == index) {
+                    results.add(entry.getKey());
+                }
             }
         }
 
-        return maxAction;
+        return results;
     }
 
-    private Action kingToEmptyTableau(State state, List<Action> actions) {
+    private List<Action> kingToEmptyTableau(State state, List<Action> actions) {
+        List<Action> results = new ArrayList<>();
         for (Action action : actions){
             if (action instanceof TableauToTableau){
                 TableauToTableau tToT = (TableauToTableau) action;
                 Card card = tToT.getCard();
                 int size = state.getTableau().getStacks().get(tToT.getTo()).size();
                 if (card.getValue() == 13 && size == 0){
-                    return action;
+                    results.add(action);
                 }
             }
         }
-        return null;
+        return results;
     }
 
-    private Action easyFoundationAction(State state, List<Action> actions){
+    private List<Action> easyTableauToFoundationAction(State state, List<Action> actions){
+        List<Action> results = new ArrayList<>();
         int minValue = Integer.MAX_VALUE;
         for (Stack<Card> stack : state.getFoundation().getStacks()){
             int value = stack.isEmpty() ? 0 : stack.peek().getValue();
@@ -150,10 +206,10 @@ public class IfAgent implements Agent {
                 TableauToFoundation tToF = (TableauToFoundation) action;
                 Card card = tToF.getCard();
                 if (card.getValue() <= minValue+2)
-                    return action;
+                    results.add(action);
             }
         }
-        return null;
+        return results;
     }
 
 }
