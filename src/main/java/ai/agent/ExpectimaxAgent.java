@@ -22,7 +22,7 @@ public class ExpectimaxAgent implements Agent {
     public ExpectimaxAgent(int maxDepth, Heuristic heuristic){
         this.maxDepth = maxDepth;
         this.heuristic = heuristic;
-        handler = new BiCycleHandler();
+        handler = new BiCycleHandler(heuristic);
     }
 
     @Override

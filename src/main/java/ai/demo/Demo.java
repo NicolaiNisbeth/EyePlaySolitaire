@@ -25,7 +25,7 @@ public class Demo {
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 100;
+        int iterations = 1000;
         for (int i = 0; i < iterations; i++) {
             State state = generateInitialState();
             //HashSet<Action> repetitions = new HashSet<>();
