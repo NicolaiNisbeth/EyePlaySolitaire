@@ -1,11 +1,7 @@
 package ai.demo;
 
 import ai.action.Action;
-import ai.agent.Agent;
-import ai.agent.ExpectimaxAgent;
-import ai.agent.MCTSAgent;
-import ai.agent.MiniMaxAgent;
-import ai.agent.RandomAgent;
+import ai.agent.*;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.Card;
@@ -26,7 +22,8 @@ public class Demo {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+        //ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+        IfAgent agent = new IfAgent();
         //Agent agent = new RandomAgent();
         int sum = 0;
         int max = 0;
@@ -51,7 +48,7 @@ public class Demo {
             sum += foundationCount;
             System.out.println(i + "\t" + (foundationCount == 52 ? "W" : ""));
         }
-        System.out.println("Leaf nodes " + agent.getCounter());
+        //System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
     }
 

@@ -17,7 +17,6 @@ public class IfAgent implements Agent {
 
         List<Action> actions = actionFinder.getActions(state);
 
-        // TODO: return list of actions that satisfies the condition
         List<Action> easier = kingToEmptyTableau(state, actions);
         List<Action> easy = easyTableauToFoundationAction(state, actions);
         List<Action> medium = exposeHiddenCards(state, actions);
@@ -25,13 +24,31 @@ public class IfAgent implements Agent {
         List<Action> harder = redOrBlack(state, actions);
         //Action hardest = findOptimalAction();
 
+        List<Action> allActions = new ArrayList<>();
+        allActions.addAll(easier);
+        allActions.addAll(easy);
+        allActions.addAll(medium);
+        allActions.addAll(hard);
+        allActions.addAll(harder);
 
+        Action maxAction = null;
 
-
-        // TODO: traverse action list and decide optimal action
-
+        for(Action action : allActions){
+            Collection<State> results = action.getResults(state);
+            boolean seen = false;
+            for(State result : results) {
+                if(visitedStates.contains(result)){
+                    seen = true;
+                    break;
+                }
+            }
+            if(!seen) {
+                maxAction = action;
+                break;
+            }
+        }
         visitedStates.add(state);
-        return null;
+        return maxAction;
     }
 
     private List<Action> redOrBlack(State state, List<Action> actions) {
