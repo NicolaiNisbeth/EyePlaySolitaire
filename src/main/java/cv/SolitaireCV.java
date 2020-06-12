@@ -57,6 +57,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     @Override
     public void onClientConnect() {
         try {
+            // TODO: Remove this at some point
             server.sendMessage(new Message(1, new JSONObject("{\"msg\" : \"Hello client!\"}")));
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,6 +75,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
                 server.sendMessage(new Message(201, null));
                 break;
             case 101: // New Game State
+                System.out.println("Received game state: " + message.getData());
                 break;
             case 102: // New Image
                 JSONObject data = message.getData();
