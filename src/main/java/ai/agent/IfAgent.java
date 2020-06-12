@@ -1,35 +1,48 @@
 package ai.agent;
 
-import ai.action.Action;
-import ai.action.StockToTableau;
-import ai.action.TableauToFoundation;
-import ai.action.TableauToTableau;
+import ai.action.*;
 import ai.state.*;
 
 import java.util.*;
 
 public class IfAgent implements Agent {
+    private final List<Integer> order;
     private IActionFinder actionFinder = new ActionFinder52();
     HashSet<State> visitedStates = new HashSet<>();
+
+    public IfAgent(List<Integer> order){
+        this.order = order;
+    }
 
     @Override
     public Action getAction(State state) {
 
         List<Action> actions = actionFinder.getActions(state);
 
+        List<Action> easiest = easyTableauToFoundationAction(state, actions);
+        List<Action> harder = redOrBlack(state, actions);
         List<Action> easier = kingToEmptyTableau(state, actions);
-        List<Action> easy = easyTableauToFoundationAction(state, actions);
         List<Action> medium = exposeHiddenCards(state, actions);
         List<Action> hard = exposeTableauIfKingCanMove(state, actions);
-        List<Action> harder = redOrBlack(state, actions);
-        //Action hardest = findOptimalAction();
+        List<Action> stf = getStf(state, actions);
+        List<Action> stt = getStt(state, actions);
+        List<Action> ttf = getTtf(state, actions);
+        List<Action> ttt = getTtt(state, actions);
 
         List<Action> allActions = new ArrayList<>();
+
+        allActions.addAll(easiest);
         allActions.addAll(easier);
-        allActions.addAll(easy);
         allActions.addAll(medium);
         allActions.addAll(hard);
         allActions.addAll(harder);
+        allActions.addAll(stf);
+        allActions.addAll(stt);
+        allActions.addAll(ttf);
+        allActions.addAll(ttt);
+
+        //the rest (duplicates dont matter)
+        allActions.addAll(actions);
 
         Action maxAction = null;
 
@@ -47,8 +60,49 @@ public class IfAgent implements Agent {
                 break;
             }
         }
+
         visitedStates.add(state);
         return maxAction;
+    }
+
+    private List<Action> getStf(State state, List<Action> actions) {
+        List<Action> result = new ArrayList<>();
+        for(Action action : actions) {
+            if(action instanceof StockToFoundation){
+                result.add(action);
+            }
+        }
+        return result;
+    }
+
+    private List<Action> getStt(State state, List<Action> actions) {
+        List<Action> result = new ArrayList<>();
+        for(Action action : actions) {
+            if(action instanceof StockToTableau){
+                result.add(action);
+            }
+        }
+        return result;
+    }
+
+    private List<Action> getTtf(State state, List<Action> actions) {
+        List<Action> result = new ArrayList<>();
+        for(Action action : actions) {
+            if(action instanceof TableauToFoundation){
+                result.add(action);
+            }
+        }
+        return result;
+    }
+
+    private List<Action> getTtt(State state, List<Action> actions) {
+        List<Action> result = new ArrayList<>();
+        for(Action action : actions) {
+            if(action instanceof TableauToTableau){
+                result.add(action);
+            }
+        }
+        return result;
     }
 
     private List<Action> redOrBlack(State state, List<Action> actions) {
@@ -94,6 +148,7 @@ public class IfAgent implements Agent {
             if(topCard == null) continue;
             if(topCard.getValue() == 13) continue;
             for(Card card : stack) {
+                if(card == null) continue;
                 if(card.getValue() == 11) {
                     if(card.getColour() == Card.RED)
                         reds++;
@@ -163,7 +218,7 @@ public class IfAgent implements Agent {
                 Card cardToMove = tToT.getCard();
                 for(int i = stack.size()-1; i > 0; i--){
                     Card cardBelow = stack.get(i-1);
-                    if (stack.get(i).equals(cardToMove) && cardBelow == null){
+                    if (stack.get(i) != null && stack.get(i).equals(cardToMove) && cardBelow == null){
                         map.put(action, i);
                     }
                 }
@@ -174,7 +229,7 @@ public class IfAgent implements Agent {
                 Card cardToMove = tToF.getCard();
                 for(int i = stack.size()-1; i > 0; i--){
                     Card cardBelow = stack.get(i-1);
-                    if (stack.get(i).equals(cardToMove) && cardBelow == null){
+                    if (stack.get(i) != null && stack.get(i).equals(cardToMove) && cardBelow == null){
                         map.put(action, i);
                     }
                 }

@@ -11,10 +11,7 @@ import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Demo {
 
@@ -22,8 +19,8 @@ public class Demo {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        //ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
-        IfAgent agent = new IfAgent();
+        ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+
         //Agent agent = new RandomAgent();
         int sum = 0;
         int max = 0;
@@ -50,6 +47,19 @@ public class Demo {
         }
         //System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
+    }
+
+    private static void search(int size, List<Integer> permutation, List<List<Integer>> permutations){
+        if(permutation.size() == size){
+            permutations.add(permutation);
+        } else {
+            for (int i = 0; i < size; i++) {
+                if(permutation.contains(i)) continue;
+                permutation.add(i);
+                search(size, permutation, permutations);
+                permutation.remove(i);
+            }
+        }
     }
 
     private static State generateInitialState() {
