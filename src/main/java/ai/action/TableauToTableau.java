@@ -111,4 +111,16 @@ public class TableauToTableau implements Action {
     public int hashCode() {
         return Objects.hash(from, to, card);
     }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public int getTo() {
+        return to;
+    }
+
+    public int getFrom() {
+        return from;
+    }
 }

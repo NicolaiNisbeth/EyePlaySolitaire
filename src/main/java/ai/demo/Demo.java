@@ -34,11 +34,11 @@ public class Demo {
         int iterations = 100;
         for (int i = 0; i < iterations; i++) {
             State state = generateInitialState();
-            HashSet<Action> repetitions = new HashSet<>();
+            //HashSet<Action> repetitions = new HashSet<>();
             while(true){
                 Action action = agent.getAction(state);
-                if(repetitions.contains(action)) break;
-                repetitions.add(action);
+                //if(repetitions.contains(action)) break;
+                //repetitions.add(action);
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
             }
