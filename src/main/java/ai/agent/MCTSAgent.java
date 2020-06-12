@@ -116,7 +116,7 @@ public class MCTSAgent implements Agent {
             }
         } while (action != null);
 
-        return state.isGoal() ? WIN : LOSS;
+        return state.isGoal() ? WIN : LOSS; // Can change to foundation size heuristic
     }
 
     private void backpropagate(Node node, int result) {
