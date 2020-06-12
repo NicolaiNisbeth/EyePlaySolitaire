@@ -72,7 +72,7 @@ def send_image():
         data = {}
     else:
         encoded_image = base64.b64encode(image).decode('ascii')
-        data = {"image": encoded_image, "width":1280, "height":720}
+        data = {"image": encoded_image, "width":416, "height":416}
 
 
     # First encode into bxase64 bytes, and then into ascii string
