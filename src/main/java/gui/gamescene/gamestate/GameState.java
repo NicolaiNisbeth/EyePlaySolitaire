@@ -12,10 +12,10 @@ import java.util.List;
  */
 public class GameState {
 
-    private List<UICard> stock;
-    private List<UICard> flipped;
-    private List<List<UICard>> tableaus;
-    private List<List<UICard>> foundations;
+    private List<Card> stock;
+    private List<Card> flipped;
+    private List<List<Card>> tableaus;
+    private List<List<Card>> foundations;
 
 
     /**
@@ -40,7 +40,7 @@ public class GameState {
 
     /**
      * Creates a new game state from a series of arbitrary List
-     * objects of {@link UICard} objects. The lists may be empty
+     * objects of {@link Card} objects. The lists may be empty
      * and cards may be added later.
      *
      * No game logic is tested when creating the game state - this
@@ -51,51 +51,51 @@ public class GameState {
      * @param tableaus  The (usually 7) stacks of cards you may move cards between
      * @param foundations The (usually 4) stacks you aim to get all cards into
      */
-    public GameState(List<UICard> stock, List<UICard> flipped,
-                     List<List<UICard>> tableaus, List<List<UICard>> foundations) {
+    public GameState(List<Card> stock, List<Card> flipped,
+                     List<List<Card>> tableaus, List<List<Card>> foundations) {
         this.stock = stock;
         this.flipped = flipped;
         this.tableaus = tableaus;
         this.foundations = foundations;
     }
 
-    public void addToStock(UICard... UICard) {
-        stock.addAll(Arrays.asList(UICard));
+    public void addToStock(Card... Card) {
+        stock.addAll(Arrays.asList(Card));
     }
 
-    public void addToFlipped(UICard UICard) {
-        flipped.add(UICard);
+    public void addToFlipped(Card Card) {
+        flipped.add(Card);
     }
 
     /**
      * Add a card to a tableau with a given index.
      * Index ranges from 0 (left most) to 6 (right most)
      */
-    public void addToTableau(int tableauIndex, UICard UICard) {
-        tableaus.get(tableauIndex).add(UICard);
+    public void addToTableau(int tableauIndex, Card Card) {
+        tableaus.get(tableauIndex).add(Card);
     }
 
     /**
      * Add a card to a foundation pile with a given index.
      * Index ranges from 0 (left most) to 3 (right most)
      */
-    public void addToFoundations(int foundationIndex, UICard UICard) {
-        foundations.get(foundationIndex).add(UICard);
+    public void addToFoundations(int foundationIndex, Card Card) {
+        foundations.get(foundationIndex).add(Card);
     }
 
-    public List<UICard> getStock() {
+    public List<Card> getStock() {
         return stock;
     }
 
-    public List<UICard> getFlipped() {
+    public List<Card> getFlipped() {
         return flipped;
     }
 
-    public List<List<UICard>> getTableaus() {
+    public List<List<Card>> getTableaus() {
         return tableaus;
     }
 
-    public List<List<UICard>> getFoundations() {
+    public List<List<Card>> getFoundations() {
         return foundations;
     }
 
@@ -113,8 +113,8 @@ public class GameState {
             str.append("\nstock: empty");
         }else{
             str.append("\nstock: ");
-            for( UICard UICard : stock ){
-                str.append( UICard.toStringShort()).append(" ");
+            for( Card Card : stock ){
+                str.append( Card.toStringShort()).append(" ");
             }
         }
 
@@ -123,32 +123,32 @@ public class GameState {
             str.append("\nflipped: empty");
         }else{
             str.append("\nflipped: ");
-            for( UICard UICard : flipped ){
-                str.append( UICard.toStringShort()).append(" ");
+            for( Card Card : flipped ){
+                str.append( Card.toStringShort()).append(" ");
             }
         }
 
 
         for(int i=0; i<7; i++){
-            List<UICard> tableau = tableaus.get(i);
+            List<Card> tableau = tableaus.get(i);
             if( tableau == null || tableau.size() == 0){
                 str.append("\n\ttableau ").append(i).append(": empty");
             }else{
                 str.append("\n\ttableau ").append(i).append(": ");
-                for( UICard UICard : tableau ){
-                    str.append( UICard.toStringShort()).append(" ");
+                for( Card Card : tableau ){
+                    str.append( Card.toStringShort()).append(" ");
                 }
             }
         }
 
         for(int i=0; i<4; i++){
-            List<UICard> foundation = foundations.get(i);
+            List<Card> foundation = foundations.get(i);
             if( foundation == null || foundation.size() == 0){
                 str.append("\n\tfoundation ").append(i).append(": empty");
             }else{
                 str.append("\n\tfoundation ").append(i).append(": ");
-                for( UICard UICard : foundation ){
-                    str.append( UICard.toStringShort()).append(" ");
+                for( Card Card : foundation ){
+                    str.append( Card.toStringShort()).append(" ");
                 }
             }
         }

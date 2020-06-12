@@ -6,8 +6,6 @@ import ai.demo.DemoDeck;
 import ai.demo.SolitaireAI;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
-import ai.state.Card;
-import ai.state.Deck;
 import ai.state.Foundation;
 import ai.state.Producer;
 import ai.state.RemainingCards;
@@ -24,7 +22,7 @@ import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamestate.GameStateGenerator;
-import gui.gamescene.gamestate.UICard;
+import gui.gamescene.gamestate.Card;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -34,7 +32,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -208,15 +205,15 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private static GameState convertState(State state){
 
         Stock stock = Producer.produceStock(state.getStock(), lol -> {});
-        List<UICard> stockList = new ArrayList<>();
-        for(Card card : stock.getCards())
+        List<Card> stockList = new ArrayList<>();
+        for(ai.state.Card card : stock.getCards())
             stockList.add(convertCard(card));
 
         Foundation foundation = Producer.produceFoundation(state.getFoundation(), lol -> {});
-        List<List<UICard>> foundationList = new ArrayList<>();
-        for(Stack<Card> stack : foundation.getStacks()){
-            List<UICard> convertedStack = new ArrayList<>();
-            List<UICard> temp = new ArrayList<>();
+        List<List<Card>> foundationList = new ArrayList<>();
+        for(Stack<ai.state.Card> stack : foundation.getStacks()){
+            List<Card> convertedStack = new ArrayList<>();
+            List<Card> temp = new ArrayList<>();
             while(!stack.isEmpty()){
                 temp.add(convertCard(stack.pop()));
             }
@@ -227,10 +224,10 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         }
 
         Tableau tableau = Producer.produceTableau(state.getTableau(), lol -> {});
-        List<List<UICard>> tableauList = new ArrayList<>();
-        for(Stack<Card> stack : tableau.getStacks()){
-            List<UICard> convertedStack = new ArrayList<>();
-            List<UICard> temp = new ArrayList<>();
+        List<List<Card>> tableauList = new ArrayList<>();
+        for(Stack<ai.state.Card> stack : tableau.getStacks()){
+            List<Card> convertedStack = new ArrayList<>();
+            List<Card> temp = new ArrayList<>();
             while(!stack.isEmpty()){
                 temp.add(convertCard(stack.pop()));
             }
@@ -240,29 +237,29 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
             tableauList.add(convertedStack);
         }
 
-        List<UICard> flipped = new ArrayList<>();
+        List<Card> flipped = new ArrayList<>();
 
 
 
         return new GameState(stockList, flipped, tableauList, foundationList);
     }
 
-    private static UICard convertCard(Card card){
-        UICard.Suit suit;
+    private static Card convertCard(ai.state.Card card){
+        Card.Suit suit;
         if(card == null)
-            return new UICard(UICard.Suit.UNKNOWN, 2);
+            return new Card(Card.Suit.UNKNOWN, 2);
         switch(card.getSuit()){
-            case 0: suit = UICard.Suit.CLUBS;
+            case 0: suit = Card.Suit.CLUBS;
                 break;
-            case 1: suit = UICard.Suit.DIAMONDS;
+            case 1: suit = Card.Suit.DIAMONDS;
                 break;
-            case 2: suit = UICard.Suit.HEARTS;
+            case 2: suit = Card.Suit.HEARTS;
                 break;
-            case 3: suit = UICard.Suit.SPADES;
+            case 3: suit = Card.Suit.SPADES;
                 break;
-            default: suit = UICard.Suit.UNKNOWN;
+            default: suit = Card.Suit.UNKNOWN;
         }
-        return new UICard(suit, card.getValue());
+        return new Card(suit, card.getValue());
     }
 
 
@@ -302,7 +299,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         board[3] = new ai.state.Card[4];
         board[4] = new ai.state.Card[5];
         board[5] = new ai.state.Card[6];
-        board[6] = new Card[7];
+        board[6] = new ai.state.Card[7];
 
         board[0][0] = deck.draw();
         board[1][0] = null;

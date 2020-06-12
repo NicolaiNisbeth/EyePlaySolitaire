@@ -3,7 +3,6 @@ import queue
 import threading
 import json
 
-from PIL import Image
 from message import Message
 
 class Connector:
@@ -54,7 +53,6 @@ class Connector:
             # Send the message
             msg = self._queued_messages.get() # blocks until something is in the queue
             self._connection.sendall((msg.to_json() + "\n").encode())
-            print("message sent")
             # Signal that the message has been sent
             if msg in self._dequeue_event_map:
                 self._dequeue_event_map[msg].set()
@@ -67,7 +65,6 @@ class Connector:
             msg = None
             try:
                 msg = Message.from_json(str_msg)
-                print("Received message: ", msg )
             except json.JSONDecodeError as e:
                 print(f"Couldn't deserialize message {str_msg} as JSON {e.msg}")
 

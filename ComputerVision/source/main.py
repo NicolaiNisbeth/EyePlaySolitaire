@@ -6,7 +6,6 @@ import base64
 import io
 import cv2
 
-from PIL import Image
 
 from message import Message
 from connector import Connector
@@ -34,7 +33,7 @@ def main():
     connector = Connector(port, message_received)
     
     # Start Detector
-    detector = Detector(detection_started, new_detection)
+    detector = Detector(detection_started, new_detections)
 
     print("Started camera")
     
@@ -44,44 +43,43 @@ def main():
     
 
 
-def new_detection():
-    pass
-    # Send message to saserver
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-
-def detection_started():
-    # Notify server that the client has started
-    connector.send_message(Message(100, {}))
-    send_image()    
-
-
-def message_received(msg: Message):
     
+def message_received(msg: Message):
     # Image requesed
     if msg._code is 201:
         send_image()
 
+
+def detection_started():
+    # Notify server that the client has started
+    connector.send_message(Message(100, "{}"))
+
+
+def new_detections(detections, width, height):
+    # Notify server that new detections are ready
+    data = {"detections" : detections, "width" : width, "height" : height}
+    connector.send_message(Message(101, json.dumps(data)), False)
 
 
 def send_image():
     global connector
     global detector
     image = detector.get_latest_frame()
+    width, height = detector.output_resolution
 
     data = None
     if image is None:
+        # If not image has been captured yet, we just return an empty json object
+        # which will cause the server to request a new image
         data = {}
     else:
+        # First encode into bxase64 bytes, and then into ascii string
         encoded_image = base64.b64encode(image).decode('ascii')
-        data = {"image": encoded_image, "width":1280, "height":720}
+        data = {"image": encoded_image, "width": width, "height": height}
 
-
-    # First encode into bxase64 bytes, and then into ascii string
-    connector.send_message(Message(
-        102,
-        json.dumps(data)
-        ), True
-    )
+    connector.send_message(Message(102, json.dumps(data)), True)
 
 
 if __name__ == "__main__":

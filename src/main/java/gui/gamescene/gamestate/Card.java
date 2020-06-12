@@ -4,7 +4,7 @@ package gui.gamescene.gamestate;
 import java.text.NumberFormat;
 
 /** Class to represent a playing card with a suit and a value */
-public class UICard {
+public class Card {
 
     private Suit suit;
     private int value; // Ranges from 1 (ace) to 13 (king)
@@ -17,7 +17,7 @@ public class UICard {
      *
      * @throws IllegalArgumentException If the value is not within the correct interval
      * */
-    public UICard(Suit suit, int value){
+    public Card(Suit suit, int value){
         this.suit = suit;
         setValue(value);
 
@@ -32,12 +32,12 @@ public class UICard {
      * Create a card which is unknown (suit == UNKNOWN and
      * value == 0).
      */
-    public static UICard createUnknown(){
-        return new UICard(Suit.UNKNOWN, 0);
+    public static Card createUnknown(){
+        return new Card(Suit.UNKNOWN, 0);
     }
 
     /**
-     * @return The card's suit as a {@link UICard.Suit} enum
+     * @return The card's suit as a {@link Card.Suit} enum
      * */
     public Suit getSuit() {
         return suit;
@@ -76,7 +76,7 @@ public class UICard {
     }
 
 
-    public boolean equals(UICard other) {
+    public boolean equals(Card other) {
         if( other == null )           return false;
         if( this == other )           return true;
         return this.suit == other.suit && this.value == other.value;

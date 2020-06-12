@@ -3,7 +3,7 @@ package gui.gamescene.gamecomponent;
 
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
-import gui.gamescene.gamestate.UICard;
+import gui.gamescene.gamestate.Card;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,7 +11,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -87,7 +86,7 @@ public class GameComponent implements IGameComponent {
     /**
      * Return the Card Pane matching the given card.
      */
-    private CardPane createCardPane(UICard card){
+    private CardPane createCardPane(Card card){
         if( card.isUnknown() )
             return createCardBackPane();
         else
@@ -115,8 +114,8 @@ public class GameComponent implements IGameComponent {
 
             // Update Flipped cards
             flipped.clearCards();
-            List<UICard> flipped = gameState.getFlipped();
-            for (UICard card : flipped) {
+            List<Card> flipped = gameState.getFlipped();
+            for (Card card : flipped) {
                 CardPane pane = createCardPane(card);
                 this.flipped.addCard(pane);
             }
@@ -124,11 +123,11 @@ public class GameComponent implements IGameComponent {
 
             // Update tableaus
             for (int i = 0; i < gameState.getTableaus().size(); i++) {
-                List<UICard> tableau = gameState.getTableaus().get(i);
+                List<Card> tableau = gameState.getTableaus().get(i);
 
                 tableaus.get(i).clearCards();
 
-                for (UICard card : tableau) {
+                for (Card card : tableau) {
                     CardPane pane = createCardPane(card);
                     tableaus.get(i).addCard(pane);
                 }
@@ -139,9 +138,9 @@ public class GameComponent implements IGameComponent {
                 foundations.get(i).clearCard();
 
                 // Only display the top card, if foundation is not empty
-                List<UICard> foundation = gameState.getFoundations().get(i);
+                List<Card> foundation = gameState.getFoundations().get(i);
                 if( foundation.size() > 0 ){
-                    UICard topCard = foundation.get(foundation.size()-1);
+                    Card topCard = foundation.get(foundation.size()-1);
                     foundations.get(i).setCard(createCardPane(topCard));
                 }
             }
