@@ -52,7 +52,7 @@ def message_received(msg: Message):
         send_image()
 
 
-def detection_started():
+def detection_started(a,b):
     # Notify server that the client has started
     connector.send_message(Message(100, "{}"))
 

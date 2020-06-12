@@ -16,7 +16,7 @@ import darknet
 
 class Detector:
 
-    def __init__(self, startup_callback, detection_callback, detection_fps=15.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
+    def __init__(self, startup_callback, detection_callback, detection_fps=1.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
         self._camera = camera.Camera(resolution, camera_id, startup_callback)
         self._fps = detection_fps
         
@@ -90,9 +90,10 @@ class Detector:
             darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
 
             detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
+            #print(detections)
             if self._detection_callback is not None:
                 self._detection_callback(_detections_to_dict(detections), darknet.network_width(netMain), darknet.network_height(netMain))
-            print(detections)
+
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -128,12 +129,12 @@ def _detections_to_dict(detections):
 
     for detection in detections:
         json_detection = {}
-        json_detection["card"] = _label_to_dict(detection[0])
-        json_detection["confidence"] = detection[1]
-        json_detection["x"] = detection[2][0]
-        json_detection["y"] = detection[2][1]
-        json_detection["width"] = detection[2][2]
-        json_detection["width"] = detection[2][3]
+        json_detection["card"] = _label_to_dict(detection[0].decode())
+        json_detection["confidence"] = truncate(detection[1], decimals=2)
+        json_detection["x"] = truncate(detection[2][0], decimals=2)
+        json_detection["y"] = truncate(detection[2][1], decimals=2)
+        json_detection["width"] = truncate(detection[2][2], decimals=2)
+        json_detection["height"] = truncate(detection[2][3], decimals=2)
         json_detections.append(json_detection)
 
     return json_detections
@@ -186,3 +187,19 @@ def cvDrawBoxes(detections, img):
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     [0, 255, 0], 2)
     return img
+
+#https://kodify.net/python/math/truncate-decimals/
+
+def truncate(number, decimals=0):
+    """
+    Returns a value truncated to a specific number of decimal places.
+    """
+    if not isinstance(decimals, int):
+        raise TypeError("decimal places must be an integer.")
+    elif decimals < 0:
+        raise ValueError("decimal places has to be 0 or more.")
+    elif decimals == 0:
+        return math.trunc(number)
+
+    factor = 10.0 ** decimals
+    return math.trunc(number * factor) / factor

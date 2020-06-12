@@ -4,6 +4,7 @@ import time
 import cv2
 import numpy
 import camera
+    
 
 from ctypes import *
 import math
@@ -12,41 +13,18 @@ import os
 import numpy as np
 import darknet
 
-def convertBack(x, y, w, h):
-    xmin = int(round(x - (w / 2)))
-    xmax = int(round(x + (w / 2)))
-    ymin = int(round(y - (h / 2)))
-    ymax = int(round(y + (h / 2)))
-    return xmin, ymin, xmax, ymax
-
-
-def cvDrawBoxes(detections, img):
-    for detection in detections:
-        x, y, w, h = detection[2][0], \
-                     detection[2][1], \
-                     detection[2][2], \
-                     detection[2][3]
-        xmin, ymin, xmax, ymax = convertBack(
-            float(x), float(y), float(w), float(h))
-        pt1 = (xmin, ymin)
-        pt2 = (xmax, ymax)
-        cv2.rectangle(img, pt1, pt2, (0, 255, 0), 1)
-        cv2.putText(img,
-                    detection[0].decode() +
-                    " [" + str(round(detection[1] * 100, 2)) + "]",
-                    (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                    [0, 255, 0], 2)
-    return img
 
 class Detector:
 
-    def __init__(self, startup_callback, detection_callback, detection_fps=15.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
+    def __init__(self, startup_callback, detection_callback, detection_fps=1.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
         self._camera = camera.Camera(resolution, camera_id, startup_callback)
         self._fps = detection_fps
         
         self._run = True
         self._frame_lock = threading.Lock()
         self._detection_callback = detection_callback
+
+        self.output_resolution = (416, 416)
 
         # The latest detected frame
         self._latest_frame: numpy.ndarray = None
@@ -112,15 +90,16 @@ class Detector:
             darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
 
             detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
+            #print(detections)
+            if self._detection_callback is not None:
+                self._detection_callback(_detections_to_dict(detections), darknet.network_width(netMain), darknet.network_height(netMain))
+
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = cv2.resize(image,
-                                       1280,
-                                        720,
-                                       interpolation=cv2.INTER_LINEAR)
+
             print("image", len(image))
 
-            #TODO: Set Frame with detection boxes here
+            
             with self._frame_lock:
                 self._latest_frame = image
 
@@ -140,10 +119,87 @@ class Detector:
 
 
 
+def _detections_to_dict(detections):
+    """
+    Converts the output list of detections from darknet.py
+    to a list of dictionary elements, which can be formatted as a json
+    objects
+    """
+    json_detections = []
+
+    for detection in detections:
+        json_detection = {}
+        json_detection["card"] = _label_to_dict(detection[0].decode())
+        json_detection["confidence"] = truncate(detection[1], decimals=2)
+        json_detection["x"] = truncate(detection[2][0], decimals=2)
+        json_detection["y"] = truncate(detection[2][1], decimals=2)
+        json_detection["width"] = truncate(detection[2][2], decimals=2)
+        json_detection["height"] = truncate(detection[2][3], decimals=2)
+        json_detections.append(json_detection)
+
+    return json_detections
 
 
+def _label_to_dict(label):
+    """
+    Extracts the value and suit of a card from a label in the format
+    '10d' or 'XXy' where XX is the value and y is the suit.
+    Constructs and returns a dictionary representing the card with
+    value and suit
+    """
+    card = {}
+    card["suit"] = label[-1].capitalize()
     
-
-
-
+    if len(label) is 3:
+        card["value"] = 10
+    else:
+        if label[0] is "K": card["value"] =  13
+        elif label[0] is "Q": card["value"] = 12
+        elif label[0] is "J": card["value"] = 11
+        elif label[0] is "A": card["value"] = 1
+        else: card["value"] = int(label[0]) 
     
+    return card
+
+
+def convertBack(x, y, w, h):
+    xmin = int(round(x - (w / 2)))
+    xmax = int(round(x + (w / 2)))
+    ymin = int(round(y - (h / 2)))
+    ymax = int(round(y + (h / 2)))
+    return xmin, ymin, xmax, ymax
+
+
+def cvDrawBoxes(detections, img):
+    for detection in detections:
+        x, y, w, h = detection[2][0], \
+                     detection[2][1], \
+                     detection[2][2], \
+                     detection[2][3]
+        xmin, ymin, xmax, ymax = convertBack(
+            float(x), float(y), float(w), float(h))
+        pt1 = (xmin, ymin)
+        pt2 = (xmax, ymax)
+        cv2.rectangle(img, pt1, pt2, (0, 255, 0), 1)
+        cv2.putText(img,
+                    detection[0].decode() +
+                    " [" + str(round(detection[1] * 100, 2)) + "]",
+                    (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                    [0, 255, 0], 2)
+    return img
+
+#https://kodify.net/python/math/truncate-decimals/
+
+def truncate(number, decimals=0):
+    """
+    Returns a value truncated to a specific number of decimal places.
+    """
+    if not isinstance(decimals, int):
+        raise TypeError("decimal places must be an integer.")
+    elif decimals < 0:
+        raise ValueError("decimal places has to be 0 or more.")
+    elif decimals == 0:
+        return math.trunc(number)
+
+    factor = 10.0 ** decimals
+    return math.trunc(number * factor) / factor
