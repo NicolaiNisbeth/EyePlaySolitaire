@@ -73,7 +73,6 @@ public class MCTSAgent implements Agent {
     private Node findRoot(State state) {
         if(root == null)
             return new Node(state, null, null);
-        root.parent = null;
         Node newRoot = null;
         for(Node child : root.children) {
             if(child.state.equals(state))
@@ -83,6 +82,7 @@ public class MCTSAgent implements Agent {
             System.out.println(root.children.size());
             throw new IllegalStateException("AAAA");
         }
+        newRoot.parent = null;
         return newRoot;
     }
 
@@ -108,7 +108,7 @@ public class MCTSAgent implements Agent {
     }
 
     private void expand(Node node) {
-        Iterable<Action> actions = actionFinder.getActions(node.state);
+        List<Action> actions = actionFinder.getActions(node.state);
         for (Action action : actions)
             for (State state : action.getResults(node.state))
                 node.children.add(new Node(state, node, action));
