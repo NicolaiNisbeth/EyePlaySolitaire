@@ -2,6 +2,7 @@ package ai.demo;
 
 import ai.action.Action;
 import ai.agent.*;
+import ai.heuristic.Cocktail;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.Card;
@@ -17,6 +18,7 @@ public class Demo {
 
     public static void main(String[] args) {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
+        //Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
         ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
@@ -24,11 +26,13 @@ public class Demo {
 
 
         //Agent agent = new RandomAgent();
+
         int sum = 0;
         int max = 0;
         int wins = 0;
         int iterations = 100;
         for (int i = 0; i < iterations; i++) {
+            int counter = 0;
             State state = generateInitialState();
             //HashSet<Action> repetitions = new HashSet<>();
             while(true){
@@ -37,6 +41,8 @@ public class Demo {
                 //repetitions.add(action);
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
+                //System.out.println(counter++);
+                System.out.println(action);
             }
             int foundationCount = state.getFoundation().getCount();
             if (foundationCount == 52)

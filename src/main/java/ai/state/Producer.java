@@ -55,7 +55,14 @@ public class Producer {
 
         Foundation foundationProduced = new Foundation();
         foundationProduced.setStacks(cardsCopyDeep);
-        foundationProduced.setSizes(foundation.getSizes());
+
+        int[] newSize = new int[foundation.getSizes().length];
+        int j = 0;
+        for (int i : foundation.getSizes()){
+            newSize[j++] = i;
+        }
+
+        foundationProduced.setSizes(newSize);
         foundationProduced.setSum(foundation.getCount());
         consumer.accept(foundationProduced);
         return foundationProduced;

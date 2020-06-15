@@ -1,8 +1,10 @@
 package ai.state;
 
+import java.util.Objects;
+
 public class Card implements Comparable<Card>{
 
-    public static final int DIAMOND = 0, CLUB = 1, HEART = 2, SPADE = 3;
+    public static final int CLUB = 0, DIAMOND = 1, HEART = 2, SPADE = 3;
     public static final int BLACK = 0, RED = 1;
 
     private int value;
@@ -48,5 +50,10 @@ public class Card implements Comparable<Card>{
                 suit * 13 + value,
                 other.suit * 13 + other.value
         );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, suit);
     }
 }
