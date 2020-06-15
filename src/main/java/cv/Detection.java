@@ -3,22 +3,39 @@ package cv;
 import gui.gamescene.gamestate.Card;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
+/**
+ * Represents a detection of a card label (corners) by the computer vision client.
+ */
 public class Detection {
 
+    // The card the label belongs to
     private Card card;
+
+    // Confidence level (0 to 1.0)
     private double confidence;
+
+    // Center coordinates of the label
     private double x;
     private double y;
+
     private double width;
     private double height;
 
+    // You shouldn't create a detection except from json
+    private Detection() { }
 
-    public static Detection fromJSON(JSONObject json){
+
+    /**
+     * Constructs a Detection from a JSON object in the format:
+     * {
+     *     "card" : { "suit" : "D", "value" 13 },
+     *     "confidence" : 0.85,
+     *     "x" :  123.12, "y" : 123,12,
+     *     "width" : 123.12, "height" : 123.12
+     * }
+     */
+    static Detection fromJSON(JSONObject json){
         Detection detection = new Detection();
 
         // Decode the card
@@ -77,23 +94,4 @@ public class Detection {
                 " }";
     }
 
-
-    public static void main(String[] args) throws IOException {
-
-        File file = new File("C:\\Users\\malte\\IdeaProjects\\EyePlaySolitaire\\src\\main\\java\\cv\\detections.test");
-
-        FileReader reader = new FileReader(file);
-
-        int input;
-        String text = "";
-        while( (input = reader.read()) >= 0){
-            if( input != '\n' && input != '\r')
-                text += (char) input;
-        }
-
-        JSONObject object = new JSONObject(text);
-
-        for(Object detection : object.getJSONArray("detections"))
-            System.out.println(Detection.fromJSON((JSONObject) detection));
-            }
 }
