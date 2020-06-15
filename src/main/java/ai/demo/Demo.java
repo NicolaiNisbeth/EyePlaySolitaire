@@ -70,7 +70,7 @@ public class Demo {
         }
     }
 
-    private static State generateInitialState() {
+    public static State generateInitialState() {
         DemoDeck deck = new DemoDeck();
 
         Card[][] board = createBoard(deck);

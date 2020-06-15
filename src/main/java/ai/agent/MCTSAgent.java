@@ -16,14 +16,7 @@ public class MCTSAgent implements Agent {
 
     private final int seconds;
     private Heuristic heuristic;
-
-    private class Tree {
-        Node root;
-
-        public Tree(State state) {
-            root = new Node(state, null, null);
-        }
-    }
+    private Node root;
 
     private class Node {
         State state;
@@ -54,11 +47,11 @@ public class MCTSAgent implements Agent {
 
     @Override
     public Action getAction(State state) {
-        Tree tree = new Tree(state);
+        root = findRoot(state);
 
         long start = System.currentTimeMillis();
         while(System.currentTimeMillis() < start + seconds * 1000){
-            Node selection = selectFrom(tree.root);
+            Node selection = selectFrom(root);
             expand(selection);
             for (Node child : selection.children) {
                 int outcome = simulate(child);
@@ -68,13 +61,29 @@ public class MCTSAgent implements Agent {
 
         int max = Integer.MIN_VALUE;
         Node chosen = null;
-        for(Node child : tree.root.children){
+        for(Node child : root.children){
             if(child.visited > max){
                 chosen = child;
                 max = child.visited;
             }
         }
         return chosen == null ? null : chosen.action;
+    }
+
+    private Node findRoot(State state) {
+        if(root == null)
+            return new Node(state, null, null);
+        root.parent = null;
+        Node newRoot = null;
+        for(Node child : root.children) {
+            if(child.state.equals(state))
+                newRoot = child;
+        }
+        if(newRoot == null) {
+            System.out.println(root.children.size());
+            throw new IllegalStateException("AAAA");
+        }
+        return newRoot;
     }
 
     private Node selectFrom(Node node) {
@@ -107,18 +116,21 @@ public class MCTSAgent implements Agent {
 
     private int simulate(Node node) {
         State state = node.state;
-        ExpectimaxAgent simulator = new ExpectimaxAgent(0, heuristic);
         Action action = null;
         do{
-            action = simulator.getAction(state);
+            List<Action> actions = actionFinder.getActions(state);
+            int random = (int)(Math.random() * actions.size());
+            action = actions.isEmpty() ? null : actions.get(random);
             if(action != null){
                 state = getRandom(action.getResults(state));
             }
         } while (action != null);
 
-        return state.isGoal() ? WIN : LOSS; // Can change to foundation size heuristic
+        return state.getFoundation().getCount();
+        //return state.isGoal() ? WIN : LOSS; // Can change to foundation size heuristic
     }
 
+    //TODO : average foundation instead of sum
     private void backpropagate(Node node, int result) {
         do {
             if (result == WIN)
