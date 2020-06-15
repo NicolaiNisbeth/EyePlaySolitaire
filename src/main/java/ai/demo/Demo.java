@@ -21,8 +21,8 @@ public class Demo {
         //Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
-        //MCTSAgent agent = new MCTSAgent(10, heuristic);
+        //ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+        MCTSAgent agent = new MCTSAgent(1, heuristic);
 
 
         //Agent agent = new RandomAgent();
@@ -42,7 +42,7 @@ public class Demo {
                 if(action == null) break;
                 state = getRandom(action.getResults(state));
                 //System.out.println(counter++);
-                System.out.println(action);
+                //System.out.println(action);
             }
             int foundationCount = state.getFoundation().getCount();
             if (foundationCount == 52)
