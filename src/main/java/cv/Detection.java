@@ -3,6 +3,12 @@ package cv;
 import gui.gamescene.gamestate.Card;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a detection of a card label (corners) by the computer vision client.
@@ -93,5 +99,40 @@ public class Detection {
                 ", height=" + height +
                 " }";
     }
+
+
+    public static void main(String[] args) throws IOException {
+
+        File file = new File("C:\\Users\\willi\\IdeaProjects\\EyePlaySolitaire1\\src\\main\\java\\cv\\test2.txt");
+
+        FileReader reader = new FileReader(file);
+
+        int input;
+        String text = "";
+        while( (input = reader.read()) >= 0){
+            if( input != '\n' && input != '\r')
+                text += (char) input;
+        }
+
+        List<Detection> detectionList = new ArrayList();
+
+        JSONObject object = new JSONObject(text).getJSONObject("detections");
+        int width =  object.getInt("width");
+        int height = object.getInt("height");
+
+        for(Object detection : object.getJSONArray("detections")){
+
+            Detection currentDetection = Detection.fromJSON((JSONObject) detection);
+            detectionList.add(currentDetection);
+        }
+
+        GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(width,height);
+        gameStateAnalyzer.analyzeDetections2(detectionList);
+
+
+        }
+
+
+
 
 }

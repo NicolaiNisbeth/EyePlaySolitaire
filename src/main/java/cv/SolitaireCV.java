@@ -20,7 +20,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
     private Server server;
     private ImageUpdateListener imageUpdateListener;
-    private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer();
+    private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(416,416);
 
 
     @Override
