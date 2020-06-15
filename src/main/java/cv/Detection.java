@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Detection {
 
@@ -80,7 +82,7 @@ public class Detection {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("C:\\Users\\malte\\IdeaProjects\\EyePlaySolitaire\\src\\main\\java\\cv\\detections.test");
+        File file = new File("C:\\Users\\willi\\IdeaProjects\\EyePlaySolitaire1\\src\\main\\java\\cv\\test2.txt");
 
         FileReader reader = new FileReader(file);
 
@@ -91,9 +93,25 @@ public class Detection {
                 text += (char) input;
         }
 
-        JSONObject object = new JSONObject(text);
+        List<Detection> detectionList = new ArrayList();
 
-        for(Object detection : object.getJSONArray("detections"))
-            System.out.println(Detection.fromJSON((JSONObject) detection));
-            }
+        JSONObject object = new JSONObject(text).getJSONObject("detections");
+        int width =  object.getInt("width");
+        int height = object.getInt("height");
+
+        for(Object detection : object.getJSONArray("detections")){
+
+            Detection currentDetection = Detection.fromJSON((JSONObject) detection);
+            detectionList.add(currentDetection);
+        }
+
+        GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(width,height);
+        gameStateAnalyzer.analyzeDetections2(detectionList);
+
+
+        }
+
+
+
+
 }
