@@ -10,17 +10,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a detection of a card label (corners) by the computer vision client.
+ */
 public class Detection {
 
+    // The card the label belongs to
     private Card card;
+
+    // Confidence level (0 to 1.0)
     private double confidence;
+
+    // Center coordinates of the label
     private double x;
     private double y;
+
     private double width;
     private double height;
 
+    // You shouldn't create a detection except from json
+    private Detection() { }
 
-    public static Detection fromJSON(JSONObject json){
+
+    /**
+     * Constructs a Detection from a JSON object in the format:
+     * {
+     *     "card" : { "suit" : "D", "value" 13 },
+     *     "confidence" : 0.85,
+     *     "x" :  123.12, "y" : 123,12,
+     *     "width" : 123.12, "height" : 123.12
+     * }
+     */
+    static Detection fromJSON(JSONObject json){
         Detection detection = new Detection();
 
         // Decode the card
