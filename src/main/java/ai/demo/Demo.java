@@ -19,8 +19,8 @@ public class Demo {
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        //ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
-        MCTSAgent agent = new MCTSAgent(10, heuristic);
+        ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+        //MCTSAgent agent = new MCTSAgent(10, heuristic);
 
 
         //Agent agent = new RandomAgent();

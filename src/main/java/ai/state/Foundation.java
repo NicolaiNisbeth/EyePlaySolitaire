@@ -38,17 +38,6 @@ public class Foundation {
         return sum;
     }
 
-    public int getLargestDifference(){
-        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-        for(int size : sizes){
-            if(size < min)
-                min = size;
-            if(size > max)
-                max = size;
-        }
-        return max - min;
-    }
-
     public List<Stack<Card>> getStacks() {
         return stacks;
     }

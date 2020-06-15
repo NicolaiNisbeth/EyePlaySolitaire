@@ -260,6 +260,7 @@ public class IfAgent implements Agent {
                 }
             }
         }
+        //TODO Stock ?
         return results;
     }
 

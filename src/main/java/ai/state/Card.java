@@ -2,7 +2,7 @@ package ai.state;
 
 public class Card implements Comparable<Card>{
 
-    public static final int CLUB = 0, DIAMOND = 1, HEART = 2, SPADE = 3;
+    public static final int DIAMOND = 0, CLUB = 1, HEART = 2, SPADE = 3;
     public static final int BLACK = 0, RED = 1;
 
     private int value;
