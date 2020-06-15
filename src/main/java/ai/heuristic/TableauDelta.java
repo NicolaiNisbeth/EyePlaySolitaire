@@ -25,6 +25,7 @@ public class TableauDelta implements Heuristic {
                 }
             }
         }
+        cardCount = cardCount == 0 ? 1 : cardCount;
         return sum / cardCount;
     }
 

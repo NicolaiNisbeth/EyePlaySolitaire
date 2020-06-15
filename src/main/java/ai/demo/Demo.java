@@ -17,8 +17,8 @@ import java.util.*;
 public class Demo {
 
     public static void main(String[] args) {
-        Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
-        //Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
+        //Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
+        Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
         ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);

@@ -39,13 +39,13 @@ public class Cocktail implements Heuristic {
 
     @Override
     public double evaluate(State state) {
-        double e1 = w1 * h1.evaluate(state);
+        double e1 = w1 * h1.evaluate(state);//
         double e2 = w2 * h2.evaluate(state);
         double e3 = w3 * h3.evaluate(state);
         double e4 = w4 * h4.evaluate(state);
-        double e5 = w5 * h5.evaluate(state);
+        double e5 = w5 * h5.evaluate(state);//
         double e6 = w6 * h6.evaluate(state);
-        double e7 = w7 * h7.evaluate(state);
+        double e7 = w7 * h7.evaluate(state);//
         double e8 = w8 * h8.evaluate(state);
         double e9 = w9 * h9.evaluate(state);
         return e1 + e2 + e3 + e4 + e5 + e6 + e7 + e8 + e9;

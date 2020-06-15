@@ -39,6 +39,7 @@ public class HasNextInChain implements Heuristic {
                 }
             }
         }
+        total = total == 0 ? 1 : total;
         return (double) has/total;
     }
 }
