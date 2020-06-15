@@ -129,7 +129,14 @@ def _detections_to_dict(detections):
 
     for detection in detections:
         json_detection = {}
-        json_detection["card"] = _label_to_dict(detection[0].decode())
+
+        # Decode card label
+        try:
+            json_detection["card"] = _label_to_dict(detection[0].decode())
+        except ValueError as err:
+            print(err)
+            continue            
+
         json_detection["confidence"] = truncate(detection[1], decimals=2)
         json_detection["x"] = truncate(detection[2][0], decimals=2)
         json_detection["y"] = truncate(detection[2][1], decimals=2)
@@ -152,12 +159,14 @@ def _label_to_dict(label):
     
     if len(label) is 3:
         card["value"] = 10
-    else:
-        if label[0] is "K": card["value"] =  13
+    elif len(label) is 2:
+        if label[0] is "K": card["value"] = 13
         elif label[0] is "Q": card["value"] = 12
         elif label[0] is "J": card["value"] = 11
         elif label[0] is "A": card["value"] = 1
-        else: card["value"] = int(label[0]) 
+        else: card["value"] = int(label[0])
+    else:
+        raise ValueError(f"Detection label length is not correct (was {len(label)})")
     
     return card
 
@@ -188,11 +197,12 @@ def cvDrawBoxes(detections, img):
                     [0, 255, 0], 2)
     return img
 
-#https://kodify.net/python/math/truncate-decimals/
+
 
 def truncate(number, decimals=0):
     """
     Returns a value truncated to a specific number of decimal places.
+    Source: #https://kodify.net/python/math/truncate-decimals/
     """
     if not isinstance(decimals, int):
         raise TypeError("decimal places must be an integer.")

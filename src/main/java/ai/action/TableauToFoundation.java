@@ -94,4 +94,12 @@ public class TableauToFoundation implements Action {
     public int hashCode() {
         return Objects.hash(card, tableauIndex);
     }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public int getTableauIndex() {
+        return tableauIndex;
+    }
 }

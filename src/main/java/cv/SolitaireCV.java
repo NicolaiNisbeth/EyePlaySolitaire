@@ -6,17 +6,21 @@ import cv.communication.Server;
 import gui.gamescene.cvinterface.ISolitaireCV;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, Server.MessageListener, Server.ErrorListener {
 
     private Server server;
     private ImageUpdateListener imageUpdateListener;
-    private GameStateUpdateListener gameStateUpdateListener;
+    private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer();
 
 
     @Override
@@ -50,7 +54,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
     @Override
     public void setGameStateUpdateListener(GameStateUpdateListener gameStateUpdateListener) {
-        this.gameStateUpdateListener = gameStateUpdateListener;
+        gameStateAnalyzer.setUpdateListener(gameStateUpdateListener);
     }
 
 
@@ -74,7 +78,8 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
                 System.out.println("Client is ready!");
                 server.sendMessage(new Message(201, null));
                 break;
-            case 101: // New Game State
+            case 101: // New Detections
+                decodeDetections(message.getData());
                 System.out.println("Received game state: " + message.getData());
                 break;
             case 102: // New Image
@@ -118,6 +123,17 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    private void decodeDetections(JSONObject data){
+        JSONArray jsonDetections = data.getJSONArray("detections");
+        List<Detection> detections = new LinkedList<>();
+        for(Object detection : jsonDetections ){
+            detections.add(Detection.fromJSON((JSONObject) detection));
+        }
+
     }
 
 

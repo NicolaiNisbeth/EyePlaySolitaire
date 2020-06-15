@@ -2,13 +2,12 @@ package ai.agent;
 
 import ai.action.Action;
 import ai.heuristic.Heuristic;
-import ai.state.ActionFinder51;
 import ai.state.ActionFinder52;
+import ai.state.CycleHandler;
 import ai.state.IActionFinder;
 import ai.state.State;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * https://en.wikipedia.org/wiki/Expectiminimax
@@ -16,6 +15,7 @@ import java.util.List;
  */
 public class ExpectimaxAgent implements Agent {
     private IActionFinder actionFinder = new ActionFinder52();
+    private CycleHandler cycleHandler;
     private int maxDepth;
     private Heuristic heuristic;
     private long counter = 0;
@@ -23,13 +23,26 @@ public class ExpectimaxAgent implements Agent {
     public ExpectimaxAgent(int maxDepth, Heuristic heuristic){
         this.maxDepth = maxDepth;
         this.heuristic = heuristic;
+        cycleHandler = new CycleHandler(actionFinder);
     }
 
     @Override
     public Action getAction(State root) {
+        if (cycleHandler.isCycle(root)){
+            List<Action> actions = cycleHandler.getAllExitActions(root);
+            Action maxAction = findMaxAction(root, actions);
+            return cycleHandler.getNextActionOnExitPath(root, maxAction);
+        }
+        else {
+            cycleHandler.markVisited(root);
+            List<Action> actions = actionFinder.getActions(root);
+            return findMaxAction(root, actions);
+        }
+    }
+
+    private Action findMaxAction(State root, List<Action> actions) {
         double maxValue = Double.MIN_VALUE;
         Action maxAction = null;
-        List<Action> actions = actionFinder.getActions(root);
         for(Action action : actions){
             double value = actionValue(root, action, 1);
             if(value > maxValue){
