@@ -31,21 +31,15 @@ public class Demo {
         int wins = 0;
         int iterations = 1000;
         for (int i = 0; i < iterations; i++) {
-            //ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
-            MCTSAgent agent = new MCTSAgent(1, heuristic);
-            int counter = 0;
+            //ExpectimaxAgent agent = new ExpectimaxAgent(1, heuristic);
+            MCTSAgent agent = new MCTSAgent(250, heuristic);
             State state = generateInitialState();
-            //HashSet<Action> repetitions = new HashSet<>();
             while(true){
                 Action action = agent.getAction(state);
-                //if(repetitions.contains(action)) break;
-                //repetitions.add(action);
                 if(action == null)  break;
                 state = getRandom(action.getResults(state));
-                //System.out.println(counter++);
-                if(!validState(state)){
-                    System.out.println("Uh oh from:" + action);
-                }
+                if(!validState(state)) System.out.println("aaaa");
+                System.out.println(action);
             }
             int foundationCount = state.getFoundation().getCount();
             if (foundationCount == 52)
@@ -60,7 +54,7 @@ public class Demo {
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
     }
 
-    private static boolean validState(State state) {
+    public static boolean validState(State state) {
         Tableau tableau = state.getTableau();
         for (int i = 0; i < tableau.getStacks().size(); i++) {
             Stack<Card> stack = tableau.getStacks().get(i);
