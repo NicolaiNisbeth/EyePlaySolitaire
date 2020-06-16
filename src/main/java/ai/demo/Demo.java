@@ -18,7 +18,6 @@ public class Demo {
 
     public static void main(String[] args) {
         //Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
-        Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
         //MCTSAgent agent = new MCTSAgent(1, heuristic);
@@ -31,6 +30,7 @@ public class Demo {
         int wins = 0;
         int iterations = 1000;
         for (int i = 0; i < iterations; i++) {
+            Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
             ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
             int counter = 0;
             State state = generateInitialState();

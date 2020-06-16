@@ -34,7 +34,8 @@ public class MaxCardGroupSize implements Heuristic {
                 }
             }
         }
-        return Math.max(odd, even);
+        if (odd == 0 && even == 0) return 0;
+        return Math.max(odd, even) / (double)(odd+even);
     }
 
 }
