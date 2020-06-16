@@ -4,7 +4,6 @@ import gui.gamescene.gamestate.Card;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,7 +102,7 @@ public class Detection {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("C:\\Users\\willi\\IdeaProjects\\EyePlaySolitaire1\\src\\main\\java\\cv\\test2.txt");
+        File file = new File("C:\\Users\\willi\\IdeaProjects\\EyePlaySolitaire1\\src\\main\\java\\cv\\test3.txt");
 
         FileReader reader = new FileReader(file);
 
@@ -126,9 +125,10 @@ public class Detection {
             detectionList.add(currentDetection);
         }
 
-        GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(width,height);
-        gameStateAnalyzer.analyzeDetections2(detectionList);
+        GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(width,height,2);
 
+        gameStateAnalyzer.DividedDetections(detectionList);
+        gameStateAnalyzer.DetectedComputervisionError();
 
         }
 

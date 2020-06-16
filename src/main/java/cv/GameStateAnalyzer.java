@@ -16,6 +16,7 @@ class GameStateAnalyzer {
     private List<Detection> flipped;
     private List<List<Detection>> tableaus;
     private List<List<Detection>> foundations;
+    private List<List<Detection>> previous;
 
     private double offset_W = 0.15;
     private double stock_W = 0.3;
@@ -25,13 +26,13 @@ class GameStateAnalyzer {
 
     private int width;
     private int height;
-
+    private int savedDetection;
 
     /**
      * Creates a new game state where the List objects
      * are initialized as ArrayLists.
      */
-    public GameStateAnalyzer(int width, int height) {
+    public GameStateAnalyzer(int width, int height, int savedDetection) {
 
         this.flipped = new ArrayList<>();
 
@@ -47,6 +48,7 @@ class GameStateAnalyzer {
 
         this.width = width;
         this.height = height;
+        this.savedDetection = savedDetection;
     }
 
     // The update listener to be called when a new game state has been
@@ -77,16 +79,16 @@ class GameStateAnalyzer {
 
     }
 
-    void analyzeDetections2(List<Detection> detections){
+    void DividedDetections(List<Detection> detections){
 
-
-        // Get stock detections;
-        System.out.println("Divid detections into sections ");
+        System.out.println("Divided detections into sections ");
         for (Detection detection:detections) {
 
             //Get stock detections
-            if(width*offset_W < detection.getX() && width*offset_W + width*stock_W > detection.getX() && height*stock_H > detection.getY()){
-                flipped.add(detection);
+            if( width*offset_W < detection.getX() &&
+                width*offset_W + width*stock_W > detection.getX() &&
+                height*stock_H > detection.getY()){
+                    flipped.add(detection);
             }
 
             //Get foundations
@@ -109,7 +111,7 @@ class GameStateAnalyzer {
             }
         }
 
-        // Get stock detections;
+
         System.out.println("Check detection in sections  ");
 
         System.out.println("Detections in stock");
@@ -117,20 +119,85 @@ class GameStateAnalyzer {
             System.out.println(detection);
         }
         for( int i = 0; i < 4; i++){
-            System.out.println("Detections in foundations "+(i+1));
+            System.out.println("Detections in foundation "+(i+1));
             for (Detection detection:foundations.get(i)) {
                 System.out.println(detection);
             }
         }
 
         for( int i = 0; i < 7; i++){
-            System.out.println("Detections in tableaus "+(i+1));
+            System.out.println("Detections in tableau "+(i+1));
             for (Detection detection:tableaus.get(i)) {
                 System.out.println(detection);
             }
         }
+    }
 
+    void SaveCurrentDetections(List<Detection> detections){
+        if(savedDetection < previous.size()){
+            previous.remove(0);
+        }
+        previous.add(detections);
+    }
+
+    void DetectedComputervisionError(){
+
+        if(CheckForMatchingErrorInSections()){
+            System.out.println("MatchingError found");
+        }
 
     }
 
+    private boolean CheckForMatchingErrorInSections(){
+
+        System.out.println("Check For Matching Error In Sections");
+
+        if(FindMatchingPairError(flipped)){
+            System.out.println("Error in flipped");
+            return true;
+        }
+
+        for( int i = 0; i < 4; i++){
+            if(FindMatchingPairError(foundations.get(i))){
+                System.out.println("Error in foundations "+(i+1));
+                return true;
+            }
+        }
+
+        for( int i = 0; i < 7; i++){
+            if(FindMatchingPairError(tableaus.get(i))){
+                System.out.println("Error in tableau "+(i+1));
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean FindMatchingPairError(List<Detection> detections){
+        for (Detection detection:detections) {
+            String currentCard = detection.getCard().toString();
+            int cardDetected = 0;
+            for (Detection current:detections) {
+                if(currentCard.equals(current.getCard().toString())){
+                    cardDetected++;
+                }
+            }
+            if(cardDetected < 2){
+                System.out.println(currentCard+ " is only detected ones");
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+    boolean CompareCurrentDetectionsToPrevious(){
+
+
+
+        return true;
+    }
 }
