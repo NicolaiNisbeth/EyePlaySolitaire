@@ -102,7 +102,7 @@ public class Detection {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("C:\\Users\\willi\\IdeaProjects\\EyePlaySolitaire1\\src\\main\\java\\cv\\test3.txt");
+        File file = new File("C:\\Users\\willi\\IdeaProjects\\EyePlaySolitaire1\\src\\main\\java\\cv\\test4.txt");
 
         FileReader reader = new FileReader(file);
 
@@ -129,9 +129,9 @@ public class Detection {
 
         gameStateAnalyzer.DividedDetections(detectionList);
         gameStateAnalyzer.DetectedComputervisionError();
+        gameStateAnalyzer.PrintCardsInSection();
 
         }
-
 
 
 

@@ -1,0 +1,109 @@
+{
+    "detections": {
+        "detections": [
+            {
+                "x": 499,
+                "y": 231,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "1"
+                }
+            },
+            {
+                "x": 546,
+                "y": 231,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "1"
+                }
+            },
+            {
+                "x": 537,
+                "y": 344,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 463,
+                "y": 345,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 476,
+                "y": 451,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "3"
+                }
+            },
+            {
+                "x": 498,
+                "y": 546,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "1"
+                }
+            },
+            {
+                "x": 540,
+                "y": 642,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "4"
+                }
+            }
+        ],
+        "width": 1280,
+        "height": 720
+    },
+    "expectedResults": {
+        "tableaus": [
+            [],
+            [],
+            [
+                "H1",
+                "H2",
+                "H3",
+                "S1",
+                "S4"
+            ],
+            [],
+            [],
+            [],
+            []
+        ],
+        "foundations": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "drawn": []
+    }
+}

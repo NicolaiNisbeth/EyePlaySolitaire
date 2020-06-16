@@ -1,8 +1,11 @@
 package cv;
 
 import gui.gamescene.cvinterface.ISolitaireCV.GameStateUpdateListener;
+import gui.gamescene.gamestate.Card;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -145,7 +148,6 @@ class GameStateAnalyzer {
         if(CheckForMatchingErrorInSections()){
             System.out.println("MatchingError found");
         }
-
     }
 
     private boolean CheckForMatchingErrorInSections(){
@@ -173,6 +175,72 @@ class GameStateAnalyzer {
         return false;
     }
 
+    private List<Detection>FindMatchingDetections(List<Detection> detections,Detection detection ){
+        List<Detection> pairs = new ArrayList<>();
+        for (Detection current:detections) {
+            if(detection.getCard().toString().equals(current.getCard().toString())){
+                pairs.add(current);
+            }
+        }
+        return pairs;
+    }
+
+    private List<Detection> RemoveMatchingDetectionsFromList(List<Detection> detections, Card card){
+
+        List<Detection> updatedList = new ArrayList<>();
+        for (Detection detection:detections) {
+            if(!detection.getCard().toString().equals(card.toString())){
+                updatedList.add(detection);
+            }
+        }
+        return updatedList;
+    }
+
+    private List<Detection> SortDetections(List<Detection> detections){
+
+        detections.sort((o1, o2) -> {
+            if (o1.getY() < o2.getY()) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+        return detections;
+    }
+
+    private List<Card> SortedCardList(List<Detection> detections){
+        List<Card> cards = new ArrayList<>();
+        for (Detection detection:detections) {
+            cards.add(detection.getCard());
+        }
+        return cards;
+    }
+
+    private List<Card> GetCardsInSection(List<Detection> detections){
+
+        List<Detection> allUniqueDetections = new ArrayList<>();
+        while (detections.size() != 0){
+            Detection temp = detections.get(0);
+            List<Detection> pairs = FindMatchingDetections(detections,temp);
+            temp = GetDetectionInLeftCorner(pairs);
+            allUniqueDetections.add(temp);
+            detections = RemoveMatchingDetectionsFromList(detections, temp.getCard());
+        }
+        return SortedCardList(SortDetections(allUniqueDetections));
+    }
+
+
+
+    private Detection GetDetectionInLeftCorner(List<Detection> detections){
+        Detection leftCorner = detections.get(0);
+        for(int i = 1; i < detections.size(); i++){
+            if(detections.get(i).getX() < leftCorner.getX() ||detections.get(i).getY() < leftCorner.getY()){
+                leftCorner = detections.get(i);
+            }
+        }
+        return leftCorner;
+    }
+
 
     private boolean FindMatchingPairError(List<Detection> detections){
         for (Detection detection:detections) {
@@ -191,12 +259,28 @@ class GameStateAnalyzer {
         return false;
     }
 
+    public void PrintCardsInSection(){
 
+        System.out.println("Cards in stock");
+        for (Card card :GetCardsInSection(flipped)) {
+            System.out.println(card);
+        }
+        for( int i = 0; i < 4; i++){
+            System.out.println("Cards in foundation "+(i+1));
+            for (Card card:GetCardsInSection(foundations.get(i))) {
+                System.out.println(card);
+            }
+        }
 
+        for( int i = 0; i < 7; i++){
+            System.out.println("Cards in tableau "+(i+1));
+            for (Card card:GetCardsInSection(tableaus.get(i))) {
+                System.out.println(card);
+            }
+        }
+    }
 
     boolean CompareCurrentDetectionsToPrevious(){
-
-
 
         return true;
     }
