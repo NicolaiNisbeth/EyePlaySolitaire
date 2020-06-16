@@ -1,6 +1,7 @@
 package cv;
 
 import gui.gamescene.cvinterface.ISolitaireCV.GameStateUpdateListener;
+import gui.gamescene.gamestate.GameState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ class GameStateAnalyzer {
      * @param height        Height of the detections coordinate system
      */
     void analyzeDetections(List<Detection> detections, int width, int height){
-
+        updateListener.onGameStateUpdate(new GameState());
     }
 
     void analyzeDetections2(List<Detection> detections){
