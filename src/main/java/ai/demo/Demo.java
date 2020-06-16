@@ -20,7 +20,7 @@ public class Demo {
         //Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        //MCTSAgent agent = new MCTSAgent(1, heuristic);
+
 
 
         //Agent agent = new RandomAgent();
@@ -34,15 +34,12 @@ public class Demo {
             ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
             int counter = 0;
             State state = generateInitialState();
-            //HashSet<Action> repetitions = new HashSet<>();
             while(true){
                 Action action = agent.getAction(state);
-                //if(repetitions.contains(action)) break;
-                //repetitions.add(action);
-                if(action == null) break;
+                if(action == null)  break;
                 state = getRandom(action.getResults(state));
-                //System.out.println(counter++);
-                //System.out.println(action);
+                if(!validState(state)) System.out.println("aaaa");
+                System.out.println(action);
             }
             int foundationCount = state.getFoundation().getCount();
             if (foundationCount == 52)
@@ -55,6 +52,22 @@ public class Demo {
         }
         //System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
+    }
+
+    public static boolean validState(State state) {
+        Tableau tableau = state.getTableau();
+        for (int i = 0; i < tableau.getStacks().size(); i++) {
+            Stack<Card> stack = tableau.getStacks().get(i);
+            for (int j = 1; j < stack.size(); j++) {
+                Card card = stack.get(j);
+                Card previous = stack.get(j-1);
+                if(card != null && previous != null) {
+                    if(card.getValue() != previous.getValue() - 1)
+                        return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static void search(int size, List<Integer> permutation, List<List<Integer>> permutations){

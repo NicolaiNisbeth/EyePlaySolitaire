@@ -2,23 +2,21 @@ package ai.agent;
 
 import ai.action.Action;
 import ai.heuristic.Heuristic;
-import ai.heuristic.OptionsKnowledgeFoundation;
-import ai.state.ActionFinder51;
+import ai.state.ActionFinder52;
 import ai.state.State;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MCTSAgent implements Agent {
 
-    private final int seconds;
-    private Heuristic heuristic;
+    private final int milliseconds;
+    private final Heuristic heuristic;
+    private final BiCycleHandler handler;
     private Node root;
 
-    private class Node {
+    private static class Node {
         State state;
         Action action;
         Node parent;
@@ -37,20 +35,26 @@ public class MCTSAgent implements Agent {
     }
 
     private static final int WIN = 1, LOSS = 0;
-    private ActionFinder51 actionFinder;
+    private final ActionFinder52 actionFinder;
 
-    public MCTSAgent(int seconds, Heuristic heuristic) {
+    public MCTSAgent(int milliseconds, Heuristic heuristic) {
+        this.handler = new BiCycleHandler(heuristic);
         this.heuristic = heuristic;
-        this.seconds = seconds;
-        actionFinder = new ActionFinder51();
+        this.milliseconds = milliseconds;
+        actionFinder = new ActionFinder52();
     }
 
     @Override
     public Action getAction(State state) {
         root = findRoot(state);
 
+        boolean isLoop = handler.isLoop(state);
+        if(isLoop) {
+            return handler.getOutOfLoop(state);
+        }
+
         long start = System.currentTimeMillis();
-        while(System.currentTimeMillis() < start + seconds * 1000){
+        while(System.currentTimeMillis() < start + milliseconds){
             Node selection = selectFrom(root);
             expand(selection);
             for (Node child : selection.children) {
@@ -74,13 +78,14 @@ public class MCTSAgent implements Agent {
         if(root == null)
             return new Node(state, null, null);
         Node newRoot = null;
-        for(Node child : root.children) {
+        List<Node> children = root.children;
+        for(Node child : children) {
             if(child.state.equals(state))
                 newRoot = child;
         }
         if(newRoot == null) {
-            System.out.println(root.children.size());
-            throw new IllegalStateException("AAAA");
+            System.out.println("AAAA?");
+            return new Node(state, null, null);
         }
         newRoot.parent = null;
         return newRoot;
@@ -117,10 +122,16 @@ public class MCTSAgent implements Agent {
     private int simulate(Node node) {
         State state = node.state;
         Action action = null;
+        BiCycleHandler simulHandler = new BiCycleHandler(heuristic);
         do{
-            List<Action> actions = actionFinder.getActions(state);
-            int random = (int)(Math.random() * actions.size());
-            action = actions.isEmpty() ? null : actions.get(random);
+            boolean isLoop = simulHandler.isLoop(state);
+            if(isLoop) {
+                action = simulHandler.getOutOfLoop(state);
+            } else {
+                List<Action> actions = actionFinder.getActions(state);
+                int random = (int)(Math.random() * actions.size());
+                action = actions.isEmpty() ? null : actions.get(random);
+            }
             if(action != null){
                 state = getRandom(action.getResults(state));
             }
