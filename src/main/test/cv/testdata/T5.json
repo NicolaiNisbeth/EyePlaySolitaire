@@ -1,0 +1,178 @@
+{
+    "expectedResults": {
+        "tableaus": [
+            ["C13"],
+            [
+                "D13",
+                "S12"
+            ],
+            [],
+            [],
+            [],
+            [],
+            []
+        ],
+        "foundations": ["C1"],
+        "drawn": ["C1"]
+    },
+    "detections": {
+        "width": 1280,
+        "detections": [
+            {
+                "confidence": 0.95,
+                "x": 647,
+                "width": 13,
+                "y": 29,
+                "card": {
+                    "suit": "C",
+                    "value": "1"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 608,
+                "width": 13,
+                "y": 30,
+                "card": {
+                    "suit": "C",
+                    "value": "1"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 657,
+                "width": 13,
+                "y": 71,
+                "card": {
+                    "suit": "C",
+                    "value": "1"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 611,
+                "width": 13,
+                "y": 79,
+                "card": {
+                    "suit": "C",
+                    "value": "1"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.4,
+                "x": 389,
+                "width": 13,
+                "y": 254,
+                "card": {
+                    "suit": "D",
+                    "value": "13"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.4,
+                "x": 350,
+                "width": 13,
+                "y": 256,
+                "card": {
+                    "suit": "D",
+                    "value": "13"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 256,
+                "width": 13,
+                "y": 261,
+                "card": {
+                    "suit": "C",
+                    "value": "13"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 219,
+                "width": 13,
+                "y": 262,
+                "card": {
+                    "suit": "C",
+                    "value": "13"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 396,
+                "width": 13,
+                "y": 312,
+                "card": {
+                    "suit": "S",
+                    "value": "12"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 351,
+                "width": 13,
+                "y": 318,
+                "card": {
+                    "suit": "S",
+                    "value": "12"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 255,
+                "width": 13,
+                "y": 335,
+                "card": {
+                    "suit": "C",
+                    "value": "13"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 223,
+                "width": 13,
+                "y": 337,
+                "card": {
+                    "suit": "C",
+                    "value": "13"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 346,
+                "width": 13,
+                "y": 370,
+                "card": {
+                    "suit": "S",
+                    "value": "12"
+                },
+                "height": 23
+            },
+            {
+                "confidence": 0.95,
+                "x": 398,
+                "width": 13,
+                "y": 372,
+                "card": {
+                    "suit": "S",
+                    "value": "12"
+                },
+                "height": 23
+            }
+        ],
+        "height": 720
+    }
+}
