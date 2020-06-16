@@ -92,10 +92,15 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
 
+        cameraComponent.startLoading("Starting computer vision...");
+
+/*
+
 
         // Just a temporary image
         Image image = new Image("images/solitaire_irl.jpg", false);
         cameraComponent.updateImage(image);
+*/
 
 
         // Start Computer Vision
