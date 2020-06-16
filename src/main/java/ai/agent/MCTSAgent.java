@@ -55,7 +55,10 @@ public class MCTSAgent implements Agent {
 
         long start = System.currentTimeMillis();
         while(System.currentTimeMillis() < start + milliseconds){
-            Node selection = selectFrom(root);
+            Node selection = root;
+            while(selection.children.size() != 0){
+                selection = selectNext(selection);
+            }
             expand(selection);
             for (Node child : selection.children) {
                 int outcome = simulate(child);
@@ -89,6 +92,18 @@ public class MCTSAgent implements Agent {
         }
         newRoot.parent = null;
         return newRoot;
+    }
+
+    private Node selectNext(Node node) {
+        if(node.children.size() == 0)
+            throw new IllegalStateException("Only nodes with children (it's my fetish)");
+
+        Node selection = null;
+        for (Node child : node.children) {
+            if (selection == null || ucb(node, child) > ucb(node, selection))
+                selection = child;
+        }
+        return selection;
     }
 
     private Node selectFrom(Node node) {
