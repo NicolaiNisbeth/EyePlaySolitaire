@@ -29,7 +29,7 @@ public class Demo {
 
 
         //Agent agent = new RandomAgent();
-        List<List<Integer>> memory = new ArrayList<>();
+        List<int[]> memory = new ArrayList<>();
         int sum = 0;
         int max = 0;
         int wins = 0;
@@ -62,39 +62,41 @@ public class Demo {
         saveActionsToFile(memory);
     }
 
-    private static void saveActionsToFile(List<List<Integer>> memory) {
+    private static void saveActionsToFile(List<int[]> memory) {
         Path path = Paths.get("output.txt");
         String[] possibilities = {"StockToFoundation", "StockToTableau", "TableauToFoundation", "TableauToTableau"};
         try (BufferedWriter writer = Files.newBufferedWriter(path)){
+            for (int i = 0; i < possibilities.length; i++) {
+                writer.write(possibilities[i] + " ");
+            }
+            writer.write("\n");
             for (int i=0; i<memory.size(); i++){
-                List<Integer> action = memory.get(i);
-                writer.write("\n"+possibilities[i]);
-                for (Integer index : action){
-                    writer.write(" " + index);
+                int[] actions = memory.get(i);
+                for (Integer count : actions){
+                    writer.write(count + " ");
                 }
+                writer.write("\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void tracker(Action action, int counter, List<List<Integer>> memory) {
+    private static void tracker(Action action, int counter, List<int[]> memory) {
+        int index = -1;
         if (action instanceof StockToFoundation){
-            List<Integer> l = memory.get(0);
-            l.add(counter);
+            index = 0;
+        } else if (action instanceof StockToTableau){
+            index = 1;
+        } else if (action instanceof TableauToFoundation){
+            index = 2;
+        } else if (action instanceof TableauToTableau){
+            index = 3;
         }
-        else if (action instanceof StockToTableau){
-            List<Integer> l = memory.get(1);
-            l.add(counter);
+        if(memory.size() == counter){
+            memory.add(new int[4]);
         }
-        else if (action instanceof TableauToFoundation){
-            List<Integer> l = memory.get(2);
-            l.add(counter);
-        }
-        else if (action instanceof TableauToTableau){
-            List<Integer> l = memory.get(3);
-            l.add(counter);
-        }
+        memory.get(counter)[index]++;
     }
 
     public static boolean validState(State state) {

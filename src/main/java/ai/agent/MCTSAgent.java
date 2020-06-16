@@ -137,8 +137,8 @@ public class MCTSAgent implements Agent {
             }
         } while (action != null);
 
-        return state.getFoundation().getCount();
-        //return state.isGoal() ? WIN : LOSS; // Can change to foundation size heuristic
+        //return state.getFoundation().getCount();
+        return state.isGoal() ? WIN : LOSS; // Can change to foundation size heuristic
     }
 
     //TODO : average foundation instead of sum
