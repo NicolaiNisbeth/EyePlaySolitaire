@@ -25,11 +25,21 @@ public interface ISolitaireCV {
     void setGameStateUpdateListener(GameStateUpdateListener gameStateUpdateListener);
 
 
+    /**
+     *  Add a callback to fire once the Computer Vision terminates.
+     */
+    void setFinishedCallback(FinishedCallback callback);
+
+
     interface ImageUpdateListener{
         void onImageUpdate(Image image);
     }
 
     interface GameStateUpdateListener{
         void onGameStateUpdate(GameState newState);
+    }
+
+    interface FinishedCallback {
+        void onFinish(boolean error);
     }
 }

@@ -21,6 +21,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     private Server server;
     private ImageUpdateListener imageUpdateListener;
     private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(416,416);
+    private FinishedCallback finishedCallback;
 
 
     @Override
@@ -37,7 +38,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
             // TODO: Consider if these should be removed
             clientStarter.setStandardOutputListener((msg) -> System.out.println("Message: " + msg));
             clientStarter.setErrorOutputListener((msg) -> System.out.println("Error: " + msg));
-            clientStarter.setProcessFinishedCallback((exitCode) -> System.out.println("Client process finished with exit code " + exitCode));
+            clientStarter.setProcessFinishedCallback(this::clientFinished);
 
             clientStarter.start(port);
         } catch (IOException e) {
@@ -57,6 +58,11 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
         gameStateAnalyzer.setUpdateListener(gameStateUpdateListener);
     }
 
+    @Override
+    public void setFinishedCallback(FinishedCallback callback) {
+        finishedCallback = callback;
+    }
+
 
     @Override
     public void onClientConnect() {
@@ -70,7 +76,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
     // Handles incoming messages from client
     @Override
-    public void onMessage(Message message) throws IOException { // TODO: Fix exception in method signature
+    public void onServerMessage(Message message) throws IOException { // TODO: Fix exception in method signature
 
         switch(message.getCode()){
             case 100:
@@ -137,8 +143,17 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     }
 
 
+    public void stop(boolean error){
+        finishedCallback.onFinish(error);
+    }
+
+    private void clientFinished(int exitCode){
+        System.out.println("CV Client has stopped with exit code " + exitCode);
+        stop(true);
+    }
+
     @Override
-    public void onError(String errorMessage) {
+    public void onServerError(String errorMessage) {
 
     }
 }

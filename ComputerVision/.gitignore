@@ -4,3 +4,4 @@
 venv/
 __pycache__/
 source/files/
+input/*.weights

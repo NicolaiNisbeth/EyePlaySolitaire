@@ -49,6 +49,10 @@ public class Server {
         return port;
     }
 
+    public void stop(){
+
+    }
+
 
     // Listens for Client connection on a seperate client thread
     private void awaitClient() {
@@ -99,9 +103,8 @@ public class Server {
                 JSONObject jsonMessage = new JSONObject(input);
                 Message message = Message.fromJSON(jsonMessage);
                 if (messageListener != null)
-                    messageListener.onMessage(message);
+                    messageListener.onServerMessage(message);
             }catch(SocketException e){
-                e.printStackTrace();
                 notifyError("Error occured when listening for messages from client: " + e.getMessage());
                 break;
             }catch(IOException e) {
@@ -149,7 +152,7 @@ public class Server {
     // Notifies the error listeners than an error has occured
     private void notifyError(String errorMessage){
         if( errorListener != null )
-            errorListener.onError(errorMessage);
+            errorListener.onServerError(errorMessage);
     }
 
 
@@ -164,11 +167,11 @@ public class Server {
     /** Listens for messages received from the client,
      *  connected to the Server */
     public interface MessageListener {
-        void onMessage(Message message) throws IOException;
+        void onServerMessage(Message message) throws IOException;
     }
 
     /** Listens for errors happening within the Server */
     public interface ErrorListener {
-        void onError(String errorMessage);
+        void onServerError(String errorMessage);
     }
 }

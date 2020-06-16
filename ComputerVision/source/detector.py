@@ -1,17 +1,19 @@
 
+# import sys, os
+# sys.path.append(os.path.abspath(os.path.join('..', 'darknet')))
+
 import threading
 import time
 import cv2
 import numpy
 import camera
     
-
 from ctypes import *
 import math
 import random
 import os
 import numpy as np
-import darknet
+from darknet import darknet
 
 
 class Detector:
@@ -35,15 +37,16 @@ class Detector:
 
 
     def _detect_loop(self):
+        inputDir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "input")
+
+        configPath  = os.path.join(inputDir, "yolov3.cfg")
+        weightPath  = os.path.join(inputDir, "card.weights")
+        metaPath = os.path.join(inputDir, "obj.data")
+
+        setupObjPaths(metaPath, os.path.join(inputDir, "obj.names"))
 
 
-        configPath = "C:/Users/willi/IdeaProjects/EyePlaySolitaire1/ComputerVision/source/files/yolov3_custom.cfg"
-        weightPath = "C:/Users/willi/IdeaProjects/EyePlaySolitaire1/ComputerVision/source/files/yolov3_custom_last1.weights"
-        metaPath = "C:/Users/willi/IdeaProjects/EyePlaySolitaire1/ComputerVision/source/files/obj.data"
-
-
-        netMain = darknet.load_net_custom(configPath.encode(
-                "ascii"), weightPath.encode("ascii"), 0, 1)  # batch size = 1
+        netMain = darknet.load_net_custom(configPath.encode("ascii"), weightPath.encode("ascii"), 0, 1)  # batch size = 1
 
         metaMain = darknet.load_meta(metaPath.encode("ascii"))
 
@@ -94,8 +97,11 @@ class Detector:
             if self._detection_callback is not None:
                 self._detection_callback(_detections_to_dict(detections), darknet.network_width(netMain), darknet.network_height(netMain))
 
-            image = cvDrawBoxes(detections, frame_resized)
+            # scaledDetections = _scale_detections(detections, 1280/darknet.network_width(netMain), 720/darknet.network_height(netMain))
+
+            image = cvDrawBoxes(scaledDetections, frame)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            
 
             print("image", len(image))
 
@@ -118,6 +124,20 @@ class Detector:
             return self._latest_frame 
 
 
+
+
+def _scale_detections(detections, widthScale, heightScale):
+    pass
+    # scaledDetections = []
+    # for detection in detections:
+    #     scaledDetection {}
+    #     scaledDetection.x = detection.x * widthScale
+    #     scaledDetection.y = detection.y * heightScale
+    #     scaledDetection.width = detection.width * widthScale
+    #     scaledDetection.height = detection.height * heightScale
+    #     scaledDetection.confidence = detection.confidence
+    #     scaledDetections.append(scaledDetection)
+    # return scaledDetections
 
 def _detections_to_dict(detections):
     """
@@ -213,3 +233,23 @@ def truncate(number, decimals=0):
 
     factor = 10.0 ** decimals
     return math.trunc(number * factor) / factor
+
+
+
+# Adjusts the path within the obj.data for the obj.names file, so that is has an
+# absolute path on this local system
+def setupObjPaths(objDataPath, objNamesPath):
+
+    objDataFile = open(objDataPath,'r')
+    lines = objDataFile.read().splitlines()
+    objDataFile.close()
+    objDataFile = open(objDataPath, 'w')
+
+    for line in lines:
+        tokens = line.split(" ")
+        if tokens[0] == "names":
+            objDataFile.write("names = " + objNamesPath + "\n")
+        else:
+            objDataFile.write(line + "\n")
+
+    objDataFile.close()

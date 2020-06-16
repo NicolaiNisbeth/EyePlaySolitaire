@@ -83,7 +83,7 @@ class METADATA(Structure):
 #lib = CDLL("libdarknet.so", RTLD_GLOBAL)
 hasGPU = True
 if os.name == "nt":
-    cwd = os.path.dirname(__file__)
+    cwd = os.path.dirname(os.path.abspath(__file__))
     os.environ['PATH'] = cwd + ';' + os.environ['PATH']
     winGPUdll = os.path.join(cwd, "yolo_cpp_dll.dll")
     winNoGPUdll = os.path.join(cwd, "yolo_cpp_dll_nogpu.dll")

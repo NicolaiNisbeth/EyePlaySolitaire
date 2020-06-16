@@ -94,23 +94,17 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
         cameraComponent.startLoading("Starting computer vision...");
 
-/*
-
-
-        // Just a temporary image
-        Image image = new Image("images/solitaire_irl.jpg", false);
-        cameraComponent.updateImage(image);
-*/
-
-
         // Start Computer Vision
         cv.setImageUpdateListener((newImage) -> cameraComponent.updateImage(newImage));
+        cv.setFinishedCallback(err -> {
+            cameraComponent.showError("Computer vision client has been stopped!");
+        });
         cv.start();
 
         // TODO: Remove this once CV has been implemented
         // Display a randomized Game State
-        GameState state = GameStateGenerator.generateGameState(1000);
-        gameComponent.updateGameState(state);
+      /*  GameState state = GameStateGenerator.generateGameState(1000);
+        gameComponent.updateGameState(state);*/
 
         // TODO: Remove this once CV has been implemented
         // Starts a Thread for testing AI
