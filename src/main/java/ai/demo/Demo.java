@@ -33,10 +33,10 @@ public class Demo {
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 2;
+        int iterations = 200;
         for (int i = 0; i < iterations; i++) {
             Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
-            ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
+            MCTSAgent agent = new MCTSAgent(5000, heuristic);
             int counter = 0;
             State state = generateInitialState();
             while(true){
