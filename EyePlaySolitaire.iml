@@ -7,11 +7,11 @@
       <sourceFolder url="file://$MODULE_DIR$/ComputerVision" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.json:json:20180813" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:12" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:12" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:12" level="project" />
@@ -23,5 +23,7 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:12" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:win:12" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20180813" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.13" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
   </component>
 </module>
