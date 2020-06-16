@@ -156,4 +156,58 @@ public class GameState {
         str.append("\n}");
         return str.toString();
     }
+
+
+    /**
+     * Checks that this GameState is equal to another GameState by checking
+     * that all lists (tableaus, flippped, stock, foundation) contains the
+     * same cards (not same objects but card values - see Card.equals()).
+     * */
+    public boolean equals(GameState gameState){
+        if( this == gameState ) return true;
+
+        // Check tableaus are equal
+        for( int i=0; i<7; i++){
+            List<Card> tableau = tableaus.get(i);
+            List<Card> otherTableau = gameState.getTableaus().get(i);
+            if( tableau.size() != otherTableau.size())
+                return false;
+            for( int j=0; j<tableau.size(); j++){
+                if( !tableau.get(j).equals(otherTableau.get(j)) )
+                    return false;
+            }
+        }
+
+        // Check Foundations are equal
+        for( int i=0; i<4; i++){
+            List<Card> foundation = foundations.get(i);
+            List<Card> otherFoundation = gameState.getFoundations().get(i);
+            if( foundation.size() != otherFoundation.size())
+                return false;
+            for( int j=0; j<foundation.size(); j++){
+                if( !foundation.get(j).equals(otherFoundation.get(j)) )
+                    return false;
+            }
+        }
+
+        // Check flipped are equal
+        if( flipped.size() != gameState.flipped.size() )
+            return false;
+        for(int i=0; i<flipped.size(); i++){
+            if( !flipped.get(i).equals(gameState.flipped.get(i)) )
+                return false;
+        }
+
+        // Check stock
+        if( stock.size() != gameState.stock.size() )
+            return false;
+        for( int i=0; i<stock.size(); i++ ){
+            if( !stock.get(i).equals(gameState.stock.get(i)) )
+                return false;
+        }
+
+        return true;
+    }
+
+
 }
