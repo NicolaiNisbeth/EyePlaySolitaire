@@ -74,7 +74,8 @@ public class MCTSAgent implements Agent {
         if(root == null)
             return new Node(state, null, null);
         Node newRoot = null;
-        for(Node child : root.children) {
+        List<Node> children = root.children;
+        for(Node child : children) {
             if(child.state.equals(state))
                 newRoot = child;
         }
