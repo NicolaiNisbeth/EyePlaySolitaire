@@ -1,6 +1,6 @@
 package ai.demo;
 
-import ai.action.Action;
+import ai.action.*;
 import ai.agent.*;
 import ai.heuristic.Cocktail;
 import ai.heuristic.Heuristic;
@@ -12,6 +12,11 @@ import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Demo {
@@ -24,11 +29,11 @@ public class Demo {
 
 
         //Agent agent = new RandomAgent();
-
+        List<List<Integer>> memory = new ArrayList<>();
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 1000;
+        int iterations = 2;
         for (int i = 0; i < iterations; i++) {
             Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
             ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
@@ -39,7 +44,9 @@ public class Demo {
                 if(action == null)  break;
                 state = getRandom(action.getResults(state));
                 if(!validState(state)) System.out.println("aaaa");
-                System.out.println(action);
+                tracker(action, counter++, memory);
+
+                //System.out.println(action);
             }
             int foundationCount = state.getFoundation().getCount();
             if (foundationCount == 52)
@@ -52,6 +59,42 @@ public class Demo {
         }
         //System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
+        saveActionsToFile(memory);
+    }
+
+    private static void saveActionsToFile(List<List<Integer>> memory) {
+        Path path = Paths.get("output.txt");
+        String[] possibilities = {"StockToFoundation", "StockToTableau", "TableauToFoundation", "TableauToTableau"};
+        try (BufferedWriter writer = Files.newBufferedWriter(path)){
+            for (int i=0; i<memory.size(); i++){
+                List<Integer> action = memory.get(i);
+                writer.write("\n"+possibilities[i]);
+                for (Integer index : action){
+                    writer.write(" " + index);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void tracker(Action action, int counter, List<List<Integer>> memory) {
+        if (action instanceof StockToFoundation){
+            List<Integer> l = memory.get(0);
+            l.add(counter);
+        }
+        else if (action instanceof StockToTableau){
+            List<Integer> l = memory.get(1);
+            l.add(counter);
+        }
+        else if (action instanceof TableauToFoundation){
+            List<Integer> l = memory.get(2);
+            l.add(counter);
+        }
+        else if (action instanceof TableauToTableau){
+            List<Integer> l = memory.get(3);
+            l.add(counter);
+        }
     }
 
     public static boolean validState(State state) {
