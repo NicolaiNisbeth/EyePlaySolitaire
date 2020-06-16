@@ -125,11 +125,21 @@ public class Detection {
             detectionList.add(currentDetection);
         }
 
-        GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(width,height,2);
+        GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(width,height,4);
 
+        // First set of detections
         gameStateAnalyzer.DividedDetections(detectionList);
-        gameStateAnalyzer.DetectedComputervisionError();
-        gameStateAnalyzer.PrintCardsInSection();
+        //gameStateAnalyzer.DetectedComputervisionError();
+        gameStateAnalyzer.SaveCurrentDetectionsAsGameState();
+
+        // Second set of detections
+        gameStateAnalyzer.DividedDetections(detectionList);
+        //gameStateAnalyzer.DetectedComputervisionError();
+        gameStateAnalyzer.SaveCurrentDetectionsAsGameState();
+
+        // Compare GameStates
+        gameStateAnalyzer.CurrentGameStateEqualsPrevious();
+
 
         }
 

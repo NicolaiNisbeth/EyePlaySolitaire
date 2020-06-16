@@ -17,7 +17,6 @@ public class GameState {
     private List<List<Card>> tableaus;
     private List<List<Card>> foundations;
 
-
     /**
      * Creates a new game state where the List objects
      * are initialized as ArrayLists.
@@ -99,8 +98,21 @@ public class GameState {
         return foundations;
     }
 
+    public void setStock(List<Card> stock) {
+        this.stock = stock;
+    }
 
+    public void setFlipped(List<Card> flipped) {
+        this.flipped = flipped;
+    }
 
+    public void setTableaus(List<Card> tableau, int index) {
+        this.tableaus.set(index,tableau);
+    }
+
+    public void setFoundations(List<Card> foundation, int index) {
+        this.tableaus.set(index, foundation);
+    }
 
     @Override
     public String toString(){
