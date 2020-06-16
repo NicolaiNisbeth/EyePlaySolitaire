@@ -75,17 +75,20 @@ class GameStateAnalyzer {
      *                          - Coordinates are center of the detection (not the card, but the card label)
      *                          - Coordinates are coordinates within widthxheight resolution
      *
-     * @param width         Width of the detections coordinate system
-     * @param height        Height of the detections coordinate system
      */
-    void analyzeDetections(List<Detection> detections, int width, int height){
-
-    }
-
-    void analyzeDetectionsTest(List<Detection> detections, int width, int height){
+    void analyzeDetections(List<Detection> detections){
+        DividedDetections(detections);
+        //DetectedComputervisionError();
+        SaveCurrentDetectionsAsGameState();
         if(!CurrentGameStateEqualsPrevious()){
             updateListener.onGameStateUpdate(gameStates.get(0));
         }
+    }
+
+    void analyzeDetectionsTest(List<Detection> detections){
+        DividedDetections(detections);
+        //DetectedComputervisionError();
+        SaveCurrentDetectionsAsGameState();
     }
 
 

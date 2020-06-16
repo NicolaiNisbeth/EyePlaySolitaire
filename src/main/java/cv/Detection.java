@@ -128,19 +128,13 @@ public class Detection {
         GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(width,height,4);
 
         // First set of detections
-        gameStateAnalyzer.DividedDetections(detectionList);
-        //gameStateAnalyzer.DetectedComputervisionError();
-        gameStateAnalyzer.SaveCurrentDetectionsAsGameState();
+        gameStateAnalyzer.analyzeDetectionsTest(detectionList);
 
         // Second set of detections
-        gameStateAnalyzer.DividedDetections(detectionList);
-        //gameStateAnalyzer.DetectedComputervisionError();
-        gameStateAnalyzer.SaveCurrentDetectionsAsGameState();
+        gameStateAnalyzer.analyzeDetectionsTest(detectionList);
 
-        // Compare GameStates
-        gameStateAnalyzer.CurrentGameStateEqualsPrevious();
-
-
+        // Third set of detections
+        gameStateAnalyzer.analyzeDetectionsTest(detectionList);
         }
 
 
