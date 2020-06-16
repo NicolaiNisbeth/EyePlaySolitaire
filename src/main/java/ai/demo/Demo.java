@@ -21,8 +21,7 @@ public class Demo {
         Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        //ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
-        MCTSAgent agent = new MCTSAgent(1, heuristic);
+        //MCTSAgent agent = new MCTSAgent(1, heuristic);
 
 
         //Agent agent = new RandomAgent();
@@ -30,8 +29,9 @@ public class Demo {
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 100;
+        int iterations = 1000;
         for (int i = 0; i < iterations; i++) {
+            ExpectimaxAgent agent = new ExpectimaxAgent(2, heuristic);
             int counter = 0;
             State state = generateInitialState();
             //HashSet<Action> repetitions = new HashSet<>();

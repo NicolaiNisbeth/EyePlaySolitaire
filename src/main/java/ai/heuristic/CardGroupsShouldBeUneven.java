@@ -34,8 +34,8 @@ public class CardGroupsShouldBeUneven implements Heuristic {
                 }
             }
         }
-        even = even == 0 ? 1 : even;
-        odd = odd == 0 ? 1 : odd;
+        if (even == 0 && odd == 0) return 0;
+
         return ((double) Math.max(odd, even)) / Math.min(odd, even);
     }
 
