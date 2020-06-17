@@ -16,6 +16,8 @@ import java.util.List;
 
 public class GameComponent implements IGameComponent {
 
+    private StackPane container = new StackPane();
+
     private GridPane grid = new GridPane();
     private GameState gameState = new GameState();
     private CardImageLoader imageLoader = new CardImageLoader();
@@ -31,7 +33,6 @@ public class GameComponent implements IGameComponent {
         BackgroundFill fill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(fill);
         grid.setBackground(background);
-
 
         //Set row
         for (int i = 0; i < 3; i++) {
@@ -81,6 +82,7 @@ public class GameComponent implements IGameComponent {
             grid.add(foundations.get(i), i+3, 0);
         }
 
+        container.getChildren().add(grid);
     }
 
     /**
@@ -149,7 +151,7 @@ public class GameComponent implements IGameComponent {
 
     @Override
     public Node getNode() {
-        return grid;
+        return container;
     }
 
 }
