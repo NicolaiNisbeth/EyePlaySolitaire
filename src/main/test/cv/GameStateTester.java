@@ -47,17 +47,11 @@ public class GameStateTester {
         int width = testData.getInt("width");
         int height = testData.getInt("height");
 
-        // Listener which receives the detected game state
-        UpdateListenerStub updateListener = new UpdateListenerStub();
-        updateListener.expectedState = expectedState;
-
         // Start analyzer
-        GameStateAnalyzer analyzer = new GameStateAnalyzer(width, height);
-        analyzer.setUpdateListener(updateListener);
-        analyzer.analyzeDetections(detections, width, height);
+        GameStateAnalyzer analyzer = new GameStateAnalyzer(width, height,4);
+        GameState detectedState = analyzer.analyzeDetectionsTest(detections);
 
-        // Assert that a game state was received
-        assertTrue("Update listener did not receive any game state from analyzer", updateListener.receivedGameState);
+        assertTrue("Game states does not match", expectedState.equals(detectedState));
     }
 
 

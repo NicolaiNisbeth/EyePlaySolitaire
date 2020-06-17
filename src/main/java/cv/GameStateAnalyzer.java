@@ -5,6 +5,8 @@ import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -85,14 +87,15 @@ public class GameStateAnalyzer {
             System.out.println("Updating gamestate");
             gameStates.get(0).toString();
             changedGameStateDetected = false;
-            //updateListener.onGameStateUpdate(gameStates.get(0));
+            updateListener.onGameStateUpdate(gameStates.get(0));
         }
     }
 
-    public void analyzeDetectionsTest(List<Detection> detections){
+    public GameState analyzeDetectionsTest(List<Detection> detections){
         DividedDetections(detections);
         //DetectedComputervisionError();
         SaveCurrentDetectionsAsGameState();
+        return gameStates.get(0);
     }
 
 
@@ -127,8 +130,8 @@ public class GameStateAnalyzer {
             //Get foundations
             if(width*offset_W + width*stock_W < detection.getX() && height*stock_H > detection.getY()){
                 for( int i = 0; i < 4; i++){
-                    if( width*offset_W + width*stock_W + width*tableau_W*i < detection.getX() &&
-                        width*offset_W + width*stock_W + width*tableau_W*(i+1) > detection.getX()){
+                    if( width*offset_W + width*stock_W + width*(tableau_W*i) < detection.getX() &&
+                        width*offset_W + width*stock_W + width*(tableau_W*(i+1)) > detection.getX()){
                             foundations.get(i).add(detection);
                     }
                 }
@@ -178,14 +181,14 @@ public class GameStateAnalyzer {
 
         GameState gameState = new GameState();
 
-        gameState.setFlipped(GetCardsInSection(flipped));
+        gameState.setFlipped(GetCardsInSection(flipped, true));
 
         for( int i = 0; i < 4; i++){
-            gameState.setFoundations(GetCardsInSection(foundations.get(i)), i);
+            gameState.setFoundations(GetCardsInSection(foundations.get(i),false), i);
         }
 
         for( int i = 0; i < 7; i++){
-            gameState.setTableaus(GetCardsInSection(tableaus.get(i)), i);
+            gameState.setTableaus(GetCardsInSection(tableaus.get(i), false), i);
         }
         return gameState;
     }
@@ -243,17 +246,6 @@ public class GameStateAnalyzer {
         return updatedList;
     }
 
-    private List<Detection> SortDetections(List<Detection> detections){
-
-        detections.sort((o1, o2) -> {
-            if (o1.getY() < o2.getY()) {
-                return 0;
-            } else {
-                return 1;
-            }
-        });
-        return detections;
-    }
 
     private List<Card> SortedCardList(List<Detection> detections){
         List<Card> cards = new ArrayList<>();
@@ -263,7 +255,7 @@ public class GameStateAnalyzer {
         return cards;
     }
 
-    private List<Card> GetCardsInSection(List<Detection> detections){
+    private List<Card> GetCardsInSection(List<Detection> detections, boolean horizontal){
 
         List<Detection> allUniqueDetections = new ArrayList<>();
         while (detections.size() != 0){
@@ -273,7 +265,26 @@ public class GameStateAnalyzer {
             allUniqueDetections.add(temp);
             detections = RemoveMatchingDetectionsFromList(detections, temp.getCard());
         }
-        return SortedCardList(SortDetections(allUniqueDetections));
+
+        if(horizontal){
+            Collections.sort(allUniqueDetections, new Comparator<Detection>() {
+                @Override
+                public int compare(Detection lhs, Detection rhs) {
+                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                    return lhs.getX() < rhs.getX() ? -1 : (lhs.getX() > rhs.getX()) ? 1 : 0;
+                }
+            });
+            return SortedCardList(allUniqueDetections);
+        }else{
+            Collections.sort(allUniqueDetections, new Comparator<Detection>() {
+                @Override
+                public int compare(Detection lhs, Detection rhs) {
+                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                    return lhs.getY() < rhs.getY() ? -1 : (lhs.getY() > rhs.getY()) ? 1 : 0;
+                }
+            });
+            return SortedCardList(allUniqueDetections);
+        }
     }
 
 
@@ -281,7 +292,7 @@ public class GameStateAnalyzer {
     private Detection GetDetectionInLeftCorner(List<Detection> detections){
         Detection leftCorner = detections.get(0);
         for(int i = 1; i < detections.size(); i++){
-            if(detections.get(i).getX() < leftCorner.getX() ||detections.get(i).getY() < leftCorner.getY()){
+            if(detections.get(i).getX() < leftCorner.getX() || detections.get(i).getY() < leftCorner.getY()){
                 leftCorner = detections.get(i);
             }
         }
@@ -309,19 +320,19 @@ public class GameStateAnalyzer {
     public void PrintCardsInSection(){
 
         System.out.println("Cards in stock");
-        for (Card card :GetCardsInSection(flipped)) {
+        for (Card card :GetCardsInSection(flipped, true)) {
             System.out.println(card);
         }
         for( int i = 0; i < 4; i++){
             System.out.println("Cards in foundation "+(i+1));
-            for (Card card:GetCardsInSection(foundations.get(i))) {
+            for (Card card:GetCardsInSection(foundations.get(i), false)) {
                 System.out.println(card);
             }
         }
 
         for( int i = 0; i < 7; i++){
             System.out.println("Cards in tableau "+(i+1));
-            for (Card card:GetCardsInSection(tableaus.get(i))) {
+            for (Card card:GetCardsInSection(tableaus.get(i), false)) {
                 System.out.println(card);
             }
         }

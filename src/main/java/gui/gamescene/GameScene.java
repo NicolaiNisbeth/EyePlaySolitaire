@@ -96,6 +96,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
         // Start Computer Vision
         cv.setImageUpdateListener((newImage) -> cameraComponent.updateImage(newImage));
+        cv.setGameStateUpdateListener((newState -> gameComponent.updateGameState(newState) ));
         cv.setFinishedCallback(err -> {
             cameraComponent.showError("Computer vision client has been stopped!");
         });

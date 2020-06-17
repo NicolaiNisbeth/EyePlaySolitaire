@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
     private Server server;
     private ImageUpdateListener imageUpdateListener;
-    private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(416,416);
+    private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(416,416,4);
     private FinishedCallback finishedCallback;
 
 
@@ -87,6 +88,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
             case 101: // New Detections
                 decodeDetections(message.getData());
                 System.out.println("Received game state: " + message.getData());
+
                 break;
             case 102: // New Image
                 JSONObject data = message.getData();
@@ -139,6 +141,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
         for(Object detection : jsonDetections ){
             detections.add(Detection.fromJSON((JSONObject) detection));
         }
+        gameStateAnalyzer.analyzeDetections(detections);
     }
 
 

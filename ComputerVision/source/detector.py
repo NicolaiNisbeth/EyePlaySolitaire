@@ -18,7 +18,7 @@ from darknet import darknet
 
 class Detector:
 
-    def __init__(self, startup_callback, detection_callback, detection_fps=1.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
+    def __init__(self, startup_callback, detection_callback, detection_fps=2.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
         self._camera = camera.Camera(resolution, camera_id, startup_callback)
         self._fps = detection_fps
         

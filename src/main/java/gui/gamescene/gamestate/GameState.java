@@ -111,7 +111,7 @@ public class GameState {
     }
 
     public void setFoundations(List<Card> foundation, int index) {
-        this.tableaus.set(index, foundation);
+        this.foundations.set(index, foundation);
     }
 
     @Override
