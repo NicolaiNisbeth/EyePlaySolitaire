@@ -13,7 +13,7 @@ import java.util.List;
  * whether or not the a new, valid game state exists.
  * If a new game state exists it notifies the given GameStateUpdateListener.
  */
-class GameStateAnalyzer {
+public class GameStateAnalyzer {
     private List<Card> stock;
     private List<Detection> flipped;
     private List<List<Detection>> tableaus;
@@ -29,6 +29,7 @@ class GameStateAnalyzer {
     private int width;
     private int height;
     private int savedGameStates;
+    private boolean changedGameStateDetected = false;
 
     /**
      * Creates a new game state where the List objects
@@ -76,23 +77,26 @@ class GameStateAnalyzer {
      *                          - Coordinates are coordinates within widthxheight resolution
      *
      */
-    void analyzeDetections(List<Detection> detections){
+    public void analyzeDetections(List<Detection> detections){
         DividedDetections(detections);
         //DetectedComputervisionError();
         SaveCurrentDetectionsAsGameState();
-        if(!CurrentGameStateEqualsPrevious()){
-            updateListener.onGameStateUpdate(gameStates.get(0));
+        if(!CurrentGameStateEqualsPrevious() && changedGameStateDetected){
+            System.out.println("Updating gamestate");
+            gameStates.get(0).toString();
+            changedGameStateDetected = false;
+            //updateListener.onGameStateUpdate(gameStates.get(0));
         }
     }
 
-    void analyzeDetectionsTest(List<Detection> detections){
+    public void analyzeDetectionsTest(List<Detection> detections){
         DividedDetections(detections);
         //DetectedComputervisionError();
         SaveCurrentDetectionsAsGameState();
     }
 
 
-    void ClearSections(){
+    private void ClearSections(){
         flipped.clear();
 
         for( int i = 0; i < 4; i++){
@@ -105,12 +109,12 @@ class GameStateAnalyzer {
 
     }
 
-    void DividedDetections(List<Detection> detections){
+    private void DividedDetections(List<Detection> detections){
 
         //Clear sections
         ClearSections();
 
-        System.out.println("Divided detections into sections ");
+        //System.out.println("Divided detections into sections ");
         for (Detection detection:detections) {
 
             //Get stock detections
@@ -139,10 +143,10 @@ class GameStateAnalyzer {
                 }
             }
         }
+    }
 
-
+    private void PrintDetectionInSections(){
         System.out.println("Check detection in sections  ");
-
         System.out.println("Detections in stock");
         for (Detection detection:flipped) {
             System.out.println(detection);
@@ -162,7 +166,7 @@ class GameStateAnalyzer {
         }
     }
 
-    void SaveCurrentDetectionsAsGameState(){
+    private void SaveCurrentDetectionsAsGameState(){
         if(savedGameStates < gameStates.size()){
             gameStates.remove(0);
         }
@@ -323,7 +327,7 @@ class GameStateAnalyzer {
         }
     }
 
-    boolean CurrentGameStateEqualsPrevious(){
+    private boolean CurrentGameStateEqualsPrevious(){
 
         System.out.println("Comparing GameStates");
 
@@ -331,8 +335,10 @@ class GameStateAnalyzer {
             return true;
         }
         GameState current = gameStates.get(0);
+        System.out.println(current.toString());
         for(int i = 1; i < gameStates.size(); i++){
             if(!current.equals(gameStates.get(i))){
+                changedGameStateDetected = true;
                 return false;
             }
         }

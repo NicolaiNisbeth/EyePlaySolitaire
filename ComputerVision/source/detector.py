@@ -84,9 +84,9 @@ class Detector:
                                        (darknet.network_width(netMain),
                                         darknet.network_height(netMain)),
                                        interpolation=cv2.INTER_LINEAR)
-            print("width", darknet.network_width(netMain))
-            print("height", darknet.network_height(netMain))
-            print("frame_resized", len(frame_resized[0]))
+            #print("width", darknet.network_width(netMain))
+            #print("height", darknet.network_height(netMain))
+            #print("frame_resized", len(frame_resized[0]))
             darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
 
             detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
@@ -97,7 +97,7 @@ class Detector:
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-            print("image", len(image))
+            #print("image", len(image))
 
             
             with self._frame_lock:

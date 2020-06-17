@@ -1,6 +1,8 @@
 package cv.communication;
 
 
+import cv.Detection;
+import cv.GameStateAnalyzer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,6 +10,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
     private int port = 0;
@@ -21,6 +25,8 @@ public class Server {
     private BufferedWriter outputStream;
     private BufferedReader inputStream;
 
+    private GameStateAnalyzer gameStateAnalyzer;
+
     private Thread clientThread;
 
     /**
@@ -33,6 +39,7 @@ public class Server {
     public Server( MessageListener messageListener, ClientConnectCallback clientConnectCallback  ) {
         this.messageListener = messageListener;
         this.clientConnectCallback = clientConnectCallback;
+        this.gameStateAnalyzer = new GameStateAnalyzer(416,416,4);
     }
 
 
@@ -98,8 +105,15 @@ public class Server {
                 if (input == null) break;
                 JSONObject jsonMessage = new JSONObject(input);
                 Message message = Message.fromJSON(jsonMessage);
-                if (messageListener != null)
-                    messageListener.onMessage(message);
+                if (messageListener != null) {
+                    //messageListener.onMessage(message);
+                    //System.out.println(jsonMessage);
+                    if(jsonMessage.getJSONObject("data") != null){
+                        if(jsonMessage.getJSONObject("data").length() != 0){
+                            gameStateAnalyzer.analyzeDetections(ExtractDetectionsFromMessage(jsonMessage));
+                        }
+                    }
+                }
             }catch(SocketException e){
                 e.printStackTrace();
                 notifyError("Error occured when listening for messages from client: " + e.getMessage());
@@ -113,6 +127,16 @@ public class Server {
             }
         }
     }
+
+    List<Detection>  ExtractDetectionsFromMessage(JSONObject jsonMessage){
+        List<Detection> detectionList = new ArrayList();
+        for(Object detection : jsonMessage.getJSONObject("data").getJSONArray("detections")){
+            Detection currentDetection = Detection.fromJSON((JSONObject) detection);
+            detectionList.add(currentDetection);
+        }
+        return detectionList;
+    }
+
 
 
     /**

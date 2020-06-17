@@ -30,7 +30,6 @@ public class Test {
         int height = object.getInt("height");
 
         for(Object detection : object.getJSONArray("detections")){
-
             Detection currentDetection = Detection.fromJSON((JSONObject) detection);
             detectionList.add(currentDetection);
         }

@@ -40,7 +40,7 @@ public class Detection {
      *     "width" : 123.12, "height" : 123.12
      * }
      */
-    static Detection fromJSON(JSONObject json){
+    public static Detection fromJSON(JSONObject json){
         Detection detection = new Detection();
 
         // Decode the card
