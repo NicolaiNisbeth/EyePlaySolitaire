@@ -31,6 +31,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,7 +104,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         cv.setFinishedCallback(err -> {
             cameraComponent.showError("Computer vision client has been stopped!");
         });
-        cv.start();
+        //cv.start();
 
     }
 
@@ -115,7 +116,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
         if( firstGameState ){
             firstGameState = false;
-            consoleComponent.print("A game state has been received. Write 'start' in console to start the artificial intelligence");
+            consoleComponent.printInfo("A game state has been received. Write 'start' in console to start the artificial intelligence");
         }
 
         if( gameRunning ) {
@@ -139,14 +140,14 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
             if( !firstGameState ){
                 if( !gameRunning ){
                     gameRunning = true;
-                    consoleComponent.print("Starting a new game!");
+                    consoleComponent.printInfo("Starting a new game!");
                     computeNextAction(currentGameState);
                     // Start AI!
                 }else{
-                    consoleComponent.print("A game is already running!");
+                    consoleComponent.printError("A game is already running!");
                 }
             }else{
-                consoleComponent.print("No initial game state has been recieved yet ");
+                consoleComponent.printError("No initial game state has been recieved yet ");
             }
         }
     }

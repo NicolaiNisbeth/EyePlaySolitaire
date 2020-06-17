@@ -10,12 +10,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import sun.font.FontFamily;
 
 
 public class ConsoleComponent implements IComponent, IGamePrompter {
 
     private VBox container = new VBox();
-    private ScrollableTextField outputField = new ScrollableTextField();
+    private ScrollableTextField outputField = new ScrollableTextField("verdana", 12);
     private TextField inputField = new TextField();
 
 
@@ -26,7 +29,7 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
             if( event.getCode() == KeyCode.ENTER){
                 String input = inputField.getText();
                 if( input != null && input.length() > 0 ){
-                    print(input);
+                    print("> " +input, Color.DARKGRAY, false);
                     inputField.setText("");
                     inputListener.onConsoleInput(input);
                     event.consume();
@@ -47,8 +50,17 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
     /**
      * Print a message in the console on a new line.
      */
-    public void print(String msg){
-        outputField.appendText("\n" + msg);
+    public void print(String msg, Paint color, boolean bold){
+        outputField.appendText(msg, color, bold);
+    }
+
+
+    public void printError(String errorMsg){
+        outputField.appendText("Error: " + errorMsg, Color.DARKRED, false);
+    }
+
+    public void printInfo(String infoMsg){
+        outputField.appendText(infoMsg, Color.DARKORANGE, false);
     }
 
 
@@ -61,7 +73,7 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
     private void printActionPrompt(String prompt){
         // Cause the prompt to run on the UI thread
         Platform.runLater(() -> {
-            print("Take action: " + prompt);
+            print("Take action: " + prompt, Color.DARKGREEN, false);
         });
     }
 
@@ -93,7 +105,7 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
 
     @Override
     public void gameLost() {
-        print("The solitaire can't be solved - too bad :(");
+        printActionPrompt("The solitaire can't be solved - too bad :(");
     }
 
 
