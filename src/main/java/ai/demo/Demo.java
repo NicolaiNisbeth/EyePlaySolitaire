@@ -1,11 +1,8 @@
 package ai.demo;
 
-import ai.action.Action;
-import ai.agent.Agent;
-import ai.agent.ExpectimaxAgent;
-import ai.agent.MCTSAgent;
-import ai.agent.MiniMaxAgent;
-import ai.agent.RandomAgent;
+import ai.action.*;
+import ai.agent.*;
+import ai.heuristic.Cocktail;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.Card;
@@ -15,32 +12,41 @@ import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class Demo {
 
     public static void main(String[] args) {
-        Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
+        //Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
         //MiniMaxAgent agent = new MiniMaxAgent(3, heuristic);
 
-        ExpectimaxAgent agent = new ExpectimaxAgent(3, heuristic);
+
+
+
         //Agent agent = new RandomAgent();
+        List<int[]> memory = new ArrayList<>();
         int sum = 0;
         int max = 0;
         int wins = 0;
-        int iterations = 100;
+        int iterations = 200;
         for (int i = 0; i < iterations; i++) {
+            Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
+            MCTSAgent agent = new MCTSAgent(5000, heuristic);
+            int counter = 0;
             State state = generateInitialState();
-            HashSet<Action> repetitions = new HashSet<>();
             while(true){
                 Action action = agent.getAction(state);
-                if(repetitions.contains(action)) break;
-                repetitions.add(action);
-                if(action == null) break;
+                if(action == null)  break;
                 state = getRandom(action.getResults(state));
+                if(!validState(state)) System.out.println("aaaa");
+                tracker(action, counter++, memory);
+
+                //System.out.println(action);
             }
             int foundationCount = state.getFoundation().getCount();
             if (foundationCount == 52)
@@ -51,11 +57,78 @@ public class Demo {
             sum += foundationCount;
             System.out.println(i + "\t" + (foundationCount == 52 ? "W" : ""));
         }
-        System.out.println("Leaf nodes " + agent.getCounter());
+        //System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
+        saveActionsToFile(memory);
     }
 
-    private static State generateInitialState() {
+    private static void saveActionsToFile(List<int[]> memory) {
+        Path path = Paths.get("output.txt");
+        String[] possibilities = {"StockToFoundation", "StockToTableau", "TableauToFoundation", "TableauToTableau"};
+        try (BufferedWriter writer = Files.newBufferedWriter(path)){
+            for (int i = 0; i < possibilities.length; i++) {
+                writer.write(possibilities[i] + " ");
+            }
+            writer.write("\n");
+            for (int i=0; i<memory.size(); i++){
+                int[] actions = memory.get(i);
+                for (Integer count : actions){
+                    writer.write(count + " ");
+                }
+                writer.write("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void tracker(Action action, int counter, List<int[]> memory) {
+        int index = -1;
+        if (action instanceof StockToFoundation){
+            index = 0;
+        } else if (action instanceof StockToTableau){
+            index = 1;
+        } else if (action instanceof TableauToFoundation){
+            index = 2;
+        } else if (action instanceof TableauToTableau){
+            index = 3;
+        }
+        if(memory.size() == counter){
+            memory.add(new int[4]);
+        }
+        memory.get(counter)[index]++;
+    }
+
+    public static boolean validState(State state) {
+        Tableau tableau = state.getTableau();
+        for (int i = 0; i < tableau.getStacks().size(); i++) {
+            Stack<Card> stack = tableau.getStacks().get(i);
+            for (int j = 1; j < stack.size(); j++) {
+                Card card = stack.get(j);
+                Card previous = stack.get(j-1);
+                if(card != null && previous != null) {
+                    if(card.getValue() != previous.getValue() - 1)
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static void search(int size, List<Integer> permutation, List<List<Integer>> permutations){
+        if(permutation.size() == size){
+            permutations.add(permutation);
+        } else {
+            for (int i = 0; i < size; i++) {
+                if(permutation.contains(i)) continue;
+                permutation.add(i);
+                search(size, permutation, permutations);
+                permutation.remove(i);
+            }
+        }
+    }
+
+    public static State generateInitialState() {
         DemoDeck deck = new DemoDeck();
 
         Card[][] board = createBoard(deck);

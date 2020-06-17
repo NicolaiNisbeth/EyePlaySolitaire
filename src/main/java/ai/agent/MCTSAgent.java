@@ -1,26 +1,22 @@
 package ai.agent;
 
 import ai.action.Action;
-import ai.state.ActionFinder51;
+import ai.heuristic.Heuristic;
+import ai.state.ActionFinder52;
 import ai.state.State;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MCTSAgent implements Agent {
 
-    private class Tree {
-        Node root;
+    private final int milliseconds;
+    private final Heuristic heuristic;
+    private final BiCycleHandler handler;
+    private Node root;
 
-        public Tree(State state) {
-            root = new Node(state, null, null);
-        }
-    }
-
-    private class Node {
+    private static class Node {
         State state;
         Action action;
         Node parent;
@@ -39,37 +35,75 @@ public class MCTSAgent implements Agent {
     }
 
     private static final int WIN = 1, LOSS = 0;
-    private ActionFinder51 actionFinder;
+    private final ActionFinder52 actionFinder;
 
-    public MCTSAgent() {
-        actionFinder = new ActionFinder51();
+    public MCTSAgent(int milliseconds, Heuristic heuristic) {
+        this.handler = new BiCycleHandler(heuristic);
+        this.heuristic = heuristic;
+        this.milliseconds = milliseconds;
+        actionFinder = new ActionFinder52();
     }
 
     @Override
     public Action getAction(State state) {
-        Tree tree = new Tree(state);
+        root = findRoot(state);
+
+        boolean isLoop = handler.isLoop(state);
+        if(isLoop) {
+            return handler.getOutOfLoop(state);
+        }
 
         long start = System.currentTimeMillis();
-        long time = 0, goal = 1000 * 1;
-        while(time < goal){
-            Node selection = selectFrom(tree.root);
+        while(System.currentTimeMillis() < start + milliseconds){
+            Node selection = root;
+            while(selection.children.size() != 0){
+                selection = selectNext(selection);
+            }
             expand(selection);
             for (Node child : selection.children) {
                 int outcome = simulate(child);
                 backpropagate(child, outcome);
             }
-            time = System.currentTimeMillis() - start;
         }
 
         int max = Integer.MIN_VALUE;
         Node chosen = null;
-        for(Node child : tree.root.children){
+        for(Node child : root.children){
             if(child.visited > max){
                 chosen = child;
                 max = child.visited;
             }
         }
         return chosen == null ? null : chosen.action;
+    }
+
+    private Node findRoot(State state) {
+        if(root == null)
+            return new Node(state, null, null);
+        Node newRoot = null;
+        List<Node> children = root.children;
+        for(Node child : children) {
+            if(child.state.equals(state))
+                newRoot = child;
+        }
+        if(newRoot == null) {
+            System.out.println("AAAA?");
+            return new Node(state, null, null);
+        }
+        newRoot.parent = null;
+        return newRoot;
+    }
+
+    private Node selectNext(Node node) {
+        if(node.children.size() == 0)
+            throw new IllegalStateException("Only nodes with children (it's my fetish)");
+
+        Node selection = null;
+        for (Node child : node.children) {
+            if (selection == null || ucb(node, child) > ucb(node, selection))
+                selection = child;
+        }
+        return selection;
     }
 
     private Node selectFrom(Node node) {
@@ -94,7 +128,7 @@ public class MCTSAgent implements Agent {
     }
 
     private void expand(Node node) {
-        Iterable<Action> actions = actionFinder.getActions(node.state);
+        List<Action> actions = actionFinder.getActions(node.state);
         for (Action action : actions)
             for (State state : action.getResults(node.state))
                 node.children.add(new Node(state, node, action));
@@ -102,31 +136,27 @@ public class MCTSAgent implements Agent {
 
     private int simulate(Node node) {
         State state = node.state;
-        List<Action> actions = actionFinder.getActions(state);
-        HashMap<Action, Integer> repetitions = new HashMap<>();
-        while (actions.size() > 0) {
-            int random = (int) (Math.random() * actions.size());
-            Action action = actions.get(random);
-            //System.out.println(action);
-            Integer count = repetitions.get(action);
-            if(count == null){
-                repetitions.put(action, 1);
+        Action action = null;
+        BiCycleHandler simulHandler = new BiCycleHandler(heuristic);
+        do{
+            boolean isLoop = simulHandler.isLoop(state);
+            if(isLoop) {
+                action = simulHandler.getOutOfLoop(state);
             } else {
-                if(count >= 100)
-                    return LOSS;
-                repetitions.put(action, ++count);
+                List<Action> actions = actionFinder.getActions(state);
+                int random = (int)(Math.random() * actions.size());
+                action = actions.isEmpty() ? null : actions.get(random);
             }
-            Collection<State> results = action.getResults(state);
-            random = (int) (Math.random() * results.size());
-            Iterator<State> resultIterator = results.iterator();
-            for (int i = 0; i <= random; i++) {
-                state = resultIterator.next();
+            if(action != null){
+                state = getRandom(action.getResults(state));
             }
-            actions = actionFinder.getActions(state);
-        }
-        return state.isGoal() ? WIN : LOSS;
+        } while (action != null);
+
+        //return state.getFoundation().getCount();
+        return state.isGoal() ? WIN : LOSS; // Can change to foundation size heuristic
     }
 
+    //TODO : average foundation instead of sum
     private void backpropagate(Node node, int result) {
         do {
             if (result == WIN)
@@ -134,6 +164,14 @@ public class MCTSAgent implements Agent {
             node.visited++;
             node = node.parent;
         } while (node != null);
+    }
+
+    private static State getRandom(Collection<State> collection) {
+        return collection
+                .stream()
+                .skip((int)(Math.random() * collection.size()))
+                .findFirst()
+                .orElse(null);
     }
 
 }

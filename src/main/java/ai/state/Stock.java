@@ -83,6 +83,7 @@ public class Stock {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Stock stock = (Stock) o;
+        if(cards.length != stock.cards.length) return false;
         boolean same = true;
         for (int i = 0; i < cards.length; i++) {
             if (!cards[i].equals(stock.cards[i])) {

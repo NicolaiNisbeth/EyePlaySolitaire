@@ -38,17 +38,6 @@ public class Foundation {
         return sum;
     }
 
-    public int getLargestDifference(){
-        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-        for(int size : sizes){
-            if(size < min)
-                min = size;
-            if(size > max)
-                max = size;
-        }
-        return max - min;
-    }
-
     public List<Stack<Card>> getStacks() {
         return stacks;
     }
@@ -83,18 +72,9 @@ public class Foundation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Foundation that = (Foundation) o;
-        boolean flag = true;
-        for (int i = 0; i < stacks.size(); i++) {
-            Stack<Card> me = stacks.get(i);
-            Stack<Card> you = that.stacks.get(i);
-            for(Card card : me){
-                if(!you.contains(card)){
-                    flag = false;
-                    break;
-                }
-            }
-        }
-        return flag && sum == that.sum;
+        return sum == that.sum &&
+                Objects.equals(stacks, that.stacks) &&
+                Arrays.equals(sizes, that.sizes);
     }
 
     @Override
