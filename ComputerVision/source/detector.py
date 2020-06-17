@@ -26,7 +26,7 @@ class Detector:
         self._frame_lock = threading.Lock()
         self._detection_callback = detection_callback
 
-        self.output_resolution = (416, 416)
+        self.output_resolution = (1280, 720)
 
         # The latest detected frame
         self._latest_frame: numpy.ndarray = None
@@ -97,11 +97,11 @@ class Detector:
             if self._detection_callback is not None:
                 self._detection_callback(_detections_to_dict(detections), darknet.network_width(netMain), darknet.network_height(netMain))
 
-            # scaledDetections = _scale_detections(detections, 1280/darknet.network_width(netMain), 720/darknet.network_height(netMain))
+            scaledDetections = _scale_detections(detections, self._camera._resolution[0]/darknet.network_width(netMain), self._camera._resolution[1]/darknet.network_height(netMain))
 
-            image = cvDrawBoxes(detections, frame_resized)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
+            image = cvDrawBoxes(scaledDetections, frame)
+            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
 
             print("image", len(image))
 
@@ -127,17 +127,20 @@ class Detector:
 
 
 def _scale_detections(detections, widthScale, heightScale):
-    pass
-    # scaledDetections = []
-    # for detection in detections:
-    #     scaledDetection {}
-    #     scaledDetection.x = detection.x * widthScale
-    #     scaledDetection.y = detection.y * heightScale
-    #     scaledDetection.width = detection.width * widthScale
-    #     scaledDetection.height = detection.height * heightScale
-    #     scaledDetection.confidence = detection.confidence
-    #     scaledDetections.append(scaledDetection)
-    # return scaledDetections
+    scaledDetections = []
+    for detection in detections:
+        scaledDetection = (
+            detection[0], detection[1],
+            (
+                detection[2][0] * widthScale,
+                detection[2][1] * heightScale,
+                detection[2][2] * widthScale,
+                detection[2][3] * heightScale
+            )
+        )
+        scaledDetections.append(scaledDetection)
+    return scaledDetections
+
 
 def _detections_to_dict(detections):
     """
