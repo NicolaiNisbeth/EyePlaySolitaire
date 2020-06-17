@@ -99,7 +99,7 @@ class Detector:
 
             # scaledDetections = _scale_detections(detections, 1280/darknet.network_width(netMain), 720/darknet.network_height(netMain))
 
-            image = cvDrawBoxes(scaledDetections, frame)
+            image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             
 
