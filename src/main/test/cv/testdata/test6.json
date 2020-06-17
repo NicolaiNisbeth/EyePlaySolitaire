@@ -1,0 +1,873 @@
+{
+    "detections": {
+        "detections": [
+            {
+                "x": 435,
+                "y": 24,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 480,
+                "y": 25,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 340,
+                "y": 26,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "4"
+                }
+            },
+            {
+                "x": 389,
+                "y": 26,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "3"
+                }
+            },
+            {
+                "x": 1033,
+                "y": 38,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 985,
+                "y": 38,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 900,
+                "y": 44,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 851,
+                "y": 44,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 483,
+                "y": 82,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 340,
+                "y": 84,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "4"
+                }
+            },
+            {
+                "x": 391,
+                "y": 85,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "3"
+                }
+            },
+            {
+                "x": 432,
+                "y": 86,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 1032,
+                "y": 93,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 983,
+                "y": 95,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 851,
+                "y": 99,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 899,
+                "y": 100,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "2"
+                }
+            },
+            {
+                "x": 635,
+                "y": 210,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 593,
+                "y": 211,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 515,
+                "y": 214,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 395,
+                "y": 216,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "13"
+                }
+            },
+            {
+                "x": 468,
+                "y": 217,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 347,
+                "y": 217,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "13"
+                }
+            },
+            {
+                "x": 261,
+                "y": 220,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "13"
+                }
+            },
+            {
+                "x": 210,
+                "y": 221,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "13"
+                }
+            },
+            {
+                "x": 512,
+                "y": 257,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 638,
+                "y": 258,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 596,
+                "y": 258,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 464,
+                "y": 260,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 400,
+                "y": 263,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "13"
+                }
+            },
+            {
+                "x": 347,
+                "y": 265,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "13"
+                }
+            },
+            {
+                "x": 209,
+                "y": 275,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "12"
+                }
+            },
+            {
+                "x": 260,
+                "y": 277,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "12"
+                }
+            },
+            {
+                "x": 261,
+                "y": 317,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 208,
+                "y": 318,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 775,
+                "y": 353,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.7,
+                "card": {
+                    "suit": "S",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 724,
+                "y": 355,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.7,
+                "card": {
+                    "suit": "S",
+                    "value": "11"
+                }
+            },
+            {
+                "x": 208,
+                "y": 371,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "10"
+                }
+            },
+            {
+                "x": 263,
+                "y": 371,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "10"
+                }
+            },
+            {
+                "x": 896,
+                "y": 396,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.8,
+                "card": {
+                    "suit": "C",
+                    "value": "10"
+                }
+            },
+            {
+                "x": 847,
+                "y": 398,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.8,
+                "card": {
+                    "suit": "C",
+                    "value": "10"
+                }
+            },
+            {
+                "x": 772,
+                "y": 400,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "10"
+                }
+            },
+            {
+                "x": 723,
+                "y": 402,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "10"
+                }
+            },
+            {
+                "x": 260,
+                "y": 413,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "9"
+                }
+            },
+            {
+                "x": 208,
+                "y": 417,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "9"
+                }
+            },
+            {
+                "x": 977,
+                "y": 437,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "6"
+                }
+            },
+            {
+                "x": 1024,
+                "y": 437,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "6"
+                }
+            },
+            {
+                "x": 897,
+                "y": 443,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "9"
+                }
+            },
+            {
+                "x": 848,
+                "y": 443,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "9"
+                }
+            },
+            {
+                "x": 725,
+                "y": 445,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "9"
+                }
+            },
+            {
+                "x": 773,
+                "y": 445,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "9"
+                }
+            },
+            {
+                "x": 260,
+                "y": 458,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 212,
+                "y": 464,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 897,
+                "y": 485,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 846,
+                "y": 488,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 727,
+                "y": 489,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 774,
+                "y": 489,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 1021,
+                "y": 491,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 979,
+                "y": 494,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "S",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 261,
+                "y": 511,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "7"
+                }
+            },
+            {
+                "x": 213,
+                "y": 516,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "7"
+                }
+            },
+            {
+                "x": 895,
+                "y": 535,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 1024,
+                "y": 536,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "4"
+                }
+            },
+            {
+                "x": 976,
+                "y": 537,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "4"
+                }
+            },
+            {
+                "x": 845,
+                "y": 537,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 729,
+                "y": 538,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 775,
+                "y": 540,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "8"
+                }
+            },
+            {
+                "x": 259,
+                "y": 562,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "6"
+                }
+            },
+            {
+                "x": 212,
+                "y": 562,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "C",
+                    "value": "6"
+                }
+            },
+            {
+                "x": 1024,
+                "y": 585,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "4"
+                }
+            },
+            {
+                "x": 974,
+                "y": 585,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "H",
+                    "value": "4"
+                }
+            },
+            {
+                "x": 259,
+                "y": 601,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 210,
+                "y": 605,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 258,
+                "y": 644,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "5"
+                }
+            },
+            {
+                "x": 211,
+                "y": 649,
+                "width": 13,
+                "height": 23,
+                "confidence": 0.95,
+                "card": {
+                    "suit": "D",
+                    "value": "5"
+                }
+            }
+        ],
+        "width": 1280,
+        "height": 720
+    },
+    "expectedResults": {
+        "tableaus": [
+            [
+                "D13",
+                "S12",
+                "H11",
+                "S10",
+                "D9",
+                "S8",
+                "D7",
+                "C6",
+                "D5"
+            ],
+            [
+                "S13"
+            ],
+            [
+                "C11"
+            ],
+            [
+                "D11"
+            ],
+            [
+                "S11",
+                "D10",
+                "C9",
+                "D8"
+            ],
+            [
+                "C10",
+                "H9",
+                "C8"
+            ],
+            [
+                "H6",
+                "S5",
+                "H4"
+            ]
+        ],
+        "foundations": [
+            "",
+            "",
+            "C2",
+            "D2"
+        ],
+        "drawn": [
+            "S4",
+            "C3",
+            "H5"
+        ]
+    }
+}

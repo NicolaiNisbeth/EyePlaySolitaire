@@ -139,7 +139,6 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
         for(Object detection : jsonDetections ){
             detections.add(Detection.fromJSON((JSONObject) detection));
         }
-
     }
 
 

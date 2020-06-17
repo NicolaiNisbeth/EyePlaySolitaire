@@ -122,9 +122,9 @@ public class GameState {
 
         // Stock
         if( stock == null || stock.size() == 0){
-            str.append("\nstock: empty");
+            str.append("\n\tstock: empty");
         }else{
-            str.append("\nstock: ");
+            str.append("\n\tstock: ");
             for( Card Card : stock ){
                 str.append( Card.toStringShort()).append(" ");
             }
@@ -132,9 +132,9 @@ public class GameState {
 
         // Flipped cards
         if( flipped == null || flipped.size() == 0){
-            str.append("\nflipped: empty");
+            str.append("\n\tflipped: empty");
         }else{
-            str.append("\nflipped: ");
+            str.append("\n\tflipped: ");
             for( Card Card : flipped ){
                 str.append( Card.toStringShort()).append(" ");
             }
