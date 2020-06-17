@@ -14,6 +14,7 @@ public class ClientStarter {
     private OutputListener errorOutputListener;
 
     private ProcessFinishedCallback processFinishedCallback;
+    private Process process;
 
     /**
      * Starts the ComputerVision client program as a seperate process
@@ -35,7 +36,7 @@ public class ClientStarter {
                 getClientPath(),
                 Integer.toString(port)
         };
-        Process process = Runtime.getRuntime().exec(arguments);
+        process = Runtime.getRuntime().exec(arguments);
         new AsyncInputReader(process.getInputStream(), standardOutputListener);
         new AsyncInputReader(process.getErrorStream(), errorOutputListener);
 
@@ -87,6 +88,11 @@ public class ClientStarter {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void stop(){
+        if( process.isAlive() )
+            process.destroyForcibly();
     }
 
 
