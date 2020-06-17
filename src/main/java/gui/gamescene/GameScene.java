@@ -53,6 +53,9 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private final ISolitaireAI ai = new SolitaireAI();
     private final ISolitaireCV cv = new SolitaireCV();
 
+    private GameState currentGameState = null;
+    private boolean firstGameState = true;
+    private boolean gameRunning = false;
 
     public GameScene() {
         super(new GridPane(), WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -96,21 +99,28 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
 
         // Start Computer Vision
         cv.setImageUpdateListener((newImage) -> cameraComponent.updateImage(newImage));
+        cv.setGameStateUpdateListener(this::gameStateReceived);
         cv.setFinishedCallback(err -> {
             cameraComponent.showError("Computer vision client has been stopped!");
         });
         cv.start();
 
-        // TODO: Remove this once CV has been implemented
-        // Display a randomized Game State
-      /*  GameState state = GameStateGenerator.generateGameState(1000);
-        gameComponent.updateGameState(state);*/
-
-        // TODO: Remove this once CV has been implemented
-        // Starts a Thread for testing AI
-        // new Thread(this::aiTest).start();
+    }
 
 
+    // Prompt the user to enter 'start' to start the game
+    private void gameStateReceived(GameState gameState){
+        currentGameState = gameState;
+        gameComponent.updateGameState(gameState);
+
+        if( firstGameState ){
+            firstGameState = false;
+            consoleComponent.print("A game state has been received. Write 'start' in console to start the artificial intelligence");
+        }
+
+        if( gameRunning ) {
+            computeNextAction(gameState);
+        }
     }
 
 
@@ -122,6 +132,22 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         if( input.equals("newstate")) {
             GameState state = GameStateGenerator.generateGameState(System.currentTimeMillis());
             gameComponent.updateGameState(state);
+        }
+
+        // Starts the AI if a game state has been received
+        if( input.equals("start")){
+            if( !firstGameState ){
+                if( !gameRunning ){
+                    gameRunning = true;
+                    consoleComponent.print("Starting a new game!");
+                    computeNextAction(currentGameState);
+                    // Start AI!
+                }else{
+                    consoleComponent.print("A game is already running!");
+                }
+            }else{
+                consoleComponent.print("No initial game state has been recieved yet ");
+            }
         }
     }
 

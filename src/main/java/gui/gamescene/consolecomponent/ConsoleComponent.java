@@ -58,7 +58,7 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
     }
 
 
-    private void printPrompt(String prompt){
+    private void printActionPrompt(String prompt){
         // Cause the prompt to run on the UI thread
         Platform.runLater(() -> {
             print("Take action: " + prompt);
@@ -67,28 +67,28 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
 
     @Override
     public void promptTraverseStock() {
-        printPrompt("Traverse the stock");
+        printActionPrompt("Traverse the stock");
     }
 
     @Override
     public void promptTableauToTableau(int sourceTableauIndex, int targetTableauIndex) {
-        printPrompt(String.format("Move the topmost card from the %s tableau to the %s", indexOrdinal(sourceTableauIndex), indexOrdinal(targetTableauIndex)));
+        printActionPrompt(String.format("Move the topmost card from the %s tableau to the %s", indexOrdinal(sourceTableauIndex), indexOrdinal(targetTableauIndex)));
     }
 
     @Override
     public void promptStockToTableau(int stockIndex, int tableauIndex) {
-        printPrompt(String.format("Move the %s card from the stock, to the %s foundation", indexOrdinal(stockIndex), indexOrdinal(tableauIndex)));
+        printActionPrompt(String.format("Move the %s card from the stock, to the %s foundation", indexOrdinal(stockIndex), indexOrdinal(tableauIndex)));
     }
 
     @Override
     public void promptTableauToFoundation(int tableauIndex, int foundationIndex) {
-        printPrompt(String.format("Move the topmost card from the %s tableau the %s foundation", indexOrdinal(tableauIndex), indexOrdinal(foundationIndex)));
+        printActionPrompt(String.format("Move the topmost card from the %s tableau the %s foundation", indexOrdinal(tableauIndex), indexOrdinal(foundationIndex)));
 
     }
 
     @Override
     public void promptStockToFoundation(int stockIndex, int foundationIndex) {
-        printPrompt(String.format("Move the %s card from the stock, to the %s foundation", indexOrdinal(stockIndex), indexOrdinal(foundationIndex)));
+        printActionPrompt(String.format("Move the %s card from the stock, to the %s foundation", indexOrdinal(stockIndex), indexOrdinal(foundationIndex)));
     }
 
     @Override
