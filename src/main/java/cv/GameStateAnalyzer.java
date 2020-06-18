@@ -85,9 +85,9 @@ public class GameStateAnalyzer {
         SaveCurrentDetectionsAsGameState();
         if(!CurrentGameStateEqualsPrevious() && changedGameStateDetected){
             System.out.println("Updating gamestate");
-            gameStates.get(0).toString();
+            gameStates.get(gameStates.size()-1).toString();
             changedGameStateDetected = false;
-            updateListener.onGameStateUpdate(gameStates.get(0));
+            updateListener.onGameStateUpdate(gameStates.get(gameStates.size()-1));
         }
     }
 
@@ -95,7 +95,7 @@ public class GameStateAnalyzer {
         DividedDetections(detections);
         //DetectedComputervisionError();
         SaveCurrentDetectionsAsGameState();
-        return gameStates.get(0);
+        return gameStates.get(gameStates.size()-1);
     }
 
 
@@ -345,9 +345,9 @@ public class GameStateAnalyzer {
         if(gameStates.size() < 2){
             return true;
         }
-        GameState current = gameStates.get(0);
+        GameState current = gameStates.get(gameStates.size()-1);
         System.out.println(current.toString());
-        for(int i = 1; i < gameStates.size(); i++){
+        for(int i = 0; i < gameStates.size()-1; i++){
             if(!current.equals(gameStates.get(i))){
                 changedGameStateDetected = true;
                 return false;
