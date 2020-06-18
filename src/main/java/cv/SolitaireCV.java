@@ -22,6 +22,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     private ImageUpdateListener imageUpdateListener;
     private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(416,416);
     private FinishedCallback finishedCallback;
+    private boolean paused = false;
 
 
     @Override
@@ -45,6 +46,16 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
             e.printStackTrace();
             // TODO: Add some real error here
         }
+    }
+
+    @Override
+    public void pause() {
+        paused = true;
+    }
+
+    @Override
+    public void unpause() {
+        paused = false;
     }
 
     @Override

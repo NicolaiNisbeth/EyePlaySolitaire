@@ -43,6 +43,7 @@ public interface IGamePrompter {
      */
     void promptTableauToFoundation(int tableauIndex, int foundationIndex);
 
+
     /**
      * Prompts the user to move a card from the stock to one of the foundations
      *

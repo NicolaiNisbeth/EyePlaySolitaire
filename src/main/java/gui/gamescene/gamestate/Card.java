@@ -76,10 +76,13 @@ public class Card {
     }
 
 
-    public boolean equals(Card other) {
+    @Override
+    public boolean equals(Object other) {
         if( other == null )           return false;
         if( this == other )           return true;
-        return this.suit == other.suit && this.value == other.value;
+        if( !(other instanceof Card) ) return false;
+        Card otherCard = (Card) other;
+        return this.suit == otherCard.suit && this.value == otherCard.value;
     }
 
     @Override

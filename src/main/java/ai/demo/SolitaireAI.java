@@ -33,6 +33,16 @@ public class SolitaireAI implements ISolitaireAI {
         else action.prompt(prompter, state);
     }
 
+    @Override
+    public void startActionComputation(GameState gameState) throws IllegalGameStateException {
+
+    }
+
+    @Override
+    public void endActionComputation(IGamePrompter prompter) {
+
+    }
+
     // TODO: plenty of room for optimization in stateConverters
     /**
      * Converts UI gameState to AI gameState

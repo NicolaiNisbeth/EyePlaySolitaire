@@ -2,6 +2,7 @@ package gui.gamescene.consolecomponent;
 
 
 import gui.gamescene.IComponent;
+import gui.gamescene.IConsole;
 import gui.gamescene.aiinterface.IGamePrompter;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -12,28 +13,26 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import sun.font.FontFamily;
+
+import java.util.HashMap;
 
 
-public class ConsoleComponent implements IComponent, IGamePrompter {
+public class ConsoleComponent implements IComponent, IGamePrompter, IConsole {
 
     private VBox container = new VBox();
     private ScrollableTextField outputField = new ScrollableTextField("verdana", 12);
     private TextField inputField = new TextField();
+    private HashMap<String, InputCommand> registeredCommands = new HashMap<>();
 
 
-    public ConsoleComponent(InputListener inputListener){
+    public ConsoleComponent(){
 
         // Register Enter key pressed on inputfield
         inputField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if( event.getCode() == KeyCode.ENTER){
-                String input = inputField.getText();
-                if( input != null && input.length() > 0 ){
-                    print("> " +input, Color.DARKGRAY, false);
-                    inputField.setText("");
-                    inputListener.onConsoleInput(input);
-                    event.consume();
-                }
+                onInput(inputField.getText());
+                inputField.setText("");
+                event.consume();
             }
         });
 
@@ -46,6 +45,24 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
                 inputField
         );
     }
+
+
+    private void onInput(String input){
+        if( input != null && input.length() > 0 ){
+            print("> " +input, Color.DARKGRAY, false);
+            for (String registeredCommand : registeredCommands.keySet()){
+                if( registeredCommand.equals(input) ) {
+                    registeredCommands.get(registeredCommand).run();
+                }
+            }
+        }
+    }
+
+
+    public void registerInputCommand(String input, InputCommand action){
+        registeredCommands.put(input, action);
+    }
+
 
     /**
      * Print a message in the console on a new line.
@@ -119,7 +136,6 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
                 return i + "th";
             default:
                 return i + sufixes[i % 10];
-
         }
     }
 
@@ -128,5 +144,8 @@ public class ConsoleComponent implements IComponent, IGamePrompter {
     public interface InputListener{
         void onConsoleInput(String input);
     }
+
+
+
 
 }

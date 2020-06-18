@@ -1,17 +1,6 @@
 package gui.gamescene;
 
-import ai.action.Action;
-import ai.agent.ExpectimaxAgent;
-import ai.demo.DemoDeck;
 import ai.demo.SolitaireAI;
-import ai.heuristic.Heuristic;
-import ai.heuristic.OptionsKnowledgeFoundation;
-import ai.state.Foundation;
-import ai.state.Producer;
-import ai.state.RemainingCards;
-import ai.state.State;
-import ai.state.Stock;
-import ai.state.Tableau;
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
@@ -21,42 +10,31 @@ import gui.gamescene.cvinterface.ISolitaireCV;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
 import gui.gamescene.gamestate.GameState;
-import gui.gamescene.gamestate.GameStateGenerator;
-import gui.gamescene.gamestate.Card;
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.io.Console;
 
 
-public class GameScene extends Scene implements ConsoleComponent.InputListener {
+public class GameScene extends Scene {
 
     private static final int WINDOW_WIDTH = 1400;
     private static final int WINDOW_HEIGHT = 720;
 
     private GridPane grid;
-    private ConsoleComponent consoleComponent;
+    private IConsole console;
     private CameraComponent cameraComponent;
     private IGameComponent gameComponent;
     private IGamePrompter prompter;
     private final ISolitaireAI ai = new SolitaireAI();
     private final ISolitaireCV cv = new SolitaireCV();
 
-    private GameState currentGameState = null;
-    private boolean firstGameState = true;
-    private boolean gameRunning = false;
+    private GameController gameController;
+
 
     public GameScene() {
         super(new GridPane(), WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -71,15 +49,13 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         column1.setPercentWidth(35);
         grid.getColumnConstraints().add(column1);
 
-
         // Add Console component
-        consoleComponent = new ConsoleComponent(this);
+        ConsoleComponent consoleComponent = new ConsoleComponent();
         grid.add(consoleComponent.getNode(), 0,1 );
         GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
         GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
-
+        console = consoleComponent;
         prompter = consoleComponent;
-
 
         // Add Game Component
         gameComponent = new GameComponent();
@@ -88,7 +64,6 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(gameNode, Priority.ALWAYS);
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
-
         // Add Camera Component
         cameraComponent = new CameraComponent();
         Node cameraNode = cameraComponent.getNode();
@@ -96,80 +71,36 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
 
-        cameraComponent.startLoading("Starting computer vision...");
-
-        // Start Computer Vision
-        cv.setImageUpdateListener((newImage) -> cameraComponent.updateImage(newImage));
-        cv.setGameStateUpdateListener(this::gameStateReceived);
-        cv.setFinishedCallback(err -> {
-            cameraComponent.showError("Computer vision client has been stopped!");
-        });
-        //cv.start();
-
+        gameController = new GameController(this);
     }
 
 
-    // Prompt the user to enter 'start' to start the game
-    private void gameStateReceived(GameState gameState){
-        currentGameState = gameState;
-        gameComponent.updateGameState(gameState);
+    public IConsole getConsole() {
+        return console;
+    }
 
-        if( firstGameState ){
-            firstGameState = false;
-            consoleComponent.printInfo("A game state has been received. Write 'start' in console to start the artificial intelligence");
-        }
-
-        if( gameRunning ) {
-            computeNextAction(gameState);
-        }
+    public IGameComponent getGameComponent() {
+        return gameComponent;
     }
 
 
-    @Override
-    public void onConsoleInput(String input) {
-        System.out.println("Input from console: " + input);
-
-        // Generates a random state of cards and updates the game component
-        if( input.equals("newstate")) {
-            GameState state = GameStateGenerator.generateGameState(System.currentTimeMillis());
-            gameComponent.updateGameState(state);
-        }
-
-        // Starts the AI if a game state has been received
-        if( input.equals("start")){
-            if( !firstGameState ){
-                if( !gameRunning ){
-                    gameRunning = true;
-                    consoleComponent.printInfo("Starting a new game!");
-                    computeNextAction(currentGameState);
-                    // Start AI!
-                }else{
-                    consoleComponent.printError("A game is already running!");
-                }
-            }else{
-                consoleComponent.printError("No initial game state has been recieved yet ");
-            }
-        }
+    public CameraComponent getCameraComponent() {
+        return cameraComponent;
     }
 
-
-    /**
-     * Sends an asynchronous computation request to the AI on a new non-UI thread.
-     */
-    public void computeNextAction(GameState state){
-        new Thread(() -> {
-            // TODO: Implement this with better error message system in the GUI
-            try{
-                ai.computeAction(state, prompter);
-            }catch(ISolitaireAI.IllegalGameStateException e){
-                e.printStackTrace();
-                System.out.println(state);
-            }
-        }).start();
+    public ISolitaireAI getAi() {
+        return ai;
     }
 
+    public ISolitaireCV getCv() {
+        return cv;
+    }
 
+    public IGamePrompter getPrompter() {
+        return prompter;
+    }
 
+    /*
     private void aiTest(){
         // TODO: JD og Nicolai implementer jeres AI shit her
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
@@ -219,11 +150,11 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
 
-        /*
+        *//*
         Brug denne her til at opdatere spillet i GUI'en
         Platform.runLater(() -> {
             gameComponent.updateState(state);
-        });*/
+        });*//*
 
 
     }
@@ -358,4 +289,8 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         return board;
     }
 
+    @Override
+    public void onConsoleInput(String input) {
+
+    }*/
 }
