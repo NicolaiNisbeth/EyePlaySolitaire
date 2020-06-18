@@ -83,7 +83,7 @@ public class GameStateAnalyzer {
         DividedDetections(detections);
         //DetectedComputervisionError();
         SaveCurrentDetectionsAsGameState();
-        if(!CurrentGameStateEqualsPrevious() && changedGameStateDetected){
+        if(CurrentGameStateEqualsPrevious() && changedGameStateDetected){
             System.out.println("Updating gamestate");
             gameStates.get(gameStates.size()-1).toString();
             changedGameStateDetected = false;
