@@ -4,10 +4,7 @@ import gui.gamescene.cvinterface.ISolitaireCV.GameStateUpdateListener;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -21,6 +18,7 @@ public class GameStateAnalyzer {
     private List<List<Detection>> tableaus;
     private List<List<Detection>> foundations;
     private List<GameState> gameStates;
+    private GameState prevGameState;
 
     private double offset_W = 0.15;
     private double stock_W = 0.3;
@@ -85,11 +83,72 @@ public class GameStateAnalyzer {
         SaveCurrentDetectionsAsGameState();
         if(CurrentGameStateEqualsPrevious() && changedGameStateDetected){
             System.out.println("Updating gamestate");
-            gameStates.get(gameStates.size()-1).toString();
+            int latest = gameStates.size()-1;
+            GameState latestGameState = gameStates.get(latest);
             changedGameStateDetected = false;
-            updateListener.onGameStateUpdate(gameStates.get(gameStates.size()-1));
+            configureHiddenCards(latestGameState);
+            updateListener.onGameStateUpdate(latestGameState);
+            prevGameState = latestGameState;
         }
     }
+
+    private void configureHiddenCards(GameState gameState) {
+
+        // initial run
+        if (prevGameState == null){
+            addInitialHiddenCards(gameState);
+            return;
+        }
+
+        // stock actions can never change hidden cards
+        if (gameState.getStock().size() < prevGameState.getStock().size())
+            return;
+
+        // find card difference in tableau if any
+        HashSet<Card> memory = new HashSet<>();
+        for(int i=0; i<=6; i++){
+            List<Card> tableau = prevGameState.getTableau(i);
+            memory.addAll(tableau);
+        }
+
+        int idx = -1;
+        boolean isCardFound = false;
+        for(int i=0; i<=6; i++){
+            List<Card> tableau = gameState.getTableau(i);
+            for (Card card : tableau) {
+                if (!memory.contains(card)) {
+                    idx = i;
+                    isCardFound = true;
+                    break;
+                }
+            }
+            if (isCardFound) break;
+        }
+
+        if (isCardFound)
+            gameState.getTableau(idx).remove(0);
+
+    }
+
+    private void addInitialHiddenCards(GameState gameState) {
+        List<List<Card>> tableaus = gameState.getTableaus();
+        int numHiddenCards = 0;
+        for (int i=0; i<tableaus.size(); i++){
+            List<Card> tableau = tableaus.get(i);
+
+            if (tableau.size() != 1)
+                throw new IllegalStateException("Expected exactly one card in each tableau!");
+
+            // TODO: verify card order: last idx is top
+            Card cardOnTop = tableau.remove(0);
+            for (int j=0; j<=numHiddenCards; j++){
+                gameState.addToTableau(i, Card.createUnknown());
+            }
+            gameState.addToTableau(i, cardOnTop);
+            numHiddenCards++;
+        }
+    }
+
 
     public GameState analyzeDetectionsTest(List<Detection> detections){
         DividedDetections(detections);
