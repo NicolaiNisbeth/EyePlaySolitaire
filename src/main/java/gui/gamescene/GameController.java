@@ -49,7 +49,7 @@ class GameController {
         scene.getCameraComponent().startLoading("Starting computer vision...");
 
         // TODO: Comment this in, if you don't want to traverse stock
-        setupTestStock(currentGameState.getStock());
+        //setupTestStock(currentGameState.getStock());
 
         registerInputCommands();
     }
@@ -103,6 +103,7 @@ class GameController {
     private void compute(){
         stopWork();
         firstGameState = false;
+
         currentGameState = newGameState;
 
         // Update the stock cards
