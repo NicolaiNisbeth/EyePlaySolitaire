@@ -44,7 +44,7 @@ class GameController {
         scene.getCameraComponent().startLoading("Starting computer vision...");
 
         // TODO: Comment this in, if you don't want to traverse stock
-        // setupTestStock(currentGameState.getStock());
+        setupTestStock(currentGameState.getStock());
 
         registerInputCommands();
     }
@@ -440,5 +440,4 @@ class GameController {
         stock.set(22, new Card(Card.Suit.HEARTS, 11));
         stock.set(23, new Card(Card.Suit.SPADES, 10));
     }
-
 }

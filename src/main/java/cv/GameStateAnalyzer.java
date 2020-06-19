@@ -86,7 +86,7 @@ public class GameStateAnalyzer {
             int latest = gameStates.size()-1;
             GameState latestGameState = gameStates.get(latest);
             changedGameStateDetected = false;
-            configureHiddenCards(latestGameState);
+            //configureHiddenCards(latestGameState);
             updateListener.onGameStateUpdate(latestGameState);
             prevGameState = latestGameState;
         }

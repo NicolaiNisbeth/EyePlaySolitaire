@@ -71,6 +71,7 @@ public class GameScene extends Scene {
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
 
+        /*
         cameraComponent.startLoading("Starting computer vision...");
 
         // Start Computer Vision
@@ -80,6 +81,7 @@ public class GameScene extends Scene {
             cameraComponent.showError("Computer vision client has been stopped!");
         });
         cv.start();
+        */
 
         // TODO: Remove this once CV has been implemented
         // Display a randomized Game State
