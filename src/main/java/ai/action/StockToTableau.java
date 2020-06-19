@@ -15,8 +15,8 @@ import java.util.function.Consumer;
 
 public class StockToTableau implements Action {
 
-    private Card card;
-    private int tableauIndex;
+    private final Card card;
+    private final int tableauIndex;
 
     public StockToTableau(Card card, int tableauIndex) {
         this.card = card;

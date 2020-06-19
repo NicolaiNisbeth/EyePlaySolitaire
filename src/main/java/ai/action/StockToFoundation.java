@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class StockToFoundation implements Action {
 
-    private Card card;
+    private final Card card;
 
     public StockToFoundation(Card card) {
         this.card = card;
@@ -34,6 +34,10 @@ public class StockToFoundation implements Action {
 
         results.add(new State(stock, state.getTableau(), foundation, state.getRemainingCards()));
         return results;
+    }
+
+    public Card getCard(){
+        return this.card;
     }
 
     @Override
