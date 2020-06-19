@@ -40,7 +40,7 @@ public class SolitaireAI implements ISolitaireAI {
 
     }
 
-    private int head = 2;
+    private Stock previous = null;
 
     // TODO: plenty of room for optimization in stateConverters
     /**
@@ -52,7 +52,7 @@ public class SolitaireAI implements ISolitaireAI {
         Tableau tableau = tableauConverter(uiGameState.getTableaus());
         Foundation foundation = foundationConverter(uiGameState.getFoundations());
         RemainingCards remainingCards = remainingCardsConverter(uiGameState);
-        Stock stock = stockConverter(uiGameState.getStock());
+        Stock stock = previous == null ? stockConverter(uiGameState.getStock()) : previous;
 
         Set<ai.state.Card> tableauOrFoundationCards = new HashSet<>();
         for (Stack<ai.state.Card> stack : tableau.getStacks()) {
@@ -73,10 +73,9 @@ public class SolitaireAI implements ISolitaireAI {
             ai.state.Card card = stock.getCards()[i];
             if(tableauOrFoundationCards.contains(card)){
                 stock.removeCard(card);
-                head = stock.getHead();
+                break;
             }
         }
-        stock.setHead(head);
 
         return new State(stock, tableau, foundation, remainingCards);
     }
