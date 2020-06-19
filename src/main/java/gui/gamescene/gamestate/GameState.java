@@ -94,6 +94,10 @@ public class GameState {
         return tableaus;
     }
 
+    public List<Card> getTableau(int idx){
+        return tableaus.get(idx);
+    }
+
     public List<List<Card>> getFoundations() {
         return foundations;
     }
