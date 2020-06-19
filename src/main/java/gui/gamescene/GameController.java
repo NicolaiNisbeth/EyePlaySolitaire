@@ -102,10 +102,12 @@ class GameController {
         }
 
         // TODO: Remove this once below todo is done
-        console.printInfo("Updated stock");
+        console.printInfo("Updated game state!");
+        System.out.println("New game state: ");
+        System.out.println(currentGameState);
 
         // Run the computation if game state is ready
-        if( currentGameState.getStock().contains(Card.createUnknown()) ){
+        if( !currentGameState.getStock().contains(Card.createUnknown()) ){
             updateGameState();
             // Run computation
             // TODO: Comment this in, once AI has implemented new interface correctly
