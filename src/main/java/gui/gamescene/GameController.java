@@ -93,6 +93,7 @@ class GameController {
 
 
     private void compute(){
+        stopWork();
         firstGameState = false;
         currentGameState = newGameState;
 
@@ -199,6 +200,11 @@ class GameController {
                 }
                 newTableau.add(card);
             }
+        }
+
+        // Copy drawn cards
+        for( Card card : detectedGameState.getFlipped() ){
+            newGameState.addToFlipped(card);
         }
 
         // Copy the foundation
