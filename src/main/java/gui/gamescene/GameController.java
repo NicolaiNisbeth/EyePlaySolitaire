@@ -101,8 +101,13 @@ class GameController {
             updateStock();
         }
 
+        // TODO: Remove this once below todo is done
+        console.printInfo("Updated game state!");
+        System.out.println("New game state: ");
+        System.out.println(currentGameState);
+
         // Run the computation if game state is ready
-        if( currentGameState.getStock().contains(Card.createUnknown()) ){
+        if( !currentGameState.getStock().contains(Card.createUnknown()) ){
             updateGameState();
             // Run computation
             // TODO: Comment this in, once AI has implemented new interface correctly
@@ -199,9 +204,13 @@ class GameController {
         // Copy the foundation
         for( int i=0; i<4; i++) {
             List<Card> foundation = detectedGameState.getFoundations().get(i);
-            for (Card card : foundation) {
-                for (int j = 1; j < card.getValue(); j++) {
-                    newGameState.addToFoundations(i, new Card(card.getSuit(), i));
+            if( foundation.size() > 0 ){
+                if( foundation.size() > 1 ){
+                    System.out.printf("WARNING: Foundation %d of detected game state is larger than 1 - %d to be exact (how's that possible)?", i, foundation.size() );
+                }
+                Card card = foundation.get(0);
+                for (int j = 1; j <= card.getValue(); j++) {
+                    newGameState.addToFoundations(i, new Card(card.getSuit(), j));
                 }
             }
         }
@@ -251,7 +260,6 @@ class GameController {
     // TODO: Perhaps create a game state validator function?
 
 
-/*
     public static void main(String[] args) {
         List<GameState> testStates = createTestStates();
         GameController gameController = new GameController();
@@ -285,9 +293,19 @@ class GameController {
         gameController.updateGameState();
         gameController.currentGameState = gameController.newGameState;
 
+        // Update
+        gameController.detectedGameState = testStates.get(5);
+        gameController.updateGameState();
+        gameController.currentGameState = gameController.newGameState;
+
+        // Update
+        gameController.detectedGameState = testStates.get(6);
+        gameController.updateGameState();
+        gameController.currentGameState = gameController.newGameState;
+
 
         System.out.println(gameController.currentGameState);
-    }*/
+    }
 
 
 
@@ -342,6 +360,29 @@ class GameController {
         state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
         states.add(state);
 
+        state = new GameState();
+        state.addToTableau(1, new Card(Card.Suit.SPADES, 1));
+        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
+        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
+        state.addToTableau(2, new Card(Card.Suit.HEARTS, 3));
+        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
+        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
+        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
+        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
+        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
+        states.add(state);
+
+        state = new GameState();
+        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
+        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
+        state.addToTableau(2, new Card(Card.Suit.HEARTS, 3));
+        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
+        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
+        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
+        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
+        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
+        state.addToFoundations(0, new Card(Card.Suit.SPADES, 1));
+        states.add(state);
 
         return states;
     }
