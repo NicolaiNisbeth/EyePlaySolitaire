@@ -44,7 +44,8 @@ public class StockToFoundation implements Action {
     public void prompt(IGamePrompter prompter, State state) {
         Stock stock = state.getStock();
         int index = stock.getCardIndex(card);
-        prompter.promptStockToFoundation(index, card.getSuit());
+        //prompter.promptStockToFoundation(index, card.getSuit());
+        prompter.promptStockToFoundation(card, card.getSuit());
     }
 
     @Override

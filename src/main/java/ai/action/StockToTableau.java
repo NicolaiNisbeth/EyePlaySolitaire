@@ -43,7 +43,8 @@ public class StockToTableau implements Action {
     public void prompt(IGamePrompter prompter, State state) {
         Stock stock = state.getStock();
         int index = stock.getCardIndex(card);
-        prompter.promptStockToTableau(index, tableauIndex);
+        //prompter.promptStockToTableau(index, tableauIndex);
+        prompter.promptStockToTableau(card, tableauIndex);
     }
 
     @Override

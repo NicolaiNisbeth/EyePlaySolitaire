@@ -1,6 +1,7 @@
 package gui.gamescene.consolecomponent;
 
 
+import ai.state.Card;
 import gui.gamescene.IComponent;
 import gui.gamescene.IConsole;
 import gui.gamescene.aiinterface.IGamePrompter;
@@ -110,9 +111,19 @@ public class ConsoleComponent implements IComponent, IGamePrompter, IConsole {
     }
 
     @Override
+    public void promptStockToTableau(Card card, int tableauIndex) {
+        printActionPrompt(String.format("Move %s from the stock, to the %s foundation", card, indexOrdinal(tableauIndex)));
+    }
+
+    @Override
     public void promptTableauToFoundation(int tableauIndex, int foundationIndex) {
         printActionPrompt(String.format("Move the topmost card from the %s tableau the %s foundation", indexOrdinal(tableauIndex), indexOrdinal(foundationIndex)));
 
+    }
+
+    @Override
+    public void promptStockToFoundation(Card card, int foundationIndex) {
+        printActionPrompt(String.format("Move %s from the stock, to the %s foundation", card, indexOrdinal(foundationIndex)));
     }
 
     @Override

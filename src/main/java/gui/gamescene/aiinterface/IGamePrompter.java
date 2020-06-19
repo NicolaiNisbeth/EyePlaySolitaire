@@ -1,6 +1,8 @@
 package gui.gamescene.aiinterface;
 
 
+import ai.state.Card;
+
 /**
  *  Prompts the user to take a particular game action (move cards).
  *
@@ -35,6 +37,8 @@ public interface IGamePrompter {
     void promptStockToTableau(int stockIndex, int tableauIndex);
 
 
+    void promptStockToTableau(Card card, int tableauIndex);
+
     /**
      * Prompts the user to move a card from a tableau to one of the foundations.
      *
@@ -53,6 +57,8 @@ public interface IGamePrompter {
      */
     void promptStockToFoundation(int stockIndex, int foundationIndex);
 
+
+    void promptStockToFoundation(Card card, int foundationIndex);
 
     /**
      * Tells the prompter, that no move can be made to solve the solitaire.
