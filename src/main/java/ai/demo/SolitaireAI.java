@@ -35,7 +35,7 @@ public class SolitaireAI implements ISolitaireAI {
 
     @Override
     public void startActionComputation(GameState gameState) throws IllegalGameStateException {
-
+        agent.getAction(stateConverter(gameState));
     }
 
     @Override

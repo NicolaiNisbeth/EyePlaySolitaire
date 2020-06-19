@@ -114,8 +114,8 @@ class GameController {
             updateGameState();
             // Run computation
             // TODO: Comment this in, once AI has implemented new interface correctly
-            /*computeNextAction(currentGameState);
-            console.printInfo("Computing the best move (write 'stop' to get result)");*/
+            computeNextAction(currentGameState);
+            console.printInfo("Computing the best move (write 'stop' to get result)");
         }
     }
 
