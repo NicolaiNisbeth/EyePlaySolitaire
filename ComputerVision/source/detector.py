@@ -100,6 +100,7 @@ class Detector:
             scaledDetections = _scale_detections(detections, self._camera._resolution[0]/darknet.network_width(netMain), self._camera._resolution[1]/darknet.network_height(netMain))
 
             image = cvDrawBoxes(scaledDetections, frame)
+            image = cvDrawSectionLines(image, self._camera._resolution[0], self._camera._resolution[1])
             # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 
@@ -202,6 +203,8 @@ def convertBack(x, y, w, h):
     return xmin, ymin, xmax, ymax
 
 
+
+
 def cvDrawBoxes(detections, img):
     for detection in detections:
         x, y, w, h = detection[2][0], \
@@ -220,7 +223,36 @@ def cvDrawBoxes(detections, img):
                     [0, 255, 0], 2)
     return img
 
+def cvDrawSectionLines(img, width, height):
 
+    offset_W = 0.15
+    stock_H = 0.27
+    tableau_W = 0.1
+
+    #Borders
+    x, y, w, h = 0,0, int(round(width*offset_W)), height
+    cv2.rectangle(img, (x,y), (w,h), (0, 0, 0), -1)
+    x, y, w, h = int(round(width-(width*offset_W))),0, width, height
+    cv2.rectangle(img, (x,y), (w,h), (0, 0, 0), -1)
+
+    #Horizontal Line
+    x1 = int(round(width*offset_W))
+    y1 = int(round(height*stock_H))
+    x2 = int(round(width-(width*offset_W)))
+    y2 = int(round(height*stock_H))
+    cv2.line(img,(x1,y1),(x2,y2),(255,0,0),5)
+
+    #Lines
+    for x in range(8):
+        x1 = int(round(width*offset_W))+int(round(width*tableau_W*x))
+        y1 = 0
+        x2 = int(round(width*offset_W))+int(round(width*tableau_W*x))
+        y2 = height
+        if(x == 1 or x == 2 or x == 2):
+            y1 = int(round(height*stock_H))
+        cv2.line(img,(x1,y1),(x2,y2),(255,0,0),5)
+
+    return img
 
 def truncate(number, decimals=0):
     """
