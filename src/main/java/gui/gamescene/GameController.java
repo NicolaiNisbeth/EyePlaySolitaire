@@ -201,6 +201,11 @@ class GameController {
             }
         }
 
+        // Copy drawn cards
+        for( Card card : detectedGameState.getFlipped() ){
+            newGameState.addToFlipped(card);
+        }
+
         // Copy the foundation
         for( int i=0; i<4; i++) {
             List<Card> foundation = detectedGameState.getFoundations().get(i);
