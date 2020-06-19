@@ -103,7 +103,6 @@ class GameController {
     private void compute(){
         stopWork();
         firstGameState = false;
-
         currentGameState = newGameState;
 
         // Update the stock cards

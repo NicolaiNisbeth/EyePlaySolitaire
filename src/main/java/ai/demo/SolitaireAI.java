@@ -15,10 +15,7 @@ import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class SolitaireAI implements ISolitaireAI {
     private static final Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
@@ -43,17 +40,45 @@ public class SolitaireAI implements ISolitaireAI {
 
     }
 
+    private int head = 2;
+
     // TODO: plenty of room for optimization in stateConverters
     /**
      * Converts UI gameState to AI gameState
      * @param uiGameState
      * @return AI gameState
      */
-    public static State stateConverter(GameState uiGameState) {
-        Stock stock = stockConverter(uiGameState.getStock());
+    public State stateConverter(GameState uiGameState) {
         Tableau tableau = tableauConverter(uiGameState.getTableaus());
         Foundation foundation = foundationConverter(uiGameState.getFoundations());
         RemainingCards remainingCards = remainingCardsConverter(uiGameState);
+        Stock stock = stockConverter(uiGameState.getStock());
+
+        Set<ai.state.Card> tableauOrFoundationCards = new HashSet<>();
+        for (Stack<ai.state.Card> stack : tableau.getStacks()) {
+            for(ai.state.Card card : stack) {
+                if(card != null){
+                    tableauOrFoundationCards.add(card);
+                }
+            }
+        }
+        for (Stack<ai.state.Card> stack : foundation.getStacks()) {
+            for(ai.state.Card card : stack) {
+                if(card != null){
+                    tableauOrFoundationCards.add(card);
+                }
+            }
+        }
+        for (int i = 0; i < stock.getCards().length; i++) {
+            ai.state.Card card = stock.getCards()[i];
+            if(tableauOrFoundationCards.contains(card)){
+                stock.removeCard(card);
+                head = stock.getHead();
+                break;
+            }
+        }
+        stock.setHead(head);
+
         return new State(stock, tableau, foundation, remainingCards);
     }
 

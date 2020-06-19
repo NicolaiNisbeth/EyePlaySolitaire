@@ -4,9 +4,7 @@ import ai.action.*;
 import ai.demo.SolitaireAI;
 import ai.heuristic.Heuristic;
 import ai.state.ActionFinder52;
-import ai.state.Card;
 import ai.state.State;
-import ai.state.Stock;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.gamestate.GameState;
@@ -31,7 +29,7 @@ public class MCTSGuiAgent implements ISolitaireAI {
     @Override
     public void startActionComputation(GameState gameState) throws IllegalGameStateException {
         calculating = true;
-        final State state = SolitaireAI.stateConverter(gameState);
+        final State state = new SolitaireAI().stateConverter(gameState);
         currentState = state;
         calculator = new Thread(() -> calculateAction(state));
         calculator.start();

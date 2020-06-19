@@ -58,6 +58,10 @@ public class Stock {
         return availableCards;
     }
 
+    public void setHead(int head){
+        this.head = head;
+    }
+
     public Card[] getCards() {
         return cards;
     }
@@ -99,5 +103,9 @@ public class Stock {
         int result = Objects.hash(head);
         result = 31 * result + Arrays.hashCode(cards);
         return result;
+    }
+
+    public int getHead() {
+        return this.head;
     }
 }
