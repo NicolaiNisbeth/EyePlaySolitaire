@@ -3,7 +3,6 @@ package ai.agent;
 import ai.action.Action;
 import ai.heuristic.Heuristic;
 import ai.state.ActionFinder52;
-import ai.state.CycleHandler;
 import ai.state.IActionFinder;
 import ai.state.State;
 
@@ -15,7 +14,7 @@ import java.util.*;
  */
 public class ExpectimaxAgent implements Agent {
     private IActionFinder actionFinder = new ActionFinder52();
-    private CycleHandler cycleHandler;
+    private BiCycleHandler handler;
     private int maxDepth;
     private Heuristic heuristic;
     private long counter = 0;
@@ -23,21 +22,17 @@ public class ExpectimaxAgent implements Agent {
     public ExpectimaxAgent(int maxDepth, Heuristic heuristic){
         this.maxDepth = maxDepth;
         this.heuristic = heuristic;
-        cycleHandler = new CycleHandler(actionFinder);
+        handler = new BiCycleHandler(heuristic);
     }
 
     @Override
     public Action getAction(State root) {
-        if (cycleHandler.isCycle(root)){
-            List<Action> actions = cycleHandler.getAllExitActions(root);
-            Action maxAction = findMaxAction(root, actions);
-            return cycleHandler.getNextActionOnExitPath(root, maxAction);
+        boolean isLoop = handler.isLoop(root);
+        if(isLoop) {
+            return handler.getOutOfLoop(root);
         }
-        else {
-            cycleHandler.markVisited(root);
-            List<Action> actions = actionFinder.getActions(root);
-            return findMaxAction(root, actions);
-        }
+        List<Action> actions = actionFinder.getActions(root);
+        return findMaxAction(root, actions);
     }
 
     private Action findMaxAction(State root, List<Action> actions) {

@@ -2,6 +2,16 @@ package gui.gamescene;
 
 import ai.demo.SolitaireAI;
 import cv.SolitaireCV;
+import ai.heuristic.Heuristic;
+import ai.heuristic.OptionsKnowledgeFoundation;
+import ai.state.Card;
+import ai.state.Deck;
+import ai.state.Foundation;
+import ai.state.Producer;
+import ai.state.RemainingCards;
+import ai.state.State;
+import ai.state.Stock;
+import ai.state.Tableau;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.cameracomponent.CameraComponent;
@@ -34,6 +44,7 @@ public class GameScene extends Scene {
     private final ISolitaireCV cv = new SolitaireCV();
 
     private GameController gameController;
+    //private Camera camera;
 
 
     public GameScene() {

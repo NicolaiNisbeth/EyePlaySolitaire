@@ -39,6 +39,10 @@ public class StockToTableau implements Action {
         return results;
     }
 
+    public Card getCard(){
+        return card;
+    }
+
     @Override
     public void prompt(IGamePrompter prompter, State state) {
         Stock stock = state.getStock();
