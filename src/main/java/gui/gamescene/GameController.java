@@ -65,7 +65,8 @@ class GameController {
     private void startDetection() {
         console.printInfo("Starting computervision detection (write 'stop' to lock detection)");
         detectedGameState = lastGameState;
-        updateGameState();
+        if( detectedGameState != null )
+            updateGameState();
         detectionRunning = true;
     }
 
