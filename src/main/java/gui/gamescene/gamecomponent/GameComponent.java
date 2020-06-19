@@ -9,12 +9,17 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class GameComponent implements IGameComponent {
+
+    private StackPane container = new StackPane();
+    private Text infoText = new Text();
 
     private GridPane grid = new GridPane();
     private GameState gameState = new GameState();
@@ -31,7 +36,6 @@ public class GameComponent implements IGameComponent {
         BackgroundFill fill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(fill);
         grid.setBackground(background);
-
 
         //Set row
         for (int i = 0; i < 3; i++) {
@@ -80,7 +84,13 @@ public class GameComponent implements IGameComponent {
             foundations.add(new CardContainer(0.05));
             grid.add(foundations.get(i), i+3, 0);
         }
+        container.getChildren().add(grid);
 
+        // Setup infotext
+        infoText.setFont(new Font(18));
+        infoText.setFill(Color.WHITE);
+        infoText.setText("No game state has been recieved from computervision yet");
+        container.getChildren().add(infoText);
     }
 
     /**
@@ -102,6 +112,7 @@ public class GameComponent implements IGameComponent {
     public void updateGameState(GameState gameState) {
         // Make sure it's run on the ui thread
         Platform.runLater(() -> {
+            infoText.setVisible(false);
 
             System.out.println("GameComponenet: New GameState recieved");
             System.out.println(gameState);
@@ -149,7 +160,7 @@ public class GameComponent implements IGameComponent {
 
     @Override
     public Node getNode() {
-        return grid;
+        return container;
     }
 
 }
