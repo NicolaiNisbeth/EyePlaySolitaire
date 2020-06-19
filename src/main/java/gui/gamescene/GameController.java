@@ -3,9 +3,7 @@ package gui.gamescene;
 import ai.demo.SolitaireAI;
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.ISolitaireAI;
-import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.cvinterface.ISolitaireCV;
-import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 
@@ -34,7 +32,7 @@ class GameController {
 
     GameController(GameScene scene) {
         this.scene = scene;
-        scene.getConsole();
+        console = scene.getConsole();
 
         cv.setImageUpdateListener( (newImage) -> scene.getCameraComponent().updateImage(newImage) );
         cv.setFinishedCallback(err -> scene.getCameraComponent().showError("Computer vision client has been stopped!") );
@@ -44,6 +42,9 @@ class GameController {
         setupInitialGameState();
 
         scene.getCameraComponent().startLoading("Starting computer vision...");
+
+        // TODO: Comment this in, if you don't want to traverse stock
+        // setupTestStock(currentGameState.getStock());
 
         registerInputCommands();
     }
@@ -104,8 +105,9 @@ class GameController {
         if( currentGameState.getStock().contains(Card.createUnknown()) ){
             updateGameState();
             // Run computation
-            computeNextAction(currentGameState);
-            console.printInfo("Computing the best move (write 'stop' to get result)");
+            // TODO: Comment this in, once AI has implemented new interface correctly
+            /*computeNextAction(currentGameState);
+            console.printInfo("Computing the best move (write 'stop' to get result)");*/
         }
     }
 
@@ -249,7 +251,7 @@ class GameController {
     // TODO: Perhaps create a game state validator function?
 
 
-
+/*
     public static void main(String[] args) {
         List<GameState> testStates = createTestStates();
         GameController gameController = new GameController();
@@ -285,7 +287,7 @@ class GameController {
 
 
         System.out.println(gameController.currentGameState);
-    }
+    }*/
 
 
 
@@ -363,5 +365,32 @@ class GameController {
         }
     }
 
+
+    private static void setupTestStock(List<Card> stock){
+        stock.set(0, new Card(Card.Suit.HEARTS,  1));
+        stock.set(1, new Card(Card.Suit.SPADES,  6));
+        stock.set(2, new Card(Card.Suit.DIAMONDS, 13));
+        stock.set(3, new Card(Card.Suit.HEARTS, 9));
+        stock.set(4, new Card(Card.Suit.CLUBS, 11));
+        stock.set(5, new Card(Card.Suit.SPADES, 2));
+        stock.set(6, new Card(Card.Suit.SPADES, 4));
+        stock.set(7, new Card(Card.Suit.DIAMONDS, 5));
+        stock.set(8, new Card(Card.Suit.DIAMONDS, 7));
+        stock.set(9, new Card(Card.Suit.HEARTS, 8));
+        stock.set(10, new Card(Card.Suit.CLUBS, 6));
+        stock.set(11, new Card(Card.Suit.SPADES, 13));
+        stock.set(12, new Card(Card.Suit.CLUBS, 7));
+        stock.set(13, new Card(Card.Suit.DIAMONDS, 1));
+        stock.set(14, new Card(Card.Suit.HEARTS, 7));
+        stock.set(15, new Card(Card.Suit.HEARTS, 4));
+        stock.set(16, new Card(Card.Suit.CLUBS, 10));
+        stock.set(17, new Card(Card.Suit.CLUBS, 12));
+        stock.set(18, new Card(Card.Suit.CLUBS, 3));
+        stock.set(19, new Card(Card.Suit.SPADES, 1));
+        stock.set(20, new Card(Card.Suit.HEARTS, 5));
+        stock.set(21, new Card(Card.Suit.DIAMONDS, 8));
+        stock.set(22, new Card(Card.Suit.HEARTS, 11));
+        stock.set(23, new Card(Card.Suit.SPADES, 10));
+    }
 
 }
