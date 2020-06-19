@@ -74,7 +74,6 @@ public class SolitaireAI implements ISolitaireAI {
             if(tableauOrFoundationCards.contains(card)){
                 stock.removeCard(card);
                 head = stock.getHead();
-                break;
             }
         }
         stock.setHead(head);
