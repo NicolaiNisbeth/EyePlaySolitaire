@@ -107,12 +107,12 @@ public class ConsoleComponent implements IComponent, IGamePrompter, IConsole {
 
     @Override
     public void promptStockToTableau(int stockIndex, int tableauIndex) {
-        printActionPrompt(String.format("Move the %s card from the stock, to the %s foundation", indexOrdinal(stockIndex), indexOrdinal(tableauIndex)));
+        printActionPrompt(String.format("Move the %s card from the stock, to the %s tableau", indexOrdinal(stockIndex), indexOrdinal(tableauIndex)));
     }
 
     @Override
     public void promptStockToTableau(Card card, int tableauIndex) {
-        printActionPrompt(String.format("Move %s from the stock, to the %s foundation", card, indexOrdinal(tableauIndex)));
+        printActionPrompt(String.format("Move %s from the stock, to the %s tableau", card.toString(), indexOrdinal(tableauIndex)));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class ConsoleComponent implements IComponent, IGamePrompter, IConsole {
 
     @Override
     public void promptStockToFoundation(Card card, int foundationIndex) {
-        printActionPrompt(String.format("Move %s from the stock, to the %s foundation", card, indexOrdinal(foundationIndex)));
+        printActionPrompt(String.format("Move %s from the stock, to the %s foundation", card.toString(), indexOrdinal(foundationIndex)));
     }
 
     @Override
@@ -140,6 +140,7 @@ public class ConsoleComponent implements IComponent, IGamePrompter, IConsole {
     private String indexOrdinal(int i) {
         // Source: https://stackoverflow.com/questions/6810336/is-there-a-way-in-java-to-convert-an-integer-to-its-ordinal
         String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
+        i++;
         switch (i % 100) {
             case 11:
             case 12:

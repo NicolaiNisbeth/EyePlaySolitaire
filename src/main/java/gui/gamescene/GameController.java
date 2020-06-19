@@ -2,6 +2,7 @@ package gui.gamescene;
 
 import ai.agent.MCTSGuiAgent;
 import ai.demo.SolitaireAI;
+import ai.heuristic.Cocktail;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
 import cv.SolitaireCV;
@@ -26,7 +27,7 @@ class GameController {
     private boolean firstGameState = true;
 
     private IConsole console = null;
-    private Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
+    private Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
     private ISolitaireAI ai = new MCTSGuiAgent(-1,heuristic);
     private ISolitaireCV cv = new SolitaireCV();
 
@@ -135,8 +136,6 @@ class GameController {
             for(int j=0; j<i; j++){
                 state.addToTableau(i, Card.createUnknown());
             }
-
-          /*  currentGameState.addToTableau(i, detectedGameState.getTableaus().get(i).get(0));*/
         }
         return state;
     }

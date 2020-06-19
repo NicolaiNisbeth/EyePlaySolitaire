@@ -108,11 +108,10 @@ public class Card {
 
     public enum Suit{
         UNKNOWN,
-        HEARTS,
         DIAMONDS,
-        SPADES,
-        CLUBS;
-
+        CLUBS,
+        HEARTS,
+        SPADES;
         @Override
         public String toString() {
             return this.name().toLowerCase();

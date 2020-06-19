@@ -59,6 +59,7 @@ public class MCTSGuiAgent implements ISolitaireAI {
             StockToTableau action = (StockToTableau) bestAction;
             action.prompt(prompter, currentState);
         }
+        //throw new IllegalStateException("break");
     }
 
     private Thread calculator;

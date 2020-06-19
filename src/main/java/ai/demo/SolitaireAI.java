@@ -53,19 +53,37 @@ public class SolitaireAI implements ISolitaireAI {
         Stock stock = stockConverter(uiGameState.getStock());
         Tableau tableau = tableauConverter(uiGameState.getTableaus());
         Foundation foundation = foundationConverter(uiGameState.getFoundations());
-        RemainingCards remainingCards = remainingCardsConverter(uiGameState.getFlipped());
+        RemainingCards remainingCards = remainingCardsConverter(uiGameState);
         return new State(stock, tableau, foundation, remainingCards);
     }
 
     /**
      *
-     * @param uiFlippedCards
+     * @param uiGameState
      * @return
      */
-    private static RemainingCards remainingCardsConverter(List<Card> uiFlippedCards) {
-        for (Card flippedCard : uiFlippedCards){
-            deck.remove(cardConverter(flippedCard));
+    private static RemainingCards remainingCardsConverter(GameState uiGameState) {
+
+        for( int i=0; i<7; i++){
+            List<Card> tableau = uiGameState.getTableaus().get(i);
+            for(int j = 0; j < tableau.size(); j++){
+                if(!tableau.get(j).isUnknown()){
+                    deck.remove(cardConverter(tableau.get(j)));
+                }
+            }
         }
+
+        for( int i=0; i<4; i++){
+            List<Card> foundations = uiGameState.getFoundations().get(i);
+            for(int j = 0; j < foundations.size(); j++){
+                deck.remove(cardConverter(foundations.get(j)));
+            }
+        }
+
+        for (Card stockCards : uiGameState.getStock()){
+            deck.remove(cardConverter(stockCards));
+        }
+
         return new RemainingCards(deck);
     }
 
