@@ -405,7 +405,7 @@ public class GameStateAnalyzer {
             return true;
         }
         GameState current = gameStates.get(gameStates.size()-1);
-        System.out.println(current.toString());
+        System.out.println("Detected game state: " + current);
         for(int i = 0; i < gameStates.size()-1; i++){
             if(!current.equals(gameStates.get(i))){
                 changedGameStateDetected = true;

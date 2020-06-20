@@ -25,9 +25,11 @@ public class GameComponent implements IGameComponent {
     private GameState gameState = new GameState();
     private CardImageLoader imageLoader = new CardImageLoader();
     private CardContainer stock;
+    private CardStackContainer stockOverview;
     private CardStackContainer flipped;
     private List<CardStackContainer> tableaus;
     private List<CardContainer> foundations;
+
 
 
     public GameComponent(){
@@ -38,24 +40,33 @@ public class GameComponent implements IGameComponent {
         grid.setBackground(background);
 
         //Set row
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             RowConstraints constraints = new RowConstraints();
 
-            if (i==0) {
-                constraints.setPercentHeight(20);
+            if (i==0){
+                constraints.setPercentHeight(14);
                 grid.getRowConstraints().add(constraints);
             }
 
             if (i==1) {
-                constraints.setPercentHeight(5);
+                constraints.setPercentHeight(1);
                 grid.getRowConstraints().add(constraints);
             }
 
             if (i==2) {
-                constraints.setPercentHeight(75);
+                constraints.setPercentHeight(17);
                 grid.getRowConstraints().add(constraints);
             }
 
+            if (i==3) {
+                constraints.setPercentHeight(3);
+                grid.getRowConstraints().add(constraints);
+            }
+
+            if (i==4) {
+                constraints.setPercentHeight(65);
+                grid.getRowConstraints().add(constraints);
+            }
         }
 
         //Set Colonner
@@ -68,23 +79,27 @@ public class GameComponent implements IGameComponent {
         }
 
         this.stock = new CardContainer(0.04);
-        grid.add(stock, 0, 0);
+        grid.add(stock, 0, 2);
 
         this.flipped = new CardStackContainer(3, 0.05, 0.10, Orientation.HORIZONTAL);
-        grid.add(flipped,1,0);
+        grid.add(flipped,1,2);
 
         this.tableaus = new ArrayList<>();
         for( int i=0; i<7; i++){
             tableaus.add(new CardStackContainer(19, 0.02, 0.04, Orientation.VERTICAL));
-            grid.add(tableaus.get(i), i, 2);
+            grid.add(tableaus.get(i), i, 4);
         }
 
         this.foundations = new ArrayList<>();
         for( int i=0; i<4; i++){
             foundations.add(new CardContainer(0.05));
-            grid.add(foundations.get(i), i+3, 0);
+            grid.add(foundations.get(i), i+3, 2);
         }
         container.getChildren().add(grid);
+
+        // Overview Stock
+        stockOverview = new CardStackContainer(24, 0.10, 0.02, Orientation.HORIZONTAL);
+        grid.add(stockOverview,0,0, 7, 1);
 
         // Setup infotext
         infoText.setFont(new Font(18));
@@ -114,13 +129,18 @@ public class GameComponent implements IGameComponent {
         Platform.runLater(() -> {
             infoText.setVisible(false);
 
-            System.out.println("GameComponenet: New GameState recieved");
-            System.out.println(gameState);
-
             // Update stock
             stock.clearCard();
             if (gameState.getStock().size() > 0) {
                 stock.setCard(createCardBackPane());
+            }
+
+            // Update stock overview
+            stockOverview.clearCards();
+            List<Card> stock = gameState.getStock();
+            for (Card card : stock) {
+                CardPane pane = createCardPane(card);
+                this.stockOverview.addCard(pane);
             }
 
             // Update Flipped cards
@@ -130,7 +150,6 @@ public class GameComponent implements IGameComponent {
                 CardPane pane = createCardPane(card);
                 this.flipped.addCard(pane);
             }
-
 
             // Update tableaus
             for (int i = 0; i < gameState.getTableaus().size(); i++) {

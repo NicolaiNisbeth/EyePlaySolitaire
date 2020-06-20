@@ -38,8 +38,7 @@ def main():
     # Notify server that the client has started
     connector.send_message(Message(100, "{}"))
     
-    # TODO: FIx this
-    print("Waiting for thread to join")
+    # Keep the program alive
     detector._thread.join()
 
     

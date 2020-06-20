@@ -1,10 +1,8 @@
 package gui.gamescene;
 
 import ai.agent.MCTSGuiAgent;
-import ai.demo.SolitaireAI;
 import ai.heuristic.Cocktail;
 import ai.heuristic.Heuristic;
-import ai.heuristic.OptionsKnowledgeFoundation;
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.cvinterface.ISolitaireCV;
@@ -15,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
+
 
 class GameController {
 
@@ -44,7 +43,7 @@ class GameController {
         cv.setGameStateUpdateListener(this::onDetection);
         cv.start();
 
-        setupInitialGameState();
+        scene.getGameComponent().updateGameState(currentGameState);
 
         scene.getCameraComponent().startLoading("Starting computer vision...");
 
@@ -81,7 +80,6 @@ class GameController {
         if( detectionRunning ) {
             detectedGameState = lastGameState;
             updateGameState();
-            scene.getGameComponent().updateGameState(newGameState);
         }
     }
 
@@ -110,16 +108,11 @@ class GameController {
             updateStock();
         }
 
-        // TODO: Remove this once below todo is done
-        console.printInfo("Updated game state!");
-        System.out.println("New game state: ");
-        System.out.println(currentGameState);
 
         // Run the computation if game state is ready
         if( !currentGameState.getStock().contains(Card.createUnknown()) ){
             updateGameState();
             // Run computation
-            // TODO: Comment this in, once AI has implemented new interface correctly
             computeNextAction(currentGameState);
             console.printInfo("Computing the best move (write 'stop' to get result)");
         }
@@ -226,6 +219,8 @@ class GameController {
                 }
             }
         }
+
+        scene.getGameComponent().updateGameState(newGameState);
     }
 
 
@@ -245,11 +240,11 @@ class GameController {
      */
     private void computeNextAction(GameState state){
         new Thread(() -> {
-            // TODO: Implement this with better error message system in the GUI
             try{
                 computationRunning = true;
                 ai.startActionComputation(state);
             }catch(ISolitaireAI.IllegalGameStateException e){
+                computationRunning = false;
                 e.printStackTrace();
                 System.out.println(state);
             }
@@ -266,10 +261,6 @@ class GameController {
             if( !list1.get(i).equals(list2.get(i))) return false;
         return true;
     }
-
-
-
-    // TODO: Perhaps create a game state validator function?
 
 
     public static void main(String[] args) {
