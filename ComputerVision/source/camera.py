@@ -15,14 +15,15 @@ class Camera:
     'get_current_frame()' method
     """
 
-    def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0, startup_callback: Callable = None):
+    def __init__(self, resolution:(int, int)=(1280, 720), camera_id: int = 0 ):
+        time_start = timeit.default_timer()
+        print(f"Initializing Camera with ID '{camera_id}' with resolution '{resolution[0]}x{resolution[1]}'")
         self._resolution = resolution
         self._width, self._height = resolution
 
         self._camera_id = camera_id
 
         self._current_frame: numpy.ndarray = None
-        self._startup_callback = startup_callback
 
         # Whether or not the camera is running
         self._run = True
@@ -30,27 +31,30 @@ class Camera:
         # To secure only one has access to current frame
         self._lock = threading.Lock()
 
+        self._camera = None
+        self._setup_camera()
+
         # Thread to make the recordings on
         self._thread = threading.Thread(target=self._capture_loop)
-        self._thread.start()       
+        self._thread.daemon = True
+        self._thread.start()
+        print(f"Camera initialized in {timeit.default_timer()-time_start:.2f} seconds")       
+
+
+    # Starts the camera
+    def _setup_camera(self):
+        self._camera = cv2.VideoCapture(self._camera_id)
+        self._camera.set(3, self._width)
+        self._camera.set(4, self._height)
 
 
     def _capture_loop(self):
-        start = timeit.default_timer()
-        cap = cv2.VideoCapture(self._camera_id)
-        cap.set(3, self._width)
-        cap.set(4, self._height)
-        startup_time = timeit.default_timer() - start
-
-        if self._startup_callback is not None:
-            self._startup_callback(startup_time, self._resolution)
 
         while self._run:
-            ret, frame_read = cap.read()
+            ret, frame_read = self._camera.read()
             with self._lock:
                 self._current_frame = frame_read
-
-        cap.release()
+        self._camera.release()
 
 
     def get_current_frame(self) -> numpy.ndarray: 
@@ -60,7 +64,6 @@ class Camera:
         with self._lock:
             return self._current_frame
             #return base64.b64encode(self._current_frame)
-
 
 
 

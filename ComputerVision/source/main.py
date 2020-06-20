@@ -33,11 +33,13 @@ def main():
     connector = Connector(port, message_received)
     
     # Start Detector
-    detector = Detector(detection_started, new_detections)
+    detector = Detector(new_detections)
 
-    print("Started camera")
+    # Notify server that the client has started
+    connector.send_message(Message(100, "{}"))
     
     # TODO: FIx this
+    print("Waiting for thread to join")
     detector._thread.join()
 
     
@@ -50,11 +52,6 @@ def message_received(msg: Message):
     # Image requesed
     if msg._code is 201:
         send_image()
-
-
-def detection_started(a,b):
-    # Notify server that the client has started
-    connector.send_message(Message(100, "{}"))
 
 
 def new_detections(detections, width, height):

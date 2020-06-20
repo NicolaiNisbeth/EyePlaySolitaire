@@ -40,7 +40,7 @@ class GameController {
         console = scene.getConsole();
 
         cv.setImageUpdateListener( (newImage) -> scene.getCameraComponent().updateImage(newImage) );
-        cv.setErrorListener(err -> scene.getCameraComponent().showError("Computer vision ran into an error and has stopped! :(") );
+        cv.setErrorListener(err -> scene.getCameraComponent().showError(err) );
         cv.setGameStateUpdateListener(this::onDetection);
         cv.start();
 

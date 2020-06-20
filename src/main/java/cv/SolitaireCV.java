@@ -28,7 +28,6 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     @Override
     public void start() {
         try {
-
             // Start the server
             server = new Server(this, this);
             int port = 0;
@@ -36,6 +35,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
             System.out.println("Started computer vision server on port " + port);
 
             // Start the client
+            System.out.println("Starting client");
             ClientStarter clientStarter = new ClientStarter();
             clientStarter.setStandardOutputListener(this::printClientMessage);
             clientStarter.setErrorOutputListener(this::printClientMessage);
@@ -160,11 +160,18 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
 
 
     private void clientFinished(int exitCode){
-        onError("Computer vision client shouldn't terminate, but has just exited with code " + exitCode);
+        switch(exitCode){
+            case 101:
+                onError("Client could not find .weight file");
+                break;
+            default:
+                onError("Computer vision client terminated with unknown status code " + exitCode);
+        }
     }
 
 
     private void onError(String errorMessage){
+        System.out.println("Computer vision error: " + errorMessage);
         if(errorListener != null)
             errorListener.onError(errorMessage);
     }

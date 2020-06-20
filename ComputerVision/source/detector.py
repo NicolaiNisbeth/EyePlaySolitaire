@@ -7,6 +7,8 @@ import time
 import cv2
 import numpy
 import camera
+import sys
+import timeit
     
 from ctypes import *
 import math
@@ -17,8 +19,12 @@ from darknet import darknet
 
 class Detector:
 
-    def __init__(self, startup_callback, detection_callback, detection_fps=2.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
-        self._camera = camera.Camera(resolution, camera_id, startup_callback)
+    def __init__(self, detection_callback, detection_fps=2.0, resolution: (int, int)=(1280, 720), camera_id: int = 0):
+        self._camera = camera.Camera(resolution, camera_id)
+
+        time_start = timeit.default_timer()
+        print(f"Initializing Darknet")
+        
         self._fps = detection_fps
         
         self._run = True
@@ -29,26 +35,42 @@ class Detector:
 
         # The latest detected frame
         self._latest_frame: numpy.ndarray = None
-    
+        
+        # Darknet variables
+        self._darknet_resolution = (0, 0)
+        self._darknet_metaMain = None
+        self._darknet_netMain = None
+        self._darknet_image = None
+
+        self._initialize_darknet()
+
         self._thread = threading.Thread(target=self._detect_loop)
         self._thread.start()
 
+        print(f"Darknet initialized in {timeit.default_timer()-time_start:.2f} seconds") 
 
 
-    def _detect_loop(self):
+
+    # Initializes the darknet library by loading config files and weights
+    def _initialize_darknet(self):
+
+        # Setup paths
         inputDir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "input")
-
         configPath  = os.path.join(inputDir, "yolov3.cfg")
         weightPath  = os.path.join(inputDir, "card.weights") # Don't change this - change the file name instead
         metaPath = os.path.join(inputDir, "obj.data")
-
         setupObjPaths(metaPath, os.path.join(inputDir, "obj.names"))
 
+        if not os.path.exists(weightPath):
+            print(f"Couldn't find weights path '{weightPath}'")
+            sys.exit(101)
 
-        netMain = darknet.load_net_custom(configPath.encode("ascii"), weightPath.encode("ascii"), 0, 1)  # batch size = 1
+        self._darknet_netMain = darknet.load_net_custom(configPath.encode("ascii"), weightPath.encode("ascii"), 0, 1)  # batch size = 1
+        self._darknet_metaMain = darknet.load_meta(metaPath.encode("ascii"))
 
-        metaMain = darknet.load_meta(metaPath.encode("ascii"))
+        print("Finished loading")
 
+        # Not sure what is going on here?
         try:
             with open(metaPath) as metaFH:
                 metaContents = metaFH.read()
@@ -64,36 +86,38 @@ class Detector:
                         with open(result) as namesFH:
                             namesList = namesFH.read().strip().split("\n")
                             altNames = [x.strip() for x in namesList]
-                except TypeError:
-                    pass
-        except Exception:
-            pass
+                except TypeError as e:
+                    print(e)
+                    sys.exit(1337)
+        except Exception as e:
+            print(e)
+            sys.exit(1337)
+
+        self._darknet_resolution = (darknet.network_width(self._darknet_netMain), darknet.network_height(self._darknet_netMain))
+        self._darknet_image = darknet.make_image(self._darknet_resolution[0], self._darknet_resolution[1], 3)
 
 
-        darknet_image = darknet.make_image(darknet.network_width(netMain), darknet.network_height(netMain), 3)
 
-
+    # Primary loop of the computer vision, which performs the actual detections
+    def _detect_loop(self):
         while self._run:
             frame = self._camera.get_current_frame()
             if frame is None:
                 continue
         
-            # TODO: Perform Detection here
-
             frame_read = frame
             frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
             frame_resized = cv2.resize(frame_rgb,
-                                       (darknet.network_width(netMain),
-                                        darknet.network_height(netMain)),
+                                       self._darknet_resolution,
                                        interpolation=cv2.INTER_LINEAR)
 
-            darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
+            darknet.copy_image_from_bytes(self._darknet_image, frame_resized.tobytes())
 
-            detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
+            detections = darknet.detect_image(self._darknet_netMain, self._darknet_metaMain, self._darknet_image, thresh=0.25)
             if self._detection_callback is not None:
-                self._detection_callback(_detections_to_dict(detections), darknet.network_width(netMain), darknet.network_height(netMain))
+                self._detection_callback(_detections_to_dict(detections), self._darknet_resolution[0], self._darknet_resolution[1])
 
-            scaledDetections = _scale_detections(detections, self._camera._resolution[0]/darknet.network_width(netMain), self._camera._resolution[1]/darknet.network_height(netMain))
+            scaledDetections = _scale_detections(detections, self._camera._resolution[0]/self._darknet_resolution[0], self._camera._resolution[1]/self._darknet_resolution[1])
 
             image = cvDrawBoxes(scaledDetections, frame)
             image = cvDrawSectionLines(image, self._camera._resolution[0], self._camera._resolution[1])
@@ -211,6 +235,7 @@ def cvDrawBoxes(detections, img):
                     [0, 255, 0], 2)
     return img
 
+
 def cvDrawSectionLines(img, width, height):
 
     offset_W = 0.15
@@ -241,6 +266,7 @@ def cvDrawSectionLines(img, width, height):
         cv2.line(img,(x1,y1),(x2,y2),(255,0,0),5)
 
     return img
+
 
 def truncate(number, decimals=0):
     """

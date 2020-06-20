@@ -17,8 +17,13 @@ class Connector:
 
         self._message_listener = message_listener
 
-        threading._start_new_thread(self._send_messages, ())
-        threading._start_new_thread(self.receive_messages, ())
+        self._send_thread = threading.Thread(target=self._send_messages)
+        self._send_thread.daemon = True
+        self._send_thread.start()
+
+        self._recieve_thread = threading.Thread(target=self.receive_messages)
+        self._recieve_thread.daemon = True
+        self._recieve_thread.start()
 
 
     def send_message(self, msg: Message, wait=False):
