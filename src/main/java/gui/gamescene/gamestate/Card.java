@@ -1,7 +1,11 @@
 package gui.gamescene.gamestate;
 
 
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+
 import java.text.NumberFormat;
+import javafx.scene.effect.DropShadow;
 
 /** Class to represent a playing card with a suit and a value */
 public class Card {

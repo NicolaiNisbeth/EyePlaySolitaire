@@ -1,6 +1,9 @@
 package gui.gamescene.gamecomponent;
 
+import ai.state.Card;
 import gui.util.MarginContainer;
+import javafx.scene.paint.Color;
+import sun.awt.SunHints;
 
 
 /**
