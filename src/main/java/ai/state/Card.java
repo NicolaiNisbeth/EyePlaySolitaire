@@ -56,4 +56,5 @@ public class Card implements Comparable<Card>{
     public int hashCode() {
         return Objects.hash(value, suit);
     }
+
 }

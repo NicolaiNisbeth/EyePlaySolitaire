@@ -10,7 +10,7 @@ import ai.state.RemainingCards;
 import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
-import gui.gamescene.aiinterface.IGamePrompter;
+import gui.gamescene.aiinterface.IActionPrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
@@ -23,7 +23,7 @@ public class SolitaireAI implements ISolitaireAI {
     private static final Set<ai.state.Card> deck = Deck.cardSet; // used in flipped to remaining cards conversion
 
     @Override
-    public void computeAction(GameState gameState, IGamePrompter prompter) throws IllegalGameStateException {
+    public void computeAction(GameState gameState, IActionPrompter prompter) throws IllegalGameStateException {
         State state = stateConverter(gameState);
         Action action = agent.getAction(state);
         if (action == null) prompter.gameLost();
@@ -36,7 +36,7 @@ public class SolitaireAI implements ISolitaireAI {
     }
 
     @Override
-    public void endActionComputation(IGamePrompter prompter) {
+    public void endActionComputation(IActionPrompter prompter) {
 
     }
 

@@ -1,6 +1,7 @@
 package gui.gamescene.gamecomponent;
 
 
+import gui.gamescene.IComponent;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
 import gui.gamescene.gamestate.Card;
@@ -16,20 +17,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GameComponent implements IGameComponent {
+public class GameComponent implements IComponent {
 
     private StackPane container = new StackPane();
     private Text infoText = new Text();
 
     private GridPane grid = new GridPane();
-    private GameState gameState = new GameState();
     private CardImageLoader imageLoader = new CardImageLoader();
     private CardContainer stock;
     private CardStackContainer stockOverview;
     private CardStackContainer flipped;
     private List<CardStackContainer> tableaus;
     private List<CardContainer> foundations;
-
 
 
     public GameComponent(){
@@ -123,7 +122,6 @@ public class GameComponent implements IGameComponent {
     }
 
 
-    @Override
     public void updateGameState(GameState gameState) {
         // Make sure it's run on the ui thread
         Platform.runLater(() -> {
@@ -140,7 +138,7 @@ public class GameComponent implements IGameComponent {
             List<Card> stock = gameState.getStock();
             for (Card card : stock) {
                 CardPane pane = createCardPane(card);
-                this.stockOverview.addCard(pane);
+                this.stockOverview.addCardPane(pane);
             }
 
             // Update Flipped cards
@@ -148,7 +146,7 @@ public class GameComponent implements IGameComponent {
             List<Card> flipped = gameState.getFlipped();
             for (Card card : flipped) {
                 CardPane pane = createCardPane(card);
-                this.flipped.addCard(pane);
+                this.flipped.addCardPane(pane);
             }
 
             // Update tableaus
@@ -159,7 +157,7 @@ public class GameComponent implements IGameComponent {
 
                 for (Card card : tableau) {
                     CardPane pane = createCardPane(card);
-                    tableaus.get(i).addCard(pane);
+                    tableaus.get(i).addCardPane(pane);
                 }
             }
 
@@ -175,6 +173,18 @@ public class GameComponent implements IGameComponent {
                 }
             }
         });
+    }
+
+    public void highlightTableauCard(int tableauIndex, int cardIndex,  Color color){
+        tableaus.get(tableauIndex).getCard(cardIndex).borderGlow(color);
+    }
+
+    public void highlightFoundation(int index, Color color){
+        foundations.get(index).borderGlow(color);
+    }
+
+    public void highlightStockCard(int index, Color color){
+        stockOverview.getCard(index).borderGlow(color);
     }
 
     @Override

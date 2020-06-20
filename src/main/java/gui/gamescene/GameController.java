@@ -8,6 +8,7 @@ import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.cvinterface.ISolitaireCV;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
+import javafx.scene.paint.Paint;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,10 +34,17 @@ class GameController {
     private boolean computationRunning = false;
     private boolean detectionRunning = false;
 
+    // TODO: Remove this
+    private GameTester tester;
+
 
     GameController(GameScene scene) {
         this.scene = scene;
         console = scene.getConsole();
+
+        tester = new GameTester();
+        cv = tester;
+        ai = tester;
 
         cv.setImageUpdateListener( (newImage) -> scene.getCameraComponent().updateImage(newImage) );
         cv.setErrorListener(err -> scene.getCameraComponent().showError(err) );
@@ -47,16 +55,34 @@ class GameController {
 
         scene.getCameraComponent().startLoading("Starting computer vision...");
 
-        // TODO: Comment this in, if you don't want to traverse stock
-        //setupTestStock(currentGameState.getStock());
+        // Apply initial stock if set
+        if( initialStock != null ) currentGameState.setStock(initialStock);
 
         registerInputCommands();
     }
 
 
+    // Sets the initial stock to be used by used, to prevent from having to
+    // traverse the stock when starting the game
+    private static List<Card> initialStock = null;
+    public static void setInitialStock(List<Card> stock){
+        if( stock.size() != 24 )
+            throw new IllegalArgumentException("Stock must be of size 24");
+        List<Card> stockCopy = new LinkedList<>();
+        for( Card card : stock ) stockCopy.add(card.copy());
+        initialStock = stockCopy;
+    }
+
+    // TODO: Comment this in if you want to use a pre-defined stock
+    static{ setInitialStock(createTestStock()); }
+
+
     // For testing purposes
     private GameController() { }
 
+    public GameState getCurrentGameState(){
+        return currentGameState;
+    }
 
 
     private void registerInputCommands() {
@@ -136,7 +162,11 @@ class GameController {
 
     private void updateStock(){
         if( detectedGameState.getFlipped().size() == 0){
-            console.printError("No cards are drawn from the stock. Still need to detect " + currentGameState.getStock().size() + " cards.");
+            int unknownCount = 0;
+            for( Card card : currentGameState.getStock() )
+                if( card.isUnknown() ) unknownCount++;
+
+            console.printError("Still need to detect " + unknownCount + " cards, but none are drawn from the stock");
             return;
         }
 
@@ -213,7 +243,14 @@ class GameController {
                 if( foundation.size() > 1 ){
                     System.out.printf("WARNING: Foundation %d of detected game state is larger than 1 - %d to be exact (how's that possible)?", i, foundation.size() );
                 }
+
                 Card card = foundation.get(0);
+
+                // Remove card from stock, if it was moved from there
+                if (!firstGameState && isNewCard(currentGameState, card) && newGameState.getStock().contains(card) ){
+                    newGameState.getStock().remove(card);
+                }
+
                 for (int j = 1; j <= card.getValue(); j++) {
                     newGameState.addToFoundations(i, new Card(card.getSuit(), j));
                 }
@@ -394,6 +431,11 @@ class GameController {
     private static class TestConsole implements IConsole {
 
         @Override
+        public void print(String msg, Paint color, boolean bold) {
+
+        }
+
+        @Override
         public void printError(String msg) {
             System.out.println("Error: " + msg);
         }
@@ -410,30 +452,32 @@ class GameController {
     }
 
 
-    private static void setupTestStock(List<Card> stock){
-        stock.set(0, new Card(Card.Suit.HEARTS,  1));
-        stock.set(1, new Card(Card.Suit.SPADES,  6));
-        stock.set(2, new Card(Card.Suit.DIAMONDS, 13));
-        stock.set(3, new Card(Card.Suit.HEARTS, 9));
-        stock.set(4, new Card(Card.Suit.CLUBS, 11));
-        stock.set(5, new Card(Card.Suit.SPADES, 2));
-        stock.set(6, new Card(Card.Suit.SPADES, 4));
-        stock.set(7, new Card(Card.Suit.DIAMONDS, 5));
-        stock.set(8, new Card(Card.Suit.DIAMONDS, 7));
-        stock.set(9, new Card(Card.Suit.HEARTS, 8));
-        stock.set(10, new Card(Card.Suit.CLUBS, 6));
-        stock.set(11, new Card(Card.Suit.SPADES, 13));
-        stock.set(12, new Card(Card.Suit.CLUBS, 7));
-        stock.set(13, new Card(Card.Suit.DIAMONDS, 1));
-        stock.set(14, new Card(Card.Suit.HEARTS, 7));
-        stock.set(15, new Card(Card.Suit.HEARTS, 4));
-        stock.set(16, new Card(Card.Suit.CLUBS, 10));
-        stock.set(17, new Card(Card.Suit.CLUBS, 12));
-        stock.set(18, new Card(Card.Suit.CLUBS, 3));
-        stock.set(19, new Card(Card.Suit.SPADES, 1));
-        stock.set(20, new Card(Card.Suit.HEARTS, 5));
-        stock.set(21, new Card(Card.Suit.DIAMONDS, 8));
-        stock.set(22, new Card(Card.Suit.HEARTS, 11));
-        stock.set(23, new Card(Card.Suit.SPADES, 10));
+    private static List<Card> createTestStock(){
+        List<Card> stock = new LinkedList<>();
+        stock.add(new Card(Card.Suit.HEARTS,  1));
+        stock.add(new Card(Card.Suit.SPADES,  6));
+        stock.add(new Card(Card.Suit.DIAMONDS, 13));
+        stock.add(new Card(Card.Suit.HEARTS, 9));
+        stock.add(new Card(Card.Suit.CLUBS, 11));
+        stock.add(new Card(Card.Suit.SPADES, 2));
+        stock.add(new Card(Card.Suit.SPADES, 4));
+        stock.add(new Card(Card.Suit.DIAMONDS, 5));
+        stock.add(new Card(Card.Suit.DIAMONDS, 7));
+        stock.add(new Card(Card.Suit.HEARTS, 8));
+        stock.add(new Card(Card.Suit.CLUBS, 6));
+        stock.add(new Card(Card.Suit.SPADES, 13));
+        stock.add(new Card(Card.Suit.CLUBS, 7));
+        stock.add(new Card(Card.Suit.DIAMONDS, 1));
+        stock.add(new Card(Card.Suit.HEARTS, 7));
+        stock.add(new Card(Card.Suit.HEARTS, 4));
+        stock.add(new Card(Card.Suit.CLUBS, 10));
+        stock.add(new Card(Card.Suit.CLUBS, 12));
+        stock.add(new Card(Card.Suit.CLUBS, 3));
+        stock.add(new Card(Card.Suit.SPADES, 1));
+        stock.add(new Card(Card.Suit.HEARTS, 5));
+        stock.add(new Card(Card.Suit.DIAMONDS, 8));
+        stock.add(new Card(Card.Suit.HEARTS, 11));
+        stock.add(new Card(Card.Suit.SPADES, 10));
+        return stock;
     }
 }

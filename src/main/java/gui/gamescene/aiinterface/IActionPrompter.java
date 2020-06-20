@@ -1,7 +1,6 @@
 package gui.gamescene.aiinterface;
 
 
-import ai.state.Card;
 
 /**
  *  Prompts the user to take a particular game action (move cards).
@@ -9,13 +8,7 @@ import ai.state.Card;
  *  The prompter, does not check any game logic, as this is up to the
  *  caller.
  */
-public interface IGamePrompter {
-
-
-    /**
-     *  Prompt the user to traverse the entire stock. */
-    void promptTraverseStock();
-
+public interface IActionPrompter {
 
     /**
      *  Prompts the user to move the card from the top of the source tableau
@@ -37,8 +30,6 @@ public interface IGamePrompter {
     void promptStockToTableau(int stockIndex, int tableauIndex);
 
 
-    void promptStockToTableau(Card card, int tableauIndex);
-
     /**
      * Prompts the user to move a card from a tableau to one of the foundations.
      *
@@ -56,9 +47,6 @@ public interface IGamePrompter {
      * @param foundationIndex Index of the foundation to move the card to. Ranges from 0-3 where 0, is the leftmost foundation.
      */
     void promptStockToFoundation(int stockIndex, int foundationIndex);
-
-
-    void promptStockToFoundation(Card card, int foundationIndex);
 
     /**
      * Tells the prompter, that no move can be made to solve the solitaire.

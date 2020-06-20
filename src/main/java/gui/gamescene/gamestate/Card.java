@@ -5,6 +5,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
 import java.text.NumberFormat;
+import java.util.*;
+
 import javafx.scene.effect.DropShadow;
 
 /** Class to represent a playing card with a suit and a value */
@@ -39,6 +41,12 @@ public class Card {
     public static Card createUnknown(){
         return new Card(Suit.UNKNOWN, 0);
     }
+
+
+    public Card copy(){
+        return new Card(suit, value);
+    }
+
 
     /**
      * @return The card's suit as a {@link Card.Suit} enum
@@ -110,6 +118,35 @@ public class Card {
         return suit.toString().substring(0, 1).toUpperCase() + format.format(value);
     }
 
+
+    /**
+     * Generates a string representation of the card in a user friendly format.
+     * Example H1 becomes 'Ace of Hearts' and C12 becomes Queen of Clubs
+     */
+    public String toStringPretty(){
+        return valueAsName(value) + " of " + suit.toString();
+    }
+
+
+    public static String valueAsName(int value){
+        if(value == 1) return "Ace";
+        if(value == 2) return "Two";
+        if(value == 3) return "Three";
+        if(value == 4) return "Four ";
+        if(value == 5) return "Five";
+        if(value == 6) return "Six";
+        if(value == 7) return "Seven";
+        if(value == 8) return "Eight";
+        if(value == 9) return "Nine";
+        if(value == 10) return "Ten";
+        if(value == 11) return "Jack";
+        if(value == 12) return "Queen";
+        if(value == 13) return "King";
+
+        return "Unknown";
+    }
+
+
     public enum Suit{
         UNKNOWN,
         DIAMONDS,
@@ -120,5 +157,25 @@ public class Card {
         public String toString() {
             return this.name().toLowerCase();
         }
+    }
+
+
+    /**
+     * Creates a list of all Cards (meaning a full deck).
+     * @param shuffle Whether or not to shuffle the deck
+     */
+    public static List<Card> createDeck(boolean shuffle){
+        List<Card> deck = new LinkedList<>();
+        for( Suit suit : Suit.values() ){
+            if( suit == Suit.UNKNOWN) continue;
+            for( int i=1; i<=13; i++){
+                deck.add(new Card(suit, i));
+            }
+        }
+
+        if( shuffle )
+            Collections.shuffle(deck);
+
+        return deck;
     }
 }
