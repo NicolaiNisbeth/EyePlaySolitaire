@@ -1,0 +1,7 @@
+# Special git ignore just for this folder
+.idea/
+.vscode/
+venv/
+__pycache__/
+source/files/
+input/*.weights

@@ -3,19 +3,23 @@ package gui.gamescene.gamecomponent;
 
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
-import gui.gamescene.gamestate.UICard;
+import gui.gamescene.gamestate.Card;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
 public class GameComponent implements IGameComponent {
+
+    private StackPane container = new StackPane();
+    private Text infoText = new Text();
 
     private GridPane grid = new GridPane();
     private GameState gameState = new GameState();
@@ -32,7 +36,6 @@ public class GameComponent implements IGameComponent {
         BackgroundFill fill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(fill);
         grid.setBackground(background);
-
 
         //Set row
         for (int i = 0; i < 3; i++) {
@@ -81,13 +84,19 @@ public class GameComponent implements IGameComponent {
             foundations.add(new CardContainer(0.05));
             grid.add(foundations.get(i), i+3, 0);
         }
+        container.getChildren().add(grid);
 
+        // Setup infotext
+        infoText.setFont(new Font(18));
+        infoText.setFill(Color.WHITE);
+        infoText.setText("No game state has been recieved from computervision yet");
+        container.getChildren().add(infoText);
     }
 
     /**
      * Return the Card Pane matching the given card.
      */
-    private CardPane createCardPane(UICard card){
+    private CardPane createCardPane(Card card){
         if( card.isUnknown() )
             return createCardBackPane();
         else
@@ -103,6 +112,7 @@ public class GameComponent implements IGameComponent {
     public void updateGameState(GameState gameState) {
         // Make sure it's run on the ui thread
         Platform.runLater(() -> {
+            infoText.setVisible(false);
 
             System.out.println("GameComponenet: New GameState recieved");
             System.out.println(gameState);
@@ -115,8 +125,8 @@ public class GameComponent implements IGameComponent {
 
             // Update Flipped cards
             flipped.clearCards();
-            List<UICard> flipped = gameState.getFlipped();
-            for (UICard card : flipped) {
+            List<Card> flipped = gameState.getFlipped();
+            for (Card card : flipped) {
                 CardPane pane = createCardPane(card);
                 this.flipped.addCard(pane);
             }
@@ -124,11 +134,11 @@ public class GameComponent implements IGameComponent {
 
             // Update tableaus
             for (int i = 0; i < gameState.getTableaus().size(); i++) {
-                List<UICard> tableau = gameState.getTableaus().get(i);
+                List<Card> tableau = gameState.getTableaus().get(i);
 
                 tableaus.get(i).clearCards();
 
-                for (UICard card : tableau) {
+                for (Card card : tableau) {
                     CardPane pane = createCardPane(card);
                     tableaus.get(i).addCard(pane);
                 }
@@ -139,9 +149,9 @@ public class GameComponent implements IGameComponent {
                 foundations.get(i).clearCard();
 
                 // Only display the top card, if foundation is not empty
-                List<UICard> foundation = gameState.getFoundations().get(i);
+                List<Card> foundation = gameState.getFoundations().get(i);
                 if( foundation.size() > 0 ){
-                    UICard topCard = foundation.get(foundation.size()-1);
+                    Card topCard = foundation.get(foundation.size()-1);
                     foundations.get(i).setCard(createCardPane(topCard));
                 }
             }
@@ -150,7 +160,7 @@ public class GameComponent implements IGameComponent {
 
     @Override
     public Node getNode() {
-        return grid;
+        return container;
     }
 
 }

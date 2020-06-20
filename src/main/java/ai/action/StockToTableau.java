@@ -15,8 +15,8 @@ import java.util.function.Consumer;
 
 public class StockToTableau implements Action {
 
-    private Card card;
-    private int tableauIndex;
+    private final Card card;
+    private final int tableauIndex;
 
     public StockToTableau(Card card, int tableauIndex) {
         this.card = card;
@@ -47,7 +47,8 @@ public class StockToTableau implements Action {
     public void prompt(IGamePrompter prompter, State state) {
         Stock stock = state.getStock();
         int index = stock.getCardIndex(card);
-        prompter.promptStockToTableau(index, tableauIndex);
+        //prompter.promptStockToTableau(index, tableauIndex);
+        prompter.promptStockToTableau(card, tableauIndex);
     }
 
     @Override

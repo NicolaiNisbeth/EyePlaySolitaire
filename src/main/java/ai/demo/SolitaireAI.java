@@ -12,13 +12,10 @@ import ai.state.Stock;
 import ai.state.Tableau;
 import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
-import gui.gamescene.gamestate.UICard;
+import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class SolitaireAI implements ISolitaireAI {
     private static final Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
@@ -33,29 +30,83 @@ public class SolitaireAI implements ISolitaireAI {
         else action.prompt(prompter, state);
     }
 
+    @Override
+    public void startActionComputation(GameState gameState) throws IllegalGameStateException {
+        agent.getAction(stateConverter(gameState));
+    }
+
+    @Override
+    public void endActionComputation(IGamePrompter prompter) {
+
+    }
+
+    private Stock previous = null;
+
     // TODO: plenty of room for optimization in stateConverters
     /**
      * Converts UI gameState to AI gameState
      * @param uiGameState
      * @return AI gameState
      */
-    private State stateConverter(GameState uiGameState) {
-        Stock stock = stockConverter(uiGameState.getStock());
+    public State stateConverter(GameState uiGameState) {
         Tableau tableau = tableauConverter(uiGameState.getTableaus());
         Foundation foundation = foundationConverter(uiGameState.getFoundations());
-        RemainingCards remainingCards = remainingCardsConverter(uiGameState.getFlipped());
+        RemainingCards remainingCards = remainingCardsConverter(uiGameState);
+        Stock stock = previous == null ? stockConverter(uiGameState.getStock()) : previous;
+
+        Set<ai.state.Card> tableauOrFoundationCards = new HashSet<>();
+        for (Stack<ai.state.Card> stack : tableau.getStacks()) {
+            for(ai.state.Card card : stack) {
+                if(card != null){
+                    tableauOrFoundationCards.add(card);
+                }
+            }
+        }
+        for (Stack<ai.state.Card> stack : foundation.getStacks()) {
+            for(ai.state.Card card : stack) {
+                if(card != null){
+                    tableauOrFoundationCards.add(card);
+                }
+            }
+        }
+        for (int i = 0; i < stock.getCards().length; i++) {
+            ai.state.Card card = stock.getCards()[i];
+            if(tableauOrFoundationCards.contains(card)){
+                stock.removeCard(card);
+                break;
+            }
+        }
+
         return new State(stock, tableau, foundation, remainingCards);
     }
 
     /**
      *
-     * @param uiFlippedUICards
+     * @param uiGameState
      * @return
      */
-    private RemainingCards remainingCardsConverter(List<UICard> uiFlippedUICards) {
-        for (UICard flippedUICard : uiFlippedUICards){
-            deck.remove(cardConverter(flippedUICard));
+    private static RemainingCards remainingCardsConverter(GameState uiGameState) {
+
+        for( int i=0; i<7; i++){
+            List<Card> tableau = uiGameState.getTableaus().get(i);
+            for(int j = 0; j < tableau.size(); j++){
+                if(!tableau.get(j).isUnknown()){
+                    deck.remove(cardConverter(tableau.get(j)));
+                }
+            }
         }
+
+        for( int i=0; i<4; i++){
+            List<Card> foundations = uiGameState.getFoundations().get(i);
+            for(int j = 0; j < foundations.size(); j++){
+                deck.remove(cardConverter(foundations.get(j)));
+            }
+        }
+
+        for (Card stockCards : uiGameState.getStock()){
+            deck.remove(cardConverter(stockCards));
+        }
+
         return new RemainingCards(deck);
     }
 
@@ -64,14 +115,14 @@ public class SolitaireAI implements ISolitaireAI {
      * @param uiTableau
      * @return AI tableau
      */
-    private Tableau tableauConverter(List<List<UICard>> uiTableau) {
+    private static Tableau tableauConverter(List<List<Card>> uiTableau) {
         int size = uiTableau.size();
         ai.state.Card[][] cards = new ai.state.Card[size][];
         for (int i = 0; i < size; i++) {
-            List<UICard> stack = uiTableau.get(i);
+            List<Card> stack = uiTableau.get(i);
             ai.state.Card[] cc = new ai.state.Card[stack.size()];
             for (int j = 0; j < stack.size(); j++){
-                UICard c = stack.get(j);
+                Card c = stack.get(j);
                 cc[j] = cardConverter(c);
             }
             cards[i] = cc;
@@ -84,11 +135,11 @@ public class SolitaireAI implements ISolitaireAI {
      * @param uiFoundation
      * @return AI foundation
      */
-    private Foundation foundationConverter(List<List<UICard>> uiFoundation) {
+    private static Foundation foundationConverter(List<List<Card>> uiFoundation) {
         List<Stack<ai.state.Card>> stacks = new ArrayList<>();
-        for (List<UICard> f : uiFoundation){
+        for (List<Card> f : uiFoundation){
             Stack<ai.state.Card> stack = new Stack<>();
-            for (UICard c : f){
+            for (Card c : f){
                 stack.add(cardConverter(c));
             }
             stacks.add(stack);
@@ -101,11 +152,11 @@ public class SolitaireAI implements ISolitaireAI {
      * @param uiStock
      * @return AI stock
      */
-    private Stock stockConverter(List<UICard> uiStock) {
+    private static Stock stockConverter(List<Card> uiStock) {
         int size = uiStock.size();
         ai.state.Card[] cards = new ai.state.Card[size];
         for (int i = 0; i < size; i++){
-            UICard c = uiStock.get(i);
+            Card c = uiStock.get(i);
             cards[i] = cardConverter(c);
         }
         return new Stock(cards);
@@ -113,12 +164,12 @@ public class SolitaireAI implements ISolitaireAI {
 
     /**
      * Converts UI card to AI card
-     * @param aiUICard
+     * @param aiCard
      * @return AI card
      */
-    private ai.state.Card cardConverter(UICard aiUICard) {
-        int value = aiUICard.getValue();
-        int suit = aiUICard.getSuit().ordinal()-1;
+    private static ai.state.Card cardConverter(Card aiCard) {
+        int value = aiCard.getValue();
+        int suit = aiCard.getSuit().ordinal()-1;
         return suit >= 0  ? new ai.state.Card(value, suit) : null;
     }
 }

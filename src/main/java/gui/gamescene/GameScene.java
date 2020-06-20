@@ -1,9 +1,7 @@
 package gui.gamescene;
 
-import ai.action.Action;
-import ai.agent.ExpectimaxAgent;
-import ai.demo.DemoDeck;
 import ai.demo.SolitaireAI;
+import cv.SolitaireCV;
 import ai.heuristic.Heuristic;
 import ai.heuristic.OptionsKnowledgeFoundation;
 import ai.state.Card;
@@ -18,39 +16,34 @@ import gui.gamescene.aiinterface.IGamePrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
+import gui.gamescene.cvinterface.ISolitaireCV;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamecomponent.IGameComponent;
 import gui.gamescene.gamestate.GameState;
-import gui.gamescene.gamestate.GameStateGenerator;
-import gui.gamescene.gamestate.UICard;
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.io.Console;
 
 
-public class GameScene extends Scene implements ConsoleComponent.InputListener {
+public class GameScene extends Scene {
 
     private static final int WINDOW_WIDTH = 1400;
     private static final int WINDOW_HEIGHT = 720;
 
     private GridPane grid;
-    private ConsoleComponent consoleComponent;
+    private IConsole console;
     private CameraComponent cameraComponent;
     private IGameComponent gameComponent;
     private IGamePrompter prompter;
     private final ISolitaireAI ai = new SolitaireAI();
+    private final ISolitaireCV cv = new SolitaireCV();
+
+    private GameController gameController;
     //private Camera camera;
 
 
@@ -67,15 +60,13 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         column1.setPercentWidth(35);
         grid.getColumnConstraints().add(column1);
 
-
         // Add Console component
-        consoleComponent = new ConsoleComponent(this);
+        ConsoleComponent consoleComponent = new ConsoleComponent();
         grid.add(consoleComponent.getNode(), 0,1 );
         GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
         GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
-
+        console = consoleComponent;
         prompter = consoleComponent;
-
 
         // Add Game Component
         gameComponent = new GameComponent();
@@ -84,7 +75,6 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(gameNode, Priority.ALWAYS);
         GridPane.setVgrow(gameNode, Priority.ALWAYS);
 
-
         // Add Camera Component
         cameraComponent = new CameraComponent();
         Node cameraNode = cameraComponent.getNode();
@@ -92,62 +82,58 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
 
+        /*
+        cameraComponent.startLoading("Starting computer vision...");
 
-        // Just a temporary image
-        Image image = new Image("images/solitaire_irl.jpg", false);
-        cameraComponent.updateImage(image);
-
+        // Start Computer Vision
+        cv.setImageUpdateListener((newImage) -> cameraComponent.updateImage(newImage));
+        cv.setGameStateUpdateListener((newState -> gameComponent.updateGameState(newState) ));
+        cv.setFinishedCallback(err -> {
+            cameraComponent.showError("Computer vision client has been stopped!");
+        });
+        cv.start();
+        */
 
         // TODO: Remove this once CV has been implemented
         // Display a randomized Game State
-        GameState state = GameStateGenerator.generateGameState(1000);
-        gameComponent.updateGameState(state);
+      /*  GameState state = GameStateGenerator.generateGameState(1000);
+        gameComponent.updateGameState(state);*/
 
         // TODO: Remove this once CV has been implemented
         // Starts a Thread for testing AI
-        new Thread(this::aiTest).start();
+        // new Thread(this::aiTest).start();
 
 
-        // TODO: Remove this when camera is implemented corretly
-        /*
-        // Testing camera
-        camera = new Camera();
-        camera.startCamera( (img) -> {
-            cameraComponent.updateImage(img);
-        });
-        */
+        gameController = new GameController(this);
     }
 
 
-    @Override
-    public void onConsoleInput(String input) {
-        System.out.println("Input from console: " + input);
+    public IConsole getConsole() {
+        return console;
+    }
 
-        // Generates a random state of cards and updates the game component
-        if( input.equals("newstate")) {
-            GameState state = GameStateGenerator.generateGameState(System.currentTimeMillis());
-            gameComponent.updateGameState(state);
-        }
+    public IGameComponent getGameComponent() {
+        return gameComponent;
     }
 
 
-    /**
-     * Sends an asynchronous computation request to the AI on a new non-UI thread.
-     */
-    public void computeNextAction(GameState state){
-        new Thread(() -> {
-            // TODO: Implement this with better error message system in the GUI
-            try{
-                ai.computeAction(state, prompter);
-            }catch(ISolitaireAI.IllegalGameStateException e){
-                e.printStackTrace();
-                System.out.println(state);
-            }
-        }).start();
+    public CameraComponent getCameraComponent() {
+        return cameraComponent;
     }
 
+    public ISolitaireAI getAi() {
+        return ai;
+    }
 
+    public ISolitaireCV getCv() {
+        return cv;
+    }
 
+    public IGamePrompter getPrompter() {
+        return prompter;
+    }
+
+    /*
     private void aiTest(){
         // TODO: JD og Nicolai implementer jeres AI shit her
         Heuristic heuristic = new OptionsKnowledgeFoundation(1, 0, 1);
@@ -197,11 +183,11 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         System.out.println("Leaf nodes " + agent.getCounter());
         System.out.println(String.format("Wins %d\nMax %d\nAverage %f", wins, max, (double)sum/iterations));
 
-        /*
+        *//*
         Brug denne her til at opdatere spillet i GUI'en
         Platform.runLater(() -> {
             gameComponent.updateState(state);
-        });*/
+        });*//*
 
 
     }
@@ -209,15 +195,15 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
     private static GameState convertState(State state){
 
         Stock stock = Producer.produceStock(state.getStock(), lol -> {});
-        List<UICard> stockList = new ArrayList<>();
-        for(Card card : stock.getCards())
+        List<Card> stockList = new ArrayList<>();
+        for(ai.state.Card card : stock.getCards())
             stockList.add(convertCard(card));
 
         Foundation foundation = Producer.produceFoundation(state.getFoundation(), lol -> {});
-        List<List<UICard>> foundationList = new ArrayList<>();
-        for(Stack<Card> stack : foundation.getStacks()){
-            List<UICard> convertedStack = new ArrayList<>();
-            List<UICard> temp = new ArrayList<>();
+        List<List<Card>> foundationList = new ArrayList<>();
+        for(Stack<ai.state.Card> stack : foundation.getStacks()){
+            List<Card> convertedStack = new ArrayList<>();
+            List<Card> temp = new ArrayList<>();
             while(!stack.isEmpty()){
                 temp.add(convertCard(stack.pop()));
             }
@@ -228,10 +214,10 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         }
 
         Tableau tableau = Producer.produceTableau(state.getTableau(), lol -> {});
-        List<List<UICard>> tableauList = new ArrayList<>();
-        for(Stack<Card> stack : tableau.getStacks()){
-            List<UICard> convertedStack = new ArrayList<>();
-            List<UICard> temp = new ArrayList<>();
+        List<List<Card>> tableauList = new ArrayList<>();
+        for(Stack<ai.state.Card> stack : tableau.getStacks()){
+            List<Card> convertedStack = new ArrayList<>();
+            List<Card> temp = new ArrayList<>();
             while(!stack.isEmpty()){
                 temp.add(convertCard(stack.pop()));
             }
@@ -241,29 +227,29 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
             tableauList.add(convertedStack);
         }
 
-        List<UICard> flipped = new ArrayList<>();
+        List<Card> flipped = new ArrayList<>();
 
 
 
         return new GameState(stockList, flipped, tableauList, foundationList);
     }
 
-    private static UICard convertCard(Card card){
-        UICard.Suit suit;
+    private static Card convertCard(ai.state.Card card){
+        Card.Suit suit;
         if(card == null)
-            return new UICard(UICard.Suit.UNKNOWN, 2);
+            return new Card(Card.Suit.UNKNOWN, 2);
         switch(card.getSuit()){
-            case 0: suit = UICard.Suit.CLUBS;
+            case 0: suit = Card.Suit.CLUBS;
                 break;
-            case 1: suit = UICard.Suit.DIAMONDS;
+            case 1: suit = Card.Suit.DIAMONDS;
                 break;
-            case 2: suit = UICard.Suit.HEARTS;
+            case 2: suit = Card.Suit.HEARTS;
                 break;
-            case 3: suit = UICard.Suit.SPADES;
+            case 3: suit = Card.Suit.SPADES;
                 break;
-            default: suit = UICard.Suit.UNKNOWN;
+            default: suit = Card.Suit.UNKNOWN;
         }
-        return new UICard(suit, card.getValue());
+        return new Card(suit, card.getValue());
     }
 
 
@@ -303,7 +289,7 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         board[3] = new ai.state.Card[4];
         board[4] = new ai.state.Card[5];
         board[5] = new ai.state.Card[6];
-        board[6] = new Card[7];
+        board[6] = new ai.state.Card[7];
 
         board[0][0] = deck.draw();
         board[1][0] = null;
@@ -336,4 +322,8 @@ public class GameScene extends Scene implements ConsoleComponent.InputListener {
         return board;
     }
 
+    @Override
+    public void onConsoleInput(String input) {
+
+    }*/
 }

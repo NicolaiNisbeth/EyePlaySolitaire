@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class StockToFoundation implements Action {
 
-    private Card card;
+    private final Card card;
 
     public StockToFoundation(Card card) {
         this.card = card;
@@ -36,11 +36,16 @@ public class StockToFoundation implements Action {
         return results;
     }
 
+    public Card getCard(){
+        return this.card;
+    }
+
     @Override
     public void prompt(IGamePrompter prompter, State state) {
         Stock stock = state.getStock();
         int index = stock.getCardIndex(card);
-        prompter.promptStockToFoundation(index, card.getSuit());
+        //prompter.promptStockToFoundation(index, card.getSuit());
+        prompter.promptStockToFoundation(card, card.getSuit());
     }
 
     @Override
