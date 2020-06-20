@@ -31,7 +31,7 @@ public class GameScene extends Scene implements IActionPrompter {
     private GameController gameController;
 
 
-    public GameScene() {
+    public GameScene(boolean useManualAI, boolean useManualCV, boolean usePreDefinedStock) {
         super(new GridPane(), WINDOW_WIDTH, WINDOW_HEIGHT);
         grid = (GridPane) getRoot();
 
@@ -66,7 +66,7 @@ public class GameScene extends Scene implements IActionPrompter {
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
 
-        gameController = new GameController(this, false, false, false);
+        gameController = new GameController(this, useManualAI, useManualCV, usePreDefinedStock);
     }
 
 
