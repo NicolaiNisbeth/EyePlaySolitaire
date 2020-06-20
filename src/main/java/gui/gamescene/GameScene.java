@@ -3,6 +3,7 @@ package gui.gamescene;
 import gui.gamescene.aiinterface.IActionPrompter;
 import gui.gamescene.cameracomponent.CameraComponent;
 import gui.gamescene.consolecomponent.ConsoleComponent;
+import gui.gamescene.contolcomponent.ControlComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
@@ -27,6 +28,7 @@ public class GameScene extends Scene implements IActionPrompter {
     private CameraComponent cameraComponent;
     private GameComponent gameComponent;
     private IActionPrompter prompter;
+    private ControlComponent controlComponent;
 
     private GameController gameController;
 
@@ -44,13 +46,18 @@ public class GameScene extends Scene implements IActionPrompter {
         column1.setPercentWidth(35);
         grid.getColumnConstraints().add(column1);
 
-        // Add Console component
+        /*// Add Console component
         ConsoleComponent consoleComponent = new ConsoleComponent();
         grid.add(consoleComponent.getNode(), 0,1 );
         GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
         GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
         console = consoleComponent;
-        prompter = this;
+        prompter = this;*/
+
+        controlComponent = new ControlComponent();
+        grid.add(controlComponent.getNode(), 0,1 );
+        GridPane.setHgrow(controlComponent.getNode(), Priority.ALWAYS);
+        GridPane.setVgrow(controlComponent.getNode(), Priority.ALWAYS);
 
         // Add Game Component
         gameComponent = new GameComponent();
@@ -65,6 +72,8 @@ public class GameScene extends Scene implements IActionPrompter {
         grid.add(cameraNode, 0,0 );
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
+
+        prompter = this;
 
         gameController = new GameController(this, useManualAI, useManualCV, usePreDefinedStock);
     }
@@ -86,8 +95,9 @@ public class GameScene extends Scene implements IActionPrompter {
         return prompter;
     }
 
-
-
+    public ControlComponent getControlComponent() {
+        return controlComponent;
+    }
 
     // ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
     // Action prompting
@@ -98,8 +108,8 @@ public class GameScene extends Scene implements IActionPrompter {
 
     private void printActionPrompt(String prompt){
         // Cause the prompt to run on the UI thread
-        console.print("Take action: " + prompt, Color.DARKGREEN, false);
-
+        //console.print("Take action: " + prompt, Color.DARKGREEN, false);
+        controlComponent.promptAction("Take action:\n" + prompt);
     }
 
 

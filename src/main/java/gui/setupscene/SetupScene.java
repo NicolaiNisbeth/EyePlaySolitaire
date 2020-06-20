@@ -9,10 +9,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
+
+
 
 public class SetupScene extends Scene {
 
@@ -22,7 +23,7 @@ public class SetupScene extends Scene {
     private CheckBox checkBox_PredefinedStock;
 
     public SetupScene() {
-        super(new VBox(), 350, 450);
+        super(new VBox(), 350, 500);
 
         // Setup container
         container = (VBox) getRoot();

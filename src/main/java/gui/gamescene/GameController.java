@@ -28,7 +28,7 @@ class GameController {
 
     private boolean firstGameState = true;
 
-    private IConsole console = null;
+    //private IConsole console = null;
     private Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
     private ISolitaireAI ai;
     private ISolitaireCV cv;
@@ -41,7 +41,12 @@ class GameController {
 
     GameController(GameScene scene, boolean manualAI, boolean manualCV, boolean usePredefinedStock) {
         this.scene = scene;
-        console = scene.getConsole();
+        //console = scene.getConsole();
+
+        // Setup control component
+        scene.getControlComponent().onDetectStarted(this::startDetection);
+        scene.getControlComponent().onComputeStarted(this::compute);
+        scene.getControlComponent().onComputeStopped(this::stopCompute);
 
         // Remove top cards from game state
         for( List<Card> tableau : currentGameState.getTableaus() )
@@ -69,7 +74,7 @@ class GameController {
         }
         currentGameState.setStock(stock);
 
-        registerInputCommands();
+        //registerInputCommands();
 
         cv.start();
     }
@@ -83,16 +88,16 @@ class GameController {
         return currentGameState;
     }
 
-
+/*
     private void registerInputCommands() {
         console.registerInputCommand("detect", this::startDetection);
         console.registerInputCommand("stop", this::stopWork);
         console.registerInputCommand("compute", this::compute);
-    }
+    }*/
 
 
     private void startDetection() {
-        console.printInfo("Starting computervision detection (write 'stop' to lock detection)");
+        // console.printInfo("Starting computervision detection (write 'stop' to lock detection)");
         detectedGameState = lastGameState;
         if( detectedGameState != null )
             updateGameState();
@@ -109,7 +114,7 @@ class GameController {
     }
 
 
-    // Stops both computervision, and AI
+ /*   // Stops both computervision, and AI
     private void stopWork()  {
         if( detectionRunning ) {
             detectionRunning = false;
@@ -118,29 +123,42 @@ class GameController {
         if( computationRunning ){
             computationRunning = false;
             console.printInfo("Stopping computation of best move");
+
+        }
+    }*/
+
+    private void stopCompute(){
+        if( computationRunning ){
+            computationRunning = false;
             ai.endActionComputation(scene.getPrompter());
         }
     }
 
 
     private void compute(){
-        stopWork();
-        firstGameState = false;
-        currentGameState = newGameState;
+        if( newGameState == null ){
+            scene.getControlComponent().promptAction("No state has been detected yet!");
+        }else{
+            detectionRunning = false;
+            firstGameState = false;
+            currentGameState = newGameState;
 
-        // Update the stock cards
-        if( currentGameState.getStock().contains(Card.createUnknown()) ){
-            updateStock();
+            // Update the stock cards
+            if( currentGameState.getStock().contains(Card.createUnknown()) ){
+                updateStock();
+            }
+
+            // Run the computation if game state is ready
+            if( !currentGameState.getStock().contains(Card.createUnknown()) ){
+                updateGameState();
+                // Run computation
+                computeNextAction(currentGameState);
+                //console.printInfo("Computing the best move (write 'stop' to get result)");
+            }else{
+                computationRunning = false;
+            }
         }
 
-
-        // Run the computation if game state is ready
-        if( !currentGameState.getStock().contains(Card.createUnknown()) ){
-            updateGameState();
-            // Run computation
-            computeNextAction(currentGameState);
-            console.printInfo("Computing the best move (write 'stop' to get result)");
-        }
     }
 
 
@@ -150,12 +168,12 @@ class GameController {
             for( Card card : currentGameState.getStock() )
                 if( card.isUnknown() ) unknownCount++;
 
-            console.printError("Still need to detect " + unknownCount + " cards, but none are drawn from the stock");
+            scene.getControlComponent().promptAction("Still need to detect " + unknownCount + " cards, but none are drawn from the stock");
             return;
         }
 
         if( compareCardLists(currentGameState.getStock(), detectedGameState.getFlipped()) ){
-            console.printError("You have drawn no new cards. Draw 3 new cards from the stock!");
+            scene.getControlComponent().promptAction("You have drawn no new cards. Draw 3 new cards from the stock!");
             return;
         }
 
@@ -175,7 +193,7 @@ class GameController {
 
         // Print info to user
         String cardLabels = addedCards.stream().map(Card::toStringShort).collect(joining(", ", "", ""));
-        console.printInfo("Added " + addedCards.size() + " new cards to the stock: " + cardLabels);
+        scene.getControlComponent().promptAction("Added " + addedCards.size() + " new cards to the stock: " + cardLabels);
     }
 
 
@@ -287,7 +305,7 @@ class GameController {
     public static void main(String[] args) {
         List<GameState> testStates = createTestStates();
         GameController gameController = new GameController();
-        gameController.console = new TestConsole();
+        // gameController.console = new TestConsole();
         System.out.println(gameController.currentGameState);
 
         // Update flipped
