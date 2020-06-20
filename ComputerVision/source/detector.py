@@ -12,7 +12,6 @@ from ctypes import *
 import math
 import random
 import os
-import numpy as np
 from darknet import darknet
 
 
@@ -40,7 +39,7 @@ class Detector:
         inputDir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "input")
 
         configPath  = os.path.join(inputDir, "yolov3.cfg")
-        weightPath  = os.path.join(inputDir, "final.weights")
+        weightPath  = os.path.join(inputDir, "card.weights") # Don't change this - change the file name instead
         metaPath = os.path.join(inputDir, "obj.data")
 
         setupObjPaths(metaPath, os.path.join(inputDir, "obj.names"))
@@ -87,13 +86,10 @@ class Detector:
                                        (darknet.network_width(netMain),
                                         darknet.network_height(netMain)),
                                        interpolation=cv2.INTER_LINEAR)
-            #print("width", darknet.network_width(netMain))
-            #print("height", darknet.network_height(netMain))
-            #print("frame_resized", len(frame_resized[0]))
+
             darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
 
             detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
-            #print(detections)
             if self._detection_callback is not None:
                 self._detection_callback(_detections_to_dict(detections), darknet.network_width(netMain), darknet.network_height(netMain))
 
@@ -101,17 +97,9 @@ class Detector:
 
             image = cvDrawBoxes(scaledDetections, frame)
             image = cvDrawSectionLines(image, self._camera._resolution[0], self._camera._resolution[1])
-            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-
-            #print("image", len(image))
-
-            
             with self._frame_lock:
                 self._latest_frame = image
-
-            #TODO: Notify detection here:
-            #   self._detection_callback(<arguments>)
 
             # Limits the framerate
             time.sleep(1.0/self._fps)

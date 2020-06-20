@@ -19,6 +19,8 @@ public class ClientStarter {
     /**
      * Starts the ComputerVision client program as a seperate process
      * using Python.
+     * A seperate thread will be started to wait for the process to
+     * finish.
      *
      * @param port The port number the client should connect to
      */

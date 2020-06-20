@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,30 +21,30 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     private Server server;
     private ImageUpdateListener imageUpdateListener;
     private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(416,416,2);
-    private FinishedCallback finishedCallback;
     private boolean paused = false;
+    private ErrorListener errorListener;
 
 
     @Override
     public void start() {
         try {
+
+            // Start the server
             server = new Server(this, this);
             int port = 0;
             port = server.start();
-
             System.out.println("Started computer vision server on port " + port);
 
+            // Start the client
             ClientStarter clientStarter = new ClientStarter();
-
-            // TODO: Consider if these should be removed
-            clientStarter.setStandardOutputListener((msg) -> System.out.println("Message: " + msg));
-            clientStarter.setErrorOutputListener((msg) -> System.out.println("Error: " + msg));
+            clientStarter.setStandardOutputListener(this::printClientMessage);
+            clientStarter.setErrorOutputListener(this::printClientMessage);
             clientStarter.setProcessFinishedCallback(this::clientFinished);
-
             clientStarter.start(port);
+
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: Add some real error here
+            onError("Error when starting computer vision ('"+e.getMessage()+"')");
         }
     }
 
@@ -71,8 +70,8 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     }
 
     @Override
-    public void setFinishedCallback(FinishedCallback callback) {
-        finishedCallback = callback;
+    public void setErrorListener(ErrorListener errorListener) {
+        this.errorListener = errorListener;
     }
 
 
@@ -85,6 +84,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
             e.printStackTrace();
         }
     }
+
 
     // Handles incoming messages from client
     @Override
@@ -117,8 +117,6 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     }
 
 
-
-
     /*  Decodes an image encoded as base64 into a JavaFX image and notify
     *   the ImageUpdateListener that a new image has been received */
     private void decodeImageMessage(String imageStringData, int width, int height){
@@ -145,7 +143,6 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     }
 
 
-
     private void decodeDetections(JSONObject data){
         JSONArray jsonDetections = data.getJSONArray("detections");
         List<Detection> detections = new LinkedList<>();
@@ -156,17 +153,24 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     }
 
 
-    public void stop(boolean error){
-        finishedCallback.onFinish(error);
-    }
-
-    private void clientFinished(int exitCode){
-        System.out.println("CV Client has stopped with exit code " + exitCode);
-        stop(true);
-    }
-
     @Override
     public void onServerError(String errorMessage) {
-
+        onError(errorMessage);
     }
+
+
+    private void clientFinished(int exitCode){
+        onError("Computer vision client shouldn't terminate, but has just exited with code " + exitCode);
+    }
+
+
+    private void onError(String errorMessage){
+        if(errorListener != null)
+            errorListener.onError(errorMessage);
+    }
+
+    private void printClientMessage(String message){
+        System.out.println("\u001B[90m" + message + "\u001B[0m");
+    }
+
 }
