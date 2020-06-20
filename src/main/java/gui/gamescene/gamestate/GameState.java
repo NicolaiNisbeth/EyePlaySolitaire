@@ -267,7 +267,7 @@ public class GameState {
      * Generates a random valid starting state, where the entire stock is
      * known.
      */
-    public static GameState randomStartingState(){
+    public static GameState randomStartingState(boolean unknownStock){
         GameState state = new GameState();
         List<Card> deck = Card.createDeck(true);
 
@@ -279,7 +279,8 @@ public class GameState {
         }
 
         for( int i=0; i<24; i++ ){
-            state.addToStock(deck.remove(deck.size()-1));
+            if( unknownStock ) state.addToStock(Card.createUnknown());
+            else state.addToStock(deck.remove(deck.size()-1));
         }
 
         return state;

@@ -5,7 +5,9 @@ import ai.heuristic.Cocktail;
 import ai.heuristic.Heuristic;
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.ISolitaireAI;
+import gui.gamescene.aiinterface.ManualAI;
 import gui.gamescene.cvinterface.ISolitaireCV;
+import gui.gamescene.cvinterface.ManualCV;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 import javafx.scene.paint.Paint;
@@ -22,63 +24,60 @@ class GameController {
     private GameState lastGameState; // The most recent game state received from CV (not the most recent activated one though)
     private GameState detectedGameState;
     private GameState newGameState = null;
-    private GameState currentGameState = setupInitialGameState();
+    private GameState currentGameState = GameState.randomStartingState(true);
 
     private boolean firstGameState = true;
 
     private IConsole console = null;
     private Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
-    private ISolitaireAI ai = new MCTSGuiAgent(-1,heuristic);
-    private ISolitaireCV cv = new SolitaireCV();
+    private ISolitaireAI ai;
+    private ISolitaireCV cv;
 
     private boolean computationRunning = false;
     private boolean detectionRunning = false;
 
-    // TODO: Remove this
-    private GameTester tester;
+    private static List<Card> predefinedStock = null;
 
 
-    GameController(GameScene scene) {
+    GameController(GameScene scene, boolean manualAI, boolean manualCV, boolean usePredefinedStock) {
         this.scene = scene;
         console = scene.getConsole();
 
-        tester = new GameTester();
-        cv = tester;
-        ai = tester;
+        // Remove top cards from game state
+        for( List<Card> tableau : currentGameState.getTableaus() )
+            tableau.remove(tableau.size()-1);
+
+        cv = manualCV ? new ManualCV() : new SolitaireCV();
+        ai = manualAI ? new ManualAI() : new MCTSGuiAgent(-1,heuristic);
 
         cv.setImageUpdateListener( (newImage) -> scene.getCameraComponent().updateImage(newImage) );
         cv.setErrorListener(err -> scene.getCameraComponent().showError(err) );
         cv.setGameStateUpdateListener(this::onDetection);
-        cv.start();
 
         scene.getGameComponent().updateGameState(currentGameState);
-
         scene.getCameraComponent().startLoading("Starting computer vision...");
 
-        // Apply initial stock if set
-        if( initialStock != null ) currentGameState.setStock(initialStock);
+        // Setup initial stock
+        List<Card> stock;
+        if( manualCV ){
+            stock = ((ManualCV) cv).getPredefinedStock();
+        }else if( usePredefinedStock ){
+            stock = predefinedStock;
+        }else{
+            stock = new LinkedList<>();
+            for(int i=0; i<24; i++) stock.add(Card.createUnknown());
+        }
+        currentGameState.setStock(stock);
 
         registerInputCommands();
+
+        cv.start();
     }
-
-
-    // Sets the initial stock to be used by used, to prevent from having to
-    // traverse the stock when starting the game
-    private static List<Card> initialStock = null;
-    public static void setInitialStock(List<Card> stock){
-        if( stock.size() != 24 )
-            throw new IllegalArgumentException("Stock must be of size 24");
-        List<Card> stockCopy = new LinkedList<>();
-        for( Card card : stock ) stockCopy.add(card.copy());
-        initialStock = stockCopy;
-    }
-
-    // TODO: Comment this in if you want to use a pre-defined stock
-    static{ setInitialStock(createTestStock()); }
 
 
     // For testing purposes
     private GameController() { }
+
 
     public GameState getCurrentGameState(){
         return currentGameState;
@@ -142,21 +141,6 @@ class GameController {
             computeNextAction(currentGameState);
             console.printInfo("Computing the best move (write 'stop' to get result)");
         }
-    }
-
-
-    // Creates a game state with all the unknown cards (tableau and stock)
-    private static GameState setupInitialGameState(){
-        GameState state = new GameState();
-        for(int i=0; i<24; i++){
-            state.addToStock(Card.createUnknown());
-        }
-        for(int i=0; i<7; i++){
-            for(int j=0; j<i; j++){
-                state.addToTableau(i, Card.createUnknown());
-            }
-        }
-        return state;
     }
 
 
@@ -304,7 +288,6 @@ class GameController {
         List<GameState> testStates = createTestStates();
         GameController gameController = new GameController();
         gameController.console = new TestConsole();
-        gameController.setupInitialGameState();
         System.out.println(gameController.currentGameState);
 
         // Update flipped
@@ -452,32 +435,32 @@ class GameController {
     }
 
 
-    private static List<Card> createTestStock(){
-        List<Card> stock = new LinkedList<>();
-        stock.add(new Card(Card.Suit.HEARTS,  1));
-        stock.add(new Card(Card.Suit.SPADES,  6));
-        stock.add(new Card(Card.Suit.DIAMONDS, 13));
-        stock.add(new Card(Card.Suit.HEARTS, 9));
-        stock.add(new Card(Card.Suit.CLUBS, 11));
-        stock.add(new Card(Card.Suit.SPADES, 2));
-        stock.add(new Card(Card.Suit.SPADES, 4));
-        stock.add(new Card(Card.Suit.DIAMONDS, 5));
-        stock.add(new Card(Card.Suit.DIAMONDS, 7));
-        stock.add(new Card(Card.Suit.HEARTS, 8));
-        stock.add(new Card(Card.Suit.CLUBS, 6));
-        stock.add(new Card(Card.Suit.SPADES, 13));
-        stock.add(new Card(Card.Suit.CLUBS, 7));
-        stock.add(new Card(Card.Suit.DIAMONDS, 1));
-        stock.add(new Card(Card.Suit.HEARTS, 7));
-        stock.add(new Card(Card.Suit.HEARTS, 4));
-        stock.add(new Card(Card.Suit.CLUBS, 10));
-        stock.add(new Card(Card.Suit.CLUBS, 12));
-        stock.add(new Card(Card.Suit.CLUBS, 3));
-        stock.add(new Card(Card.Suit.SPADES, 1));
-        stock.add(new Card(Card.Suit.HEARTS, 5));
-        stock.add(new Card(Card.Suit.DIAMONDS, 8));
-        stock.add(new Card(Card.Suit.HEARTS, 11));
-        stock.add(new Card(Card.Suit.SPADES, 10));
-        return stock;
+    // Setup the predefined stock
+    static {
+        predefinedStock = new LinkedList<>();
+        predefinedStock.add(new Card(Card.Suit.HEARTS,  1));
+        predefinedStock.add(new Card(Card.Suit.SPADES,  6));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 13));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 9));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 11));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 2));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 4));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 5));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 7));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 8));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 6));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 13));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 7));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 1));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 7));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 4));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 10));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 12));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 3));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 1));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 5));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 8));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 11));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 10));
     }
 }

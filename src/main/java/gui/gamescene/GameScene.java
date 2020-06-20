@@ -6,7 +6,6 @@ import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.ColumnConstraints;
@@ -67,7 +66,7 @@ public class GameScene extends Scene implements IActionPrompter {
         GridPane.setHgrow(cameraNode, Priority.ALWAYS);
         GridPane.setVgrow(cameraNode, Priority.ALWAYS);
 
-        gameController = new GameController(this);
+        gameController = new GameController(this, false, false, false);
     }
 
 

@@ -2,6 +2,7 @@ package gui;
 
 import gui.gamescene.GameScene;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -13,6 +14,7 @@ public class SceneController extends Application {
     public void start(Stage stage) {
         stage.setTitle("Eye Play Solitaire ");
         stage.show();
+        stage.setOnCloseRequest((arg) -> Platform.exit()); // Close all windows on exit
         stage.setScene(new GameScene());
         this.stage = stage;
     }
