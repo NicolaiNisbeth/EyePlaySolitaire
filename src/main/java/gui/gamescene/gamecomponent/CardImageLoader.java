@@ -20,6 +20,7 @@ class CardImageLoader {
 
     private HashMap<Suit, Image[]> suitImageMap = new HashMap<>();
     private Image cardBack = null;
+    private Image foundationBorder = null;
 
     /**
      * Returns the image of the given card
@@ -36,6 +37,15 @@ class CardImageLoader {
         if( cardBack == null )
             cardBack = loadCardImage("back");
         return cardBack;
+    }
+
+    /**
+     * Returns the image of the border used to indicate foundations
+     */
+    Image getFoundationBorder(){
+        if( foundationBorder == null )
+            foundationBorder = loadCardImage("foundation_border");
+        return foundationBorder;
     }
 
     HashMap<Suit, Image[]> getAllSuits(){

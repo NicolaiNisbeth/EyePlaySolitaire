@@ -95,7 +95,7 @@ public class GameScene extends Scene implements IActionPrompter {
 
 
     private static final Color COLOR_TARGET = Color.DARKORANGE;
-    private static final Color COLOR_SOURCE = Color.LIGHTBLUE;
+    private static final Color COLOR_SOURCE = Color.CORNFLOWERBLUE;
 
     private void printActionPrompt(String prompt){
         // Cause the prompt to run on the UI thread

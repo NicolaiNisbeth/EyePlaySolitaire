@@ -12,8 +12,6 @@ import javafx.scene.paint.Color;
  * of a dynamic card image. */
 class CardPane extends Pane {
 
-    static int counter = 0;
-
     CardPane(Image cardImage) {
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(cardImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);

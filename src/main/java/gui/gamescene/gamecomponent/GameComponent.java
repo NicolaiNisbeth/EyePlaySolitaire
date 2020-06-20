@@ -121,6 +121,10 @@ public class GameComponent implements IComponent {
         return new CardPane(imageLoader.getCardBack());
     }
 
+    private CardPane createFoundationBorderPane(){
+        return new CardPane(imageLoader.getFoundationBorder());
+    }
+
 
     public void updateGameState(GameState gameState) {
         // Make sure it's run on the ui thread
@@ -170,6 +174,8 @@ public class GameComponent implements IComponent {
                 if( foundation.size() > 0 ){
                     Card topCard = foundation.get(foundation.size()-1);
                     foundations.get(i).setCard(createCardPane(topCard));
+                }else{
+                    foundations.get(i).setCard(createFoundationBorderPane());
                 }
             }
         });
@@ -180,7 +186,7 @@ public class GameComponent implements IComponent {
     }
 
     public void highlightFoundation(int index, Color color){
-        foundations.get(index).borderGlow(color);
+        ((CardPane) foundations.get(index).getChildren().get(0)).borderGlow(color);
     }
 
     public void highlightStockCard(int index, Color color){
