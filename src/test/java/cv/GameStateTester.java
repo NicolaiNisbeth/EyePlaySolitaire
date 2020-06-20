@@ -22,7 +22,7 @@ public class GameStateTester {
     public static void testDetection(String fileName) throws IOException {
 
         // Load test file
-        File file = new File("src/main/test/cv/testdata/"+fileName+".json");
+        File file = new File("src/test/java/cv/testdata/"+fileName+".json");
         FileReader reader = new FileReader(file);
         int input;
         String data = "";

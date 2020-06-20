@@ -1,9 +1,11 @@
 package cv;
 
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import java.io.IOException;
 
+@DisplayName("Detections to Game State")
 public class GameStateAnalyzerTests {
 
 
