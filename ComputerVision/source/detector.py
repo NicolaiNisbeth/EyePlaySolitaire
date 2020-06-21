@@ -60,7 +60,7 @@ class Detector:
         # Setup paths
         inputDir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "input")
         configPath  = os.path.join(inputDir, "yolov3.cfg")
-        weightPath  = os.path.join(inputDir, "card.weights") # Don't change this - change the file name instead
+        weightPath  = os.path.join(inputDir, "final.weights") # Don't change this - change the file name instead
         metaPath = os.path.join(inputDir, "obj.data")
         setupObjPaths(metaPath, os.path.join(inputDir, "obj.names"))
 
