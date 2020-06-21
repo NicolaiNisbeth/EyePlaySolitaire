@@ -59,11 +59,36 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
                 }
             }
 
+            // Tableau to tableau
             if (tokens[0].hasPrefix("t")) {
                 if (tokens[1].hasPrefix("t")) {
                     List<Card> tableau = physicalGameState.getTableau(tokens[0].value);
-                    Card card = tableau.remove(tableau.size() - 1);
-                    physicalGameState.addToTableau(tokens[1].value, card);
+
+                    // Get all cards to move (we move more than one, if they're a sequence
+                    LinkedList<Card> cardsToMove = new LinkedList<>();
+                    for( int i=tableau.size()-1; i >= 0; i-- ){
+                        Card current = tableau.get(i);
+                        Card previous = cardsToMove.size() == 0 ? null : cardsToMove.get(cardsToMove.size()-1);
+                        if( previous == null ) {
+                            cardsToMove.add(current);
+                        }else if(current.getValue() == previous.getValue()+1 && current.getColor() != previous.getColor() ){
+                            cardsToMove.addFirst(current);
+                        }else{
+                            break;
+                        }
+                    }
+
+                    // Move the card / cards
+                    int targetIndex = tokens[1].value;
+                    List<Card> targetTableau = physicalGameState.getTableau(targetIndex);
+                    for(Card cardToMove : cardsToMove ){
+                        // Check if the sequence is legal
+                        Card currentCard = targetTableau.size() == 0 ? null : targetTableau.get(targetTableau.size()-1);
+                        if( currentCard != null && (currentCard.getColor() == cardToMove.getColor() || currentCard.getValue() != cardToMove.getValue()-1))
+                            System.out.printf("WARNING: Moving card '%s' to card '%s' is not a matching sequence!\n", cardToMove, currentCard);
+                        tableau.remove(cardToMove);
+                        physicalGameState.addToTableau(tokens[1].value, cardToMove);
+                    }
                 }
             }
 

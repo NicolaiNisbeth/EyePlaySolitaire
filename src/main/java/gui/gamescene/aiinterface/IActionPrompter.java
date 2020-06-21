@@ -48,6 +48,12 @@ public interface IActionPrompter {
      */
     void promptStockToFoundation(int stockIndex, int foundationIndex);
 
+
+    /**
+     * Prompts the user that action was computed
+     */
+    void noActionComputed();
+
     /**
      * Tells the prompter, that no move can be made to solve the solitaire.
      */

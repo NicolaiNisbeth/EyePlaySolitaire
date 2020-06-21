@@ -2,7 +2,6 @@ package gui.gamescene;
 
 import gui.gamescene.aiinterface.IActionPrompter;
 import gui.gamescene.cameracomponent.CameraComponent;
-import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.contolcomponent.ControlComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamestate.Card;
@@ -27,7 +26,6 @@ public class GameScene extends Scene implements IActionPrompter {
     private static final int WINDOW_HEIGHT = 900;
 
     private GridPane grid;
-    private IConsole console;
     private CameraComponent cameraComponent;
     private GameComponent gameComponent;
     private IActionPrompter prompter;
@@ -48,14 +46,6 @@ public class GameScene extends Scene implements IActionPrompter {
         ColumnConstraints column1 = new ColumnConstraints();
         column1.setPercentWidth(35);
         grid.getColumnConstraints().add(column1);
-
-        /*// Add Console component
-        ConsoleComponent consoleComponent = new ConsoleComponent();
-        grid.add(consoleComponent.getNode(), 0,1 );
-        GridPane.setHgrow(consoleComponent.getNode(), Priority.ALWAYS);
-        GridPane.setVgrow(consoleComponent.getNode(), Priority.ALWAYS);
-        console = consoleComponent;
-        prompter = this;*/
 
         controlComponent = new ControlComponent();
         grid.add(controlComponent.getNode(), 0,1 );
@@ -81,10 +71,6 @@ public class GameScene extends Scene implements IActionPrompter {
         gameController = new GameController(this, useManualAI, useManualCV, usePreDefinedStock);
     }
 
-
-    public IConsole getConsole() {
-        return console;
-    }
 
     public GameComponent getGameComponent() {
         return gameComponent;
@@ -112,7 +98,7 @@ public class GameScene extends Scene implements IActionPrompter {
     private void printActionPrompt(String prompt){
         // Cause the prompt to run on the UI thread
         //console.print("Take action: " + prompt, Color.DARKGREEN, false);
-        controlComponent.promptAction("Take action:\n" + prompt);
+        controlComponent.displayMessage("Take action:\n" + prompt);
     }
 
 
@@ -183,6 +169,11 @@ public class GameScene extends Scene implements IActionPrompter {
 
     }
 
+
+    @Override
+    public void noActionComputed() {
+        controlComponent.displayMessage("No action was computed!");
+    }
 
     @Override
     public void gameLost() {

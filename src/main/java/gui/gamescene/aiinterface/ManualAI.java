@@ -83,6 +83,7 @@ public class ManualAI implements ISolitaireAI, ConsoleComponent.InputListener {
             }
         }else{
             console.printError("No action was input");
+            prompter.noActionComputed();
         }
 
 

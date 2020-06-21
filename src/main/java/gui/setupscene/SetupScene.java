@@ -59,10 +59,7 @@ public class SetupScene extends Scene {
         VBox.setMargin(button, new Insets(10, 0,0,0));
         button.setPadding(new Insets(5,15,5,15));
         button.setOnAction((event) -> start());
-        button.setOnKeyPressed(event -> {
-            if( event.getCode() == KeyCode.ENTER )
-                start();
-        });
+        button.setDefaultButton(true);
 
         container.getChildren().add(button);
 

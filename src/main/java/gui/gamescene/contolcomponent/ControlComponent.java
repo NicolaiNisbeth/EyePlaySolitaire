@@ -133,12 +133,13 @@ public class ControlComponent extends VBox implements IComponent {
         listener_computationStopped = listener;
     }
 
-    public void promptAction(String prompt){
+
+    public void displayMessage(String message){
         loader.setVisible(false);
         text_description.setVisible(false);
         button_stopCompute.setDefaultButton(false);
         button_stopCompute.setVisible(false);
-        text_prompt.setText(prompt);
+        text_prompt.setText(message);
         text_prompt.setVisible(true);
         button_detect.setVisible(true);
         button_detect.setDefaultButton(true);

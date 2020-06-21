@@ -80,21 +80,12 @@ class GameController {
     }
 
 
-    // For testing purposes
+    // Default constructor for testing purposes
     private GameController() { }
-
 
     public GameState getCurrentGameState(){
         return currentGameState;
     }
-
-/*
-    private void registerInputCommands() {
-        console.registerInputCommand("detect", this::startDetection);
-        console.registerInputCommand("stop", this::stopWork);
-        console.registerInputCommand("compute", this::compute);
-    }*/
-
 
     private void startDetection() {
         // console.printInfo("Starting computervision detection (write 'stop' to lock detection)");
@@ -114,19 +105,6 @@ class GameController {
     }
 
 
- /*   // Stops both computervision, and AI
-    private void stopWork()  {
-        if( detectionRunning ) {
-            detectionRunning = false;
-            console.printInfo("Stopped detection");
-        }
-        if( computationRunning ){
-            computationRunning = false;
-            console.printInfo("Stopping computation of best move");
-
-        }
-    }*/
-
     private void stopCompute(){
         if( computationRunning ){
             computationRunning = false;
@@ -137,7 +115,7 @@ class GameController {
 
     private void compute(){
         if( newGameState == null ){
-            scene.getControlComponent().promptAction("No state has been detected yet!");
+            scene.getControlComponent().displayMessage("No state has been detected yet!");
         }else{
             detectionRunning = false;
             firstGameState = false;
@@ -167,12 +145,12 @@ class GameController {
             int unknownCount = 0;
             for( Card card : currentGameState.getStock() )
                 if( card.isUnknown() ) unknownCount++;
-            scene.getControlComponent().promptAction("Still need to detect " + unknownCount + " cards, but none are drawn from the stock");
+            scene.getControlComponent().displayMessage("Still need to detect " + unknownCount + " cards, but none are drawn from the stock");
             return;
         }
 
         if( compareCardLists(currentGameState.getStock(), detectedGameState.getFlipped()) ){
-            scene.getControlComponent().promptAction("You have drawn no new cards. Draw 3 new cards from the stock!");
+            scene.getControlComponent().displayMessage("You have drawn no new cards. Draw 3 new cards from the stock!");
             return;
         }
 
@@ -192,7 +170,7 @@ class GameController {
 
         // Print info to user
         String cardLabels = addedCards.stream().map(Card::toStringShort).collect(joining(", ", "", ""));
-        scene.getControlComponent().promptAction("Added " + addedCards.size() + " new cards to the stock: " + cardLabels);
+        scene.getControlComponent().displayMessage("Added " + addedCards.size() + " new cards to the stock: " + cardLabels);
     }
 
 
