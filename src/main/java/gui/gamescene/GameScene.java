@@ -15,7 +15,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
+import java.util.LinkedList;
 import java.util.List;
+
+import static java.util.stream.Collectors.joining;
 
 
 public class GameScene extends Scene implements IActionPrompter {
@@ -116,12 +119,38 @@ public class GameScene extends Scene implements IActionPrompter {
     @Override
     public void promptTableauToTableau(int sourceTableauIndex, int targetTableauIndex) {
         GameState state = gameController.getCurrentGameState();
-        Card card = state.getTableauTop(sourceTableauIndex);
-        List<List<Card>> tableaus = gameController.getCurrentGameState().getTableaus();
-        gameComponent.highlightTableauCard(sourceTableauIndex, tableaus.get(sourceTableauIndex).size()-1, COLOR_SOURCE);
-        gameComponent.highlightTableauCard(targetTableauIndex, tableaus.get(targetTableauIndex).size()-1, COLOR_TARGET);
-        printActionPrompt(String.format("Move %s from the %s tableau to the %s tableau", card.toStringPretty(), indexOrdinal(sourceTableauIndex), indexOrdinal(targetTableauIndex)));
+        List<Card> sourceTableau = state.getTableau(sourceTableauIndex);
 
+        // Figuring out if we should move just 1 card or a stack of cards
+        List<Card> cardsToMove = new LinkedList<>();
+        for( int i=sourceTableau.size()-1; i >= 0; i-- ){
+            Card current = sourceTableau.get(i);
+            Card previous = cardsToMove.size() == 0 ? null : cardsToMove.get(cardsToMove.size()-1);
+            if( previous == null ) {
+                cardsToMove.add(current);
+            }else if(current.getValue() == previous.getValue()+1 && current.getColor() != previous.getColor() ){
+                cardsToMove.add(current);
+            }else{
+                break;
+            }
+        }
+
+        // Create string of card names to move
+        String cardNames = "";
+        if( cardsToMove.size() == 1 )
+            cardNames = cardsToMove.get(0).toStringPretty();
+        else {
+            cardNames = cardsToMove.subList(0, cardsToMove.size() - 1).stream().map(Card::toStringPretty).collect(joining(", "));
+            cardNames += " and " + cardsToMove.get(cardsToMove.size()-1).toStringPretty();
+        }
+
+        // Highlighting cards
+        List<List<Card>> tableaus = gameController.getCurrentGameState().getTableaus();
+        for( int i=1; i<=cardsToMove.size(); i++){
+            gameComponent.highlightTableauCard(sourceTableauIndex, tableaus.get(sourceTableauIndex).size()-i, COLOR_SOURCE);
+        }
+        gameComponent.highlightTableauCard(targetTableauIndex, tableaus.get(targetTableauIndex).size()-1, COLOR_TARGET);
+        printActionPrompt(String.format("Move %s from the %s tableau to the %s tableau", cardNames, indexOrdinal(sourceTableauIndex), indexOrdinal(targetTableauIndex)));
     }
 
 

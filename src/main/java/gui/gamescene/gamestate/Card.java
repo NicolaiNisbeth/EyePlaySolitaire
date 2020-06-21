@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 import javafx.scene.effect.DropShadow;
+import org.omg.CORBA.UNKNOWN;
 
 /** Class to represent a playing card with a suit and a value */
 public class Card {
@@ -57,6 +58,13 @@ public class Card {
 
     public void setSuit(Suit suit) {
         this.suit = suit;
+    }
+
+
+    public Color getColor(){
+        if( isUnknown() ) return Color.UNKNOWN;
+        if( suit == Suit.SPADES || suit == Suit.CLUBS ) return Color.BLACK;
+        return Color.RED;
     }
 
     /**
@@ -157,6 +165,10 @@ public class Card {
         public String toString() {
             return this.name().toLowerCase();
         }
+    }
+
+    public enum Color{
+        UNKNOWN, RED, BLACK
     }
 
 

@@ -114,15 +114,15 @@ public class GameComponent implements IComponent {
         if( card.isUnknown() )
             return createCardBackPane();
         else
-            return new CardPane(imageLoader.getCard(card));
+            return new CardPane(imageLoader.getCard(card), true);
     }
 
     private CardPane createCardBackPane(){
-        return new CardPane(imageLoader.getCardBack());
+        return new CardPane(imageLoader.getCardBack(), true);
     }
 
     private CardPane createFoundationBorderPane(){
-        return new CardPane(imageLoader.getFoundationBorder());
+        return new CardPane(imageLoader.getFoundationBorder(), false);
     }
 
 
@@ -158,10 +158,13 @@ public class GameComponent implements IComponent {
                 List<Card> tableau = gameState.getTableaus().get(i);
 
                 tableaus.get(i).clearCards();
-
-                for (Card card : tableau) {
-                    CardPane pane = createCardPane(card);
-                    tableaus.get(i).addCardPane(pane);
+                if( tableau.size() == 0){
+                    tableaus.get(i).addCardPane(createFoundationBorderPane());
+                }else{
+                    for (Card card : tableau) {
+                        CardPane pane = createCardPane(card);
+                        tableaus.get(i).addCardPane(pane);
+                    }
                 }
             }
 

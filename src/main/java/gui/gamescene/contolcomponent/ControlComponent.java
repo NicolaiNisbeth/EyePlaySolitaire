@@ -11,6 +11,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+
+/**
+ *  The Control componenet, containing the buttons to activate
+ *  detection and computation of the best action to take.
+ */
 public class ControlComponent extends VBox implements IComponent {
 
     private Button button_stopCompute, button_detect, button_compute;
@@ -43,7 +48,7 @@ public class ControlComponent extends VBox implements IComponent {
 
         text_description = new Text();
         text_description.setFont(new Font(14));
-        text_description.setWrappingWidth(getWidth()*0.80);
+        text_description.wrappingWidthProperty().bind(widthProperty().multiply(0.70));
         text_description.setTextAlignment(TextAlignment.CENTER);
         text_description.managedProperty().bind(text_description.visibleProperty());
         text_description.setVisible(false);
@@ -149,12 +154,3 @@ public class ControlComponent extends VBox implements IComponent {
     }
 
 }
-
-
-// Primary scene -> Detect, Compute
-
-// Detecting (loading spinner, text, stop)
-
-// Compute (loading spinner, text, stop)
-
-// Prompt action

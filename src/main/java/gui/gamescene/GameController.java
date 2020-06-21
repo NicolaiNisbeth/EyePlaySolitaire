@@ -167,7 +167,6 @@ class GameController {
             int unknownCount = 0;
             for( Card card : currentGameState.getStock() )
                 if( card.isUnknown() ) unknownCount++;
-
             scene.getControlComponent().promptAction("Still need to detect " + unknownCount + " cards, but none are drawn from the stock");
             return;
         }
