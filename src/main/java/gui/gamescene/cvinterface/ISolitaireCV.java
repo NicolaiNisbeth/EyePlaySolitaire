@@ -11,10 +11,10 @@ public interface ISolitaireCV {
      * Start registering information from camera, and analyze
      * the input.
      */
-    void start();
+    void initialize(InitializedCallback callback);
 
 
-    // TODO: Remove pause / unpause mechanism if it's left unused
+    // TODO: Remove pause / start mechanism if it's left unused
     /**
      *  Pauses the computer vision from analyzing detections into GameState objects
      *  thus stopping it from outputting any new GameStates to the update listener.
@@ -24,9 +24,9 @@ public interface ISolitaireCV {
 
 
     /**
-     *  Unpasuses the computer vision making it start outputting GameStates again.
+     *  Unpasuses the computer vision making it initialize outputting GameStates again.
      */
-    void unpause();
+    void start();
 
     /**
      * Add an listener, to listen for an update on the image
@@ -58,4 +58,9 @@ public interface ISolitaireCV {
     interface ErrorListener{
         void onError(String errorMsg);
     }
+
+    interface InitializedCallback{
+        void onComputerVisionInitialized();
+    }
+
 }

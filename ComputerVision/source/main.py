@@ -48,8 +48,15 @@ def main():
 
     
 def message_received(msg: Message):
-    # Image requesed
+    global detector
+
+    if msg._code is 200:
+        detector.paused = False
+
     if msg._code is 201:
+        detector.paused = True
+
+    if msg._code is 202:
         send_image()
 
 

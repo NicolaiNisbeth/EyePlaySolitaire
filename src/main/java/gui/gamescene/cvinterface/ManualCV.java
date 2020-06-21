@@ -21,6 +21,7 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
 
     private GameStateUpdateListener stateUpdateListener;
 
+    private boolean paused = true;
 
     public List<Card> getPredefinedStock(){
         List<Card> stockCopy = new LinkedList<>();
@@ -30,7 +31,7 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
 
 
     @Override
-    public void start() {
+    public void initialize(InitializedCallback callback) {
         Stage stage = new Stage();
         stage.setTitle("CV");
         StackPane container = new StackPane();
@@ -39,7 +40,21 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
         stage.show();
         console.setInputListener(this);
         console.printInfo("Manual Computer Vision Console\nType one of the available commands to move cards: 'tX tY', 'tX fY', 'sX tY' or 'sX fY', where X and Y are indexes of the tableau, foundation or stock (starting from 0)");
+        callback.onComputerVisionInitialized();
+    }
+
+
+    @Override
+    public void start() {
+        paused = false;
+        console.printInfo("Detection started");
         sendGameState();
+    }
+
+    @Override
+    public void pause() {
+        paused = true;
+        console.printInfo("Detection paused");
     }
 
 
@@ -119,7 +134,8 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
                 }
             }
 
-            sendGameState();
+            if( !paused )
+                sendGameState();
         }
     }
 
@@ -157,8 +173,6 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
 
     // ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
     // Implemented methods without functionality
-    public void pause() { }
-    public void unpause() { }
     public void setErrorListener(ErrorListener errorListener) { }
     public void setImageUpdateListener(ImageUpdateListener imageUpdateListener) { }
 

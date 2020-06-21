@@ -2,7 +2,7 @@ package gui.gamescene;
 
 import gui.gamescene.aiinterface.IActionPrompter;
 import gui.gamescene.cameracomponent.CameraComponent;
-import gui.gamescene.contolcomponent.ControlComponent;
+import gui.gamescene.control.ControlComponent;
 import gui.gamescene.gamecomponent.GameComponent;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;

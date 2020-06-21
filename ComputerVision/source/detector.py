@@ -35,6 +35,9 @@ class Detector:
 
         # The latest detected frame
         self._latest_frame: numpy.ndarray = None
+
+
+        self.paused = True
         
         # Darknet variables
         self._darknet_resolution = (0, 0)
@@ -102,28 +105,30 @@ class Detector:
     def _detect_loop(self):
         while self._run:
             frame = self._camera.get_current_frame()
-            if frame is None:
-                continue
-        
-            frame_read = frame
-            frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-            frame_resized = cv2.resize(frame_rgb,
-                                       self._darknet_resolution,
-                                       interpolation=cv2.INTER_LINEAR)
 
-            darknet.copy_image_from_bytes(self._darknet_image, frame_resized.tobytes())
+            if not self.paused:
+                if frame is None:
+                    continue
+            
+                frame_read = frame
+                frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+                frame_resized = cv2.resize(frame_rgb,
+                                        self._darknet_resolution,
+                                        interpolation=cv2.INTER_LINEAR)
 
-            detections = darknet.detect_image(self._darknet_netMain, self._darknet_metaMain, self._darknet_image, thresh=0.25)
-            if self._detection_callback is not None:
-                self._detection_callback(_detections_to_dict(detections), self._darknet_resolution[0], self._darknet_resolution[1])
+                darknet.copy_image_from_bytes(self._darknet_image, frame_resized.tobytes())
 
-            scaledDetections = _scale_detections(detections, self._camera._resolution[0]/self._darknet_resolution[0], self._camera._resolution[1]/self._darknet_resolution[1])
+                detections = darknet.detect_image(self._darknet_netMain, self._darknet_metaMain, self._darknet_image, thresh=0.25)
+                if self._detection_callback is not None:
+                    self._detection_callback(_detections_to_dict(detections), self._darknet_resolution[0], self._darknet_resolution[1])
 
-            image = cvDrawBoxes(scaledDetections, frame)
-            image = cvDrawSectionLines(image, self._camera._resolution[0], self._camera._resolution[1])
+                scaledDetections = _scale_detections(detections, self._camera._resolution[0]/self._darknet_resolution[0], self._camera._resolution[1]/self._darknet_resolution[1])
+
+                frame = cvDrawBoxes(scaledDetections, frame)
+                frame = cvDrawSectionLines(frame, self._camera._resolution[0], self._camera._resolution[1])
 
             with self._frame_lock:
-                self._latest_frame = image
+                self._latest_frame = frame
 
             # Limits the framerate
             time.sleep(1.0/self._fps)

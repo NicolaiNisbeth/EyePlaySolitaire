@@ -14,7 +14,13 @@ From Client (code 1xx)
     
 
 From Server (code 2xx)
-    
-    200 -> Request image    
+
+    200 -> Start
+
+    201 -> Pause
+
+    202 -> Request image
+
+    202 -> Set framerate?
 
     

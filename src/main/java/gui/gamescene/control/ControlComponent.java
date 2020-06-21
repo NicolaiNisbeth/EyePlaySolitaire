@@ -1,4 +1,4 @@
-package gui.gamescene.contolcomponent;
+package gui.gamescene.control;
 
 import gui.gamescene.IComponent;
 import gui.util.Loader;
@@ -143,6 +143,13 @@ public class ControlComponent extends VBox implements IComponent {
         text_prompt.setVisible(true);
         button_detect.setVisible(true);
         button_detect.setDefaultButton(true);
+    }
+
+    /** Disables all the buttons from being clicked */
+    public void disableButtons(boolean disable){
+        button_compute.setDisable(disable);
+        button_detect.setDisable(disable);
+        button_stopCompute.setDisable(disable);
     }
 
     @Override

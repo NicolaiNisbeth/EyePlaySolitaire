@@ -67,6 +67,12 @@ public class CameraComponent extends ImageView implements IComponent {
         infoText.setVisible(true);
     }
 
+    public void showMessage(String message){
+        hideAll();
+        infoText.setText(message);
+        infoText.setVisible(true);
+    }
+
     public void updateImage(Image image){
         hideAll();
         imagePane.setVisible(true);

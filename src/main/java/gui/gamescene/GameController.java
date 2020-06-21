@@ -47,6 +47,7 @@ class GameController {
         scene.getControlComponent().onDetectStarted(this::startDetection);
         scene.getControlComponent().onComputeStarted(this::compute);
         scene.getControlComponent().onComputeStopped(this::stopCompute);
+        scene.getControlComponent().disableButtons(true);
 
         // Remove top cards from game state
         for( List<Card> tableau : currentGameState.getTableaus() )
@@ -76,7 +77,10 @@ class GameController {
 
         //registerInputCommands();
 
-        cv.start();
+        cv.initialize(() -> {
+            scene.getCameraComponent().showMessage("Computer vision is ready!");
+            scene.getControlComponent().disableButtons(false);
+        });
     }
 
 
@@ -89,6 +93,7 @@ class GameController {
 
     private void startDetection() {
         // console.printInfo("Starting computervision detection (write 'stop' to lock detection)");
+        cv.start();
         detectedGameState = lastGameState;
         if( detectedGameState != null )
             updateGameState();
@@ -114,6 +119,7 @@ class GameController {
 
 
     private void compute(){
+        cv.pause();
         if( newGameState == null ){
             scene.getControlComponent().displayMessage("No state has been detected yet!");
         }else{
@@ -255,7 +261,7 @@ class GameController {
      * Sends an asynchronous computation request to the AI on a new non-UI thread.
      */
     private void computeNextAction(GameState state){
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try{
                 computationRunning = true;
                 ai.startActionComputation(state);
@@ -264,7 +270,9 @@ class GameController {
                 e.printStackTrace();
                 System.out.println(state);
             }
-        }).start();
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
 
