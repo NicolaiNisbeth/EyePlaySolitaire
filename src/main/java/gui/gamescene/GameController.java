@@ -451,7 +451,7 @@ class GameController {
         predefinedStock.add(new Card(Card.Suit.DIAMONDS, 5));
         predefinedStock.add(new Card(Card.Suit.DIAMONDS, 7));
         predefinedStock.add(new Card(Card.Suit.HEARTS, 8));
-        predefinedStock.add(new Card(Card.Suit.CLUBS, 6));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 6));
         predefinedStock.add(new Card(Card.Suit.SPADES, 13));
         predefinedStock.add(new Card(Card.Suit.CLUBS, 7));
         predefinedStock.add(new Card(Card.Suit.DIAMONDS, 1));

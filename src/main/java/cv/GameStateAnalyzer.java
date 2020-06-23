@@ -18,13 +18,11 @@ public class GameStateAnalyzer {
     private List<List<Detection>> tableaus;
     private List<List<Detection>> foundations;
     private List<GameState> gameStates;
-    private GameState prevGameState;
 
     private double offset_W = 0.15;
     private double stock_W = 0.3;
     private double stock_H = 0.27;
     private double tableau_W = 0.1;
-    private double tableau_H = 0.63;
 
     private int width;
     private int height;
@@ -77,77 +75,17 @@ public class GameStateAnalyzer {
      *                          - Coordinates are coordinates within widthxheight resolution
      *
      */
-    public void analyzeDetections(List<Detection> detections){
+    void analyzeDetections(List<Detection> detections){
         DividedDetections(detections);
-        //DetectedComputervisionError();
         SaveCurrentDetectionsAsGameState();
         if(CurrentGameStateEqualsPrevious() && changedGameStateDetected){
-            System.out.println("Updating gamestate");
             int latest = gameStates.size()-1;
             GameState latestGameState = gameStates.get(latest);
             changedGameStateDetected = false;
-            //configureHiddenCards(latestGameState);
             updateListener.onGameStateUpdate(latestGameState);
-            prevGameState = latestGameState;
         }
     }
 
-    private void configureHiddenCards(GameState gameState) {
-
-        // initial run
-        if (prevGameState == null){
-            addInitialHiddenCards(gameState);
-            return;
-        }
-
-        // stock actions can never change hidden cards
-        if (gameState.getStock().size() < prevGameState.getStock().size())
-            return;
-
-        // find card difference in tableau if any
-        HashSet<Card> memory = new HashSet<>();
-        for(int i=0; i<=6; i++){
-            List<Card> tableau = prevGameState.getTableau(i);
-            memory.addAll(tableau);
-        }
-
-        int idx = -1;
-        boolean isCardFound = false;
-        for(int i=0; i<=6; i++){
-            List<Card> tableau = gameState.getTableau(i);
-            for (Card card : tableau) {
-                if (!memory.contains(card)) {
-                    idx = i;
-                    isCardFound = true;
-                    break;
-                }
-            }
-            if (isCardFound) break;
-        }
-
-        if (isCardFound)
-            gameState.getTableau(idx).remove(0);
-
-    }
-
-    private void addInitialHiddenCards(GameState gameState) {
-        List<List<Card>> tableaus = gameState.getTableaus();
-        int numHiddenCards = 0;
-        for (int i=0; i<tableaus.size(); i++){
-            List<Card> tableau = tableaus.get(i);
-
-            if (tableau.size() != 1)
-                throw new IllegalStateException("Expected exactly one card in each tableau!");
-
-            // TODO: verify card order: last idx is top
-            Card cardOnTop = tableau.remove(0);
-            for (int j=0; j<=numHiddenCards; j++){
-                gameState.addToTableau(i, Card.createUnknown());
-            }
-            gameState.addToTableau(i, cardOnTop);
-            numHiddenCards++;
-        }
-    }
 
 
     public GameState analyzeDetectionsTest(List<Detection> detections){
@@ -207,26 +145,6 @@ public class GameStateAnalyzer {
         }
     }
 
-    private void PrintDetectionInSections(){
-        System.out.println("Check detection in sections  ");
-        System.out.println("Detections in stock");
-        for (Detection detection:flipped) {
-            System.out.println(detection);
-        }
-        for( int i = 0; i < 4; i++){
-            System.out.println("Detections in foundation "+(i+1));
-            for (Detection detection:foundations.get(i)) {
-                System.out.println(detection);
-            }
-        }
-
-        for( int i = 0; i < 7; i++){
-            System.out.println("Detections in tableau "+(i+1));
-            for (Detection detection:tableaus.get(i)) {
-                System.out.println(detection);
-            }
-        }
-    }
 
     private void SaveCurrentDetectionsAsGameState(){
         if(savedGameStates < gameStates.size()){
@@ -252,37 +170,6 @@ public class GameStateAnalyzer {
         return gameState;
     }
 
-    void DetectedComputervisionError(){
-
-        if(CheckForMatchingErrorInSections()){
-            System.out.println("MatchingError found");
-        }
-    }
-
-    private boolean CheckForMatchingErrorInSections(){
-
-        System.out.println("Check For Matching Error In Sections");
-
-        if(FindMatchingPairError(flipped)){
-            System.out.println("Error in flipped");
-            return true;
-        }
-
-        for( int i = 0; i < 4; i++){
-            if(FindMatchingPairError(foundations.get(i))){
-                System.out.println("Error in foundations "+(i+1));
-                return true;
-            }
-        }
-
-        for( int i = 0; i < 7; i++){
-            if(FindMatchingPairError(tableaus.get(i))){
-                System.out.println("Error in tableau "+(i+1));
-                return true;
-            }
-        }
-        return false;
-    }
 
     private List<Detection>FindMatchingDetections(List<Detection> detections,Detection detection ){
         List<Detection> pairs = new ArrayList<>();
@@ -346,8 +233,6 @@ public class GameStateAnalyzer {
         }
     }
 
-
-
     private Detection GetDetectionInLeftCorner(List<Detection> detections){
         Detection leftCorner = detections.get(0);
         for(int i = 1; i < detections.size(); i++){
@@ -358,44 +243,6 @@ public class GameStateAnalyzer {
         return leftCorner;
     }
 
-
-    private boolean FindMatchingPairError(List<Detection> detections){
-        for (Detection detection:detections) {
-            String currentCard = detection.getCard().toString();
-            int cardDetected = 0;
-            for (Detection current:detections) {
-                if(currentCard.equals(current.getCard().toString())){
-                    cardDetected++;
-                }
-            }
-            if(cardDetected < 2){
-                System.out.println(currentCard+ " is only detected ones");
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void PrintCardsInSection(){
-
-        System.out.println("Cards in stock");
-        for (Card card :GetCardsInSection(flipped, true)) {
-            System.out.println(card);
-        }
-        for( int i = 0; i < 4; i++){
-            System.out.println("Cards in foundation "+(i+1));
-            for (Card card:GetCardsInSection(foundations.get(i), false)) {
-                System.out.println(card);
-            }
-        }
-
-        for( int i = 0; i < 7; i++){
-            System.out.println("Cards in tableau "+(i+1));
-            for (Card card:GetCardsInSection(tableaus.get(i), false)) {
-                System.out.println(card);
-            }
-        }
-    }
 
     private boolean CurrentGameStateEqualsPrevious(){
 
