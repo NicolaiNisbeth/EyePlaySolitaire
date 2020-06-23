@@ -135,7 +135,6 @@ public class MCTSGuiAgent implements ISolitaireAI {
                 newRoot = child;
         }
         if(newRoot == null) {
-            System.out.println("AAAA?");
             return new Node(state, null, null);
         }
         newRoot.parent = null;

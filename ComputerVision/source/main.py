@@ -81,7 +81,6 @@ def send_image():
         # First encode into bxase64 bytes, and then into ascii string
         encoded_image = base64.b64encode(image).decode('ascii')
         data = {"image": encoded_image, "width": width, "height": height}
-
     connector.send_message(Message(102, json.dumps(data)), True)
 
 

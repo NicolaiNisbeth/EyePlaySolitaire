@@ -146,7 +146,7 @@ public class GameScene extends Scene implements IActionPrompter {
         List<List<Card>> tableaus = gameController.getCurrentGameState().getTableaus();
         gameComponent.highlightStockCard(stockIndex, COLOR_SOURCE);
         gameComponent.highlightTableauCard(tableauIndex, tableaus.get(tableauIndex).size()-1, COLOR_TARGET);
-        printActionPrompt(String.format("Move %s from the stock to the %s tableau", card.toStringPretty(), indexOrdinal(tableauIndex)));
+        printActionPrompt(String.format("Move %s from the stock index %s to the %s tableau", card.toStringPretty(), stockIndex, indexOrdinal(tableauIndex)));
     }
 
 
@@ -165,7 +165,7 @@ public class GameScene extends Scene implements IActionPrompter {
         Card card = gameController.getCurrentGameState().getStock().get(stockIndex);
         gameComponent.highlightStockCard(stockIndex, COLOR_SOURCE);
         gameComponent.highlightFoundation(foundationIndex, COLOR_TARGET);
-        printActionPrompt(String.format("Move %s from the stock to the %s foundation", card.toStringPretty(), indexOrdinal(foundationIndex)));
+        printActionPrompt(String.format("Move %s from the stock index %s to the %s foundation", card.toStringPretty(),stockIndex, indexOrdinal(foundationIndex)));
 
     }
 
