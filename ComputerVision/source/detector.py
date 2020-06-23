@@ -47,8 +47,7 @@ class Detector:
 
         self._initialize_darknet()
 
-        self._thread = threading.Thread(target=self._detect_loop)
-        self._thread.start()
+        self._thread = None
 
         print(f"Darknet initialized in {timeit.default_timer()-time_start:.2f} seconds") 
 
@@ -101,6 +100,12 @@ class Detector:
 
 
 
+
+    def start_detections(self):
+        self._thread = threading.Thread(target=self._detect_loop)
+        self._thread.start()
+
+
     # Primary loop of the computer vision, which performs the actual detections
     def _detect_loop(self):
         while self._run:
@@ -110,15 +115,8 @@ class Detector:
                 if frame is None:
                     continue
             
-                frame_read = frame
-                frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-                frame_resized = cv2.resize(frame_rgb,
-                                        self._darknet_resolution,
-                                        interpolation=cv2.INTER_LINEAR)
+                detections = self._detect(frame)
 
-                darknet.copy_image_from_bytes(self._darknet_image, frame_resized.tobytes())
-
-                detections = darknet.detect_image(self._darknet_netMain, self._darknet_metaMain, self._darknet_image, thresh=0.25)
                 if self._detection_callback is not None:
                     self._detection_callback(_detections_to_dict(detections), self._darknet_resolution[0], self._darknet_resolution[1])
 
@@ -133,6 +131,20 @@ class Detector:
             # Limits the framerate
             time.sleep(1.0/self._fps)
     
+
+
+    def _detect(self, image):
+        # Adjust image to darknet compatible
+        frame_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        frame_resized = cv2.resize(frame_rgb, self._darknet_resolution, interpolation=cv2.INTER_LINEAR)
+        darknet.copy_image_from_bytes(self._darknet_image, frame_resized.tobytes())
+        
+        # Perform detections
+        detections = darknet.detect_image(self._darknet_netMain, self._darknet_metaMain, self._darknet_image, thresh=0.25)
+        
+        return detections
+
+
 
     def get_latest_frame(self) -> numpy.ndarray:
         """
@@ -236,7 +248,7 @@ def cvDrawBoxes(detections, img):
         cv2.putText(img,
                     detection[0].decode() +
                     " [" + str(round(detection[1] * 100, 2)) + "]",
-                    (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                    (pt1[0], pt2[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     [0, 255, 0], 2)
     return img
 
