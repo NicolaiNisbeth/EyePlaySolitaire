@@ -185,7 +185,8 @@ public class GameComponent implements IComponent {
     }
 
     public void highlightTableauCard(int tableauIndex, int cardIndex,  Color color){
-        tableaus.get(tableauIndex).getCard(cardIndex).borderGlow(color);
+        int adjustedCardIndex = cardIndex < 0 ? 0 : cardIndex;
+        tableaus.get(tableauIndex).getCard(adjustedCardIndex).borderGlow(color);
     }
 
     public void highlightFoundation(int index, Color color){
