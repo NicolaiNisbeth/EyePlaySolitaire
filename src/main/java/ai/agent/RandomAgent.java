@@ -11,7 +11,7 @@ public class RandomAgent implements Agent {
 
     @Override
     public Action getAction(State state) {
-        ActionFinder52 finder = new ActionFinder52();
+        ActionFinder51 finder = new ActionFinder51();
         List<Action> actionList = finder.getActions(state);
         if(actionList.isEmpty()) return null;
         int count = actionList.size();
