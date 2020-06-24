@@ -264,8 +264,9 @@ public class GameState {
 
 
     /**
-     * Generates a random valid starting state, where the entire stock is
-     * known.
+     * Generates a random valid starting state
+     *
+     * @param unknownStock  Whether or not the stock should be filled with unknown cards
      */
     public static GameState randomStartingState(boolean unknownStock){
         GameState state = new GameState();
