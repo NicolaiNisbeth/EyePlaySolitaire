@@ -60,11 +60,10 @@ class GameController {
         cv.setErrorListener(err -> scene.getCameraComponent().showError(err) );
         cv.setGameStateUpdateListener(this::onDetection);
 
-        scene.getGameComponent().updateGameState(currentGameState);
-        scene.getCameraComponent().startLoading("Starting computer vision...");
+
 
         // Setup initial stock
-        List<Card> stock;
+        /*List<Card> stock;
         if( manualCV ){
             stock = ((ManualCV) cv).getPredefinedStock();
         }else if( usePredefinedStock ){
@@ -73,7 +72,15 @@ class GameController {
             stock = new LinkedList<>();
             for(int i=0; i<24; i++) stock.add(Card.createUnknown());
         }
-        currentGameState.setStock(stock);
+        currentGameState.setStock(stock);*/
+
+        currentGameState = customStartingState();
+        firstGameState = false;
+
+
+        scene.getGameComponent().updateGameState(currentGameState);
+        scene.getCameraComponent().startLoading("Starting computer vision...");
+
 
         //registerInputCommands();
 
@@ -137,7 +144,6 @@ class GameController {
                 updateGameState();
                 // Run computation
                 computeNextAction(currentGameState);
-                //console.printInfo("Computing the best move (write 'stop' to get result)");
             }else{
                 computationRunning = false;
             }
@@ -435,6 +441,40 @@ class GameController {
         public void registerInputCommand(String input, InputCommand action) {
 
         }
+    }
+
+
+
+    private static GameState customStartingState(){
+
+
+        GameState state = new GameState();
+
+        for(int i=1; i<=13; i++){
+            state.addToFoundations(0, new Card(Card.Suit.DIAMONDS, i));
+        }
+
+        for(int i=1; i<=12; i++){
+            state.addToFoundations(1, new Card(Card.Suit.CLUBS, i));
+        }
+
+        for(int i=1; i<=11; i++){
+            state.addToFoundations(2, new Card(Card.Suit.HEARTS, i));
+        }
+
+        for(int i=1; i<=11; i++){
+            state.addToFoundations(3, new Card(Card.Suit.SPADES, i));
+        }
+
+        state.addToTableau(0, new Card(Card.Suit.SPADES, 13));
+        state.addToTableau(0, new Card(Card.Suit.SPADES, 12));
+
+        state.addToTableau(3, new Card(Card.Suit.CLUBS, 13));
+
+        state.addToTableau(4, new Card(Card.Suit.HEARTS, 13));
+        state.addToTableau(6, new Card(Card.Suit.HEARTS, 12));
+
+        return state;
     }
 
 
