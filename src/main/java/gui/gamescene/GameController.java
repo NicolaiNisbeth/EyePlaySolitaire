@@ -139,13 +139,21 @@ class GameController {
                 updateStock();
             }
 
-            // Run the computation if game state is ready
-            if( !currentGameState.getStock().contains(Card.createUnknown()) ){
-                updateGameState();
-                // Run computation
-                computeNextAction(currentGameState);
+            boolean gameWon = true;
+            for( List<Card> foundation : currentGameState.getFoundations() ){
+                if( foundation.size() != 13 ) gameWon = false;
+            }
+            if( gameWon ){
+                scene.getPrompter().gameLost();
             }else{
-                computationRunning = false;
+                // Run the computation if game state is ready
+                if( !currentGameState.getStock().contains(Card.createUnknown()) ){
+                    updateGameState();
+                    // Run computation
+                    computeNextAction(currentGameState);
+                }else{
+                    computationRunning = false;
+                }
             }
         }
 
@@ -467,12 +475,14 @@ class GameController {
         }
 
         state.addToTableau(0, new Card(Card.Suit.SPADES, 13));
-        state.addToTableau(0, new Card(Card.Suit.SPADES, 12));
+        state.addToTableau(6, new Card(Card.Suit.SPADES, 12));
 
         state.addToTableau(3, new Card(Card.Suit.CLUBS, 13));
 
         state.addToTableau(4, new Card(Card.Suit.HEARTS, 13));
-        state.addToTableau(6, new Card(Card.Suit.HEARTS, 12));
+        state.addToTableau(0, new Card(Card.Suit.HEARTS, 12));
+
+
 
         return state;
     }

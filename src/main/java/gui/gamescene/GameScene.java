@@ -181,6 +181,13 @@ public class GameScene extends Scene implements IActionPrompter {
     }
 
 
+    @Override
+    public void gameWon(){
+        controlComponent.displayMessage("The solitaire has been solved!");
+        controlComponent.disableButtons(true);
+    }
+
+
     private String indexOrdinal(int i) {
         // Source: https://stackoverflow.com/questions/6810336/is-there-a-way-in-java-to-convert-an-integer-to-its-ordinal
         String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
