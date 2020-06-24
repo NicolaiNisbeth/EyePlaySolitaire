@@ -27,8 +27,9 @@ public class Demo {
 
 
 
-        Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
-        Agent agent = new RandomAgent(heuristic);
+        //Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
+        Heuristic heuristic1 = new RandomHeuristic();
+        Agent agent = new RandomAgent(heuristic1);
         List<int[]> memory = new ArrayList<>();
         int sum = 0;
         int max = 0;
