@@ -4,7 +4,7 @@ package gui.gamescene.cvinterface;
 import gui.gamescene.consolecomponent.ConsoleComponent;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
-import gui.util.CommandToken;
+import gui.util.ActionConsole;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -13,9 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
+public class ManualCV implements ISolitaireCV, ActionConsole.ActionListener {
 
-    private ConsoleComponent console = new ConsoleComponent();
+    private ConsoleComponent console = new ActionConsole(this);
 
     private GameState physicalGameState = GameState.randomStartingState(false);
 
@@ -38,7 +38,8 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
         container.getChildren().add(console.getNode());
         stage.setScene(new Scene(container, 225, 300));
         stage.show();
-        console.setInputListener(this);
+
+        //console.setInputListener(this);
         console.printInfo("Manual Computer Vision Console\nType one of the available commands to move cards: 'tX tY', 'tX fY', 'sX tY' or 'sX fY', where X and Y are indexes of the tableau, foundation or stock (starting from 0)");
         callback.onComputerVisionInitialized();
     }
@@ -58,87 +59,85 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
     }
 
 
-    /**
-     * Read input from the console, and performs some sort of movement of
-     * the game state (i.e. move card from tableau 1 to 2).
-     */
     @Override
-    public void onConsoleInput(String input, boolean wasCommand) {
-        if (!wasCommand) {
+    public void onTableauToTableau(int sourceIndex, int targetIndex) {
+        List<Card> tableau = physicalGameState.getTableau(sourceIndex);
 
-            CommandToken[] tokens = CommandToken.fromString(input);
-            if (tokens[0].hasPrefix("s")) {
-                if (tokens[1].hasPrefix("t")) {
-                    Card card = physicalGameState.getStock().remove(tokens[0].value);
-                    physicalGameState.addToTableau(tokens[1].value, card);
-                }
+        // Get all cards to move (we move more than one, if they're a sequence
+        LinkedList<Card> cardsToMove = new LinkedList<>();
+        for( int i=tableau.size()-1; i >= 0; i-- ){
+            Card current = tableau.get(i);
+            Card previous = cardsToMove.size() == 0 ? null : cardsToMove.get(cardsToMove.size()-1);
+            if( previous == null ) {
+                cardsToMove.add(current);
+            }else if(current.getValue() == previous.getValue()+1 && current.getColor() != previous.getColor() ){
+                cardsToMove.addFirst(current);
+            }else{
+                break;
             }
+        }
 
-            // Tableau to tableau
-            if (tokens[0].hasPrefix("t")) {
-                if (tokens[1].hasPrefix("t")) {
-                    List<Card> tableau = physicalGameState.getTableau(tokens[0].value);
+        // Move the card / cards
+        List<Card> targetTableau = physicalGameState.getTableau(targetIndex);
+        for(Card cardToMove : cardsToMove ){
+            // Check if the sequence is legal
+            Card currentCard = targetTableau.size() == 0 ? null : targetTableau.get(targetTableau.size()-1);
+            if( currentCard != null && (currentCard.getColor() == cardToMove.getColor() || currentCard.getValue() != cardToMove.getValue()-1))
+                System.out.printf("WARNING: Moving card '%s' to card '%s' is not a matching sequence!\n", cardToMove, currentCard);
+            tableau.remove(cardToMove);
+            physicalGameState.addToTableau(targetIndex, cardToMove);
+        }
+        updateGameState();
+    }
 
-                    // Get all cards to move (we move more than one, if they're a sequence
-                    LinkedList<Card> cardsToMove = new LinkedList<>();
-                    for( int i=tableau.size()-1; i >= 0; i-- ){
-                        Card current = tableau.get(i);
-                        Card previous = cardsToMove.size() == 0 ? null : cardsToMove.get(cardsToMove.size()-1);
-                        if( previous == null ) {
-                            cardsToMove.add(current);
-                        }else if(current.getValue() == previous.getValue()+1 && current.getColor() != previous.getColor() ){
-                            cardsToMove.addFirst(current);
-                        }else{
-                            break;
-                        }
-                    }
+    @Override
+    public void onTableauToFoundation(int tableauIndex, int foundationIndex) {
+        List<Card> tableau = physicalGameState.getTableau(tableauIndex);
+        Card card = tableau.remove(tableau.size() - 1);
+        physicalGameState.addToFoundations(foundationIndex, card);
+        updateGameState();
+    }
 
-                    // Move the card / cards
-                    int targetIndex = tokens[1].value;
-                    List<Card> targetTableau = physicalGameState.getTableau(targetIndex);
-                    for(Card cardToMove : cardsToMove ){
-                        // Check if the sequence is legal
-                        Card currentCard = targetTableau.size() == 0 ? null : targetTableau.get(targetTableau.size()-1);
-                        if( currentCard != null && (currentCard.getColor() == cardToMove.getColor() || currentCard.getValue() != cardToMove.getValue()-1))
-                            System.out.printf("WARNING: Moving card '%s' to card '%s' is not a matching sequence!\n", cardToMove, currentCard);
-                        tableau.remove(cardToMove);
-                        physicalGameState.addToTableau(tokens[1].value, cardToMove);
-                    }
-                }
-            }
+    @Override
+    public void onStockToTableau(int stockIndex, int tableauIndex) {
+        if( stockIndex > physicalGameState.getStock().size() ){
+            console.printError("Stock index must be less than the stock's size (" + physicalGameState.getStock().size() + ")");
+        }else{
+            Card card = physicalGameState.getStock().remove(stockIndex);
+            physicalGameState.addToTableau(tableauIndex, card);
+            updateGameState();
+        }
 
-            if (tokens[0].hasPrefix("s")) {
-                if (tokens[1].hasPrefix("f")) {
-                    Card card = physicalGameState.getStock().remove(tokens[0].value);
-                    physicalGameState.addToFoundations(tokens[1].value, card);
-                }
-            }
+    }
 
-            if (tokens[0].hasPrefix("t")) {
-                if (tokens[1].hasPrefix("f")) {
-                    List<Card> tableau = physicalGameState.getTableau(tokens[0].value);
-                    Card card = tableau.remove(tableau.size() - 1);
-                    physicalGameState.addToFoundations(tokens[1].value, card);
-                }
-            }
-
-            // Turn over unknown cards in tableau
-            for (List<Card> tableau : physicalGameState.getTableaus()) {
-                if (tableau.size() > 0) {
-                    Card card = tableau.get(tableau.size() - 1);
-                    if (card.isUnknown()) {
-                        Card missingCard = physicalGameState.getMissingCard();
-                        card.setSuit(missingCard.getSuit());
-                        card.setValue(missingCard.getValue());
-                    }
-                }
-            }
-
-            if( !paused )
-                sendGameState();
+    @Override
+    public void onStockToFoundation(int stockIndex, int foundationIndex) {
+        if( stockIndex > physicalGameState.getStock().size() ){
+            console.printError("Stock index must be less than the stock's size (" + physicalGameState.getStock().size() + ")");
+        }else{
+            Card card = physicalGameState.getStock().remove(stockIndex);
+            physicalGameState.addToFoundations(foundationIndex, card);
+            updateGameState();
         }
     }
 
+
+    private void updateGameState(){
+        // Turn over unknown cards in tableau
+        for (List<Card> tableau : physicalGameState.getTableaus()) {
+            if (tableau.size() > 0) {
+                Card card = tableau.get(tableau.size() - 1);
+                if (card.isUnknown()) {
+                    Card missingCard = physicalGameState.getMissingCard();
+                    card.setSuit(missingCard.getSuit());
+                    card.setValue(missingCard.getValue());
+                }
+            }
+        }
+
+        if( !paused )
+            sendGameState();
+    }
 
     /* Copy detected cards to a "detected" game state,
     *   and send the detected state to the update listener */
@@ -163,9 +162,6 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
     }
 
 
-
-
-
     @Override
     public void setGameStateUpdateListener(GameStateUpdateListener gameStateUpdateListener) {
         this.stateUpdateListener = gameStateUpdateListener;
@@ -175,5 +171,6 @@ public class ManualCV implements ISolitaireCV, ConsoleComponent.InputListener {
     // Implemented methods without functionality
     public void setErrorListener(ErrorListener errorListener) { }
     public void setImageUpdateListener(ImageUpdateListener imageUpdateListener) { }
+
 
 }

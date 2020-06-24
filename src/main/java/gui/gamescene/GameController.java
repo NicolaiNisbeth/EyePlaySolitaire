@@ -2,7 +2,7 @@ package gui.gamescene;
 
 import ai.agent.MCTSGuiAgent;
 import ai.heuristic.Cocktail;
-import ai.heuristic.Heuristic;
+
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.aiinterface.ManualAI;
@@ -10,7 +10,6 @@ import gui.gamescene.cvinterface.ISolitaireCV;
 import gui.gamescene.cvinterface.ManualCV;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
-import javafx.scene.paint.Paint;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,19 +28,17 @@ class GameController {
     private boolean firstGameState = true;
 
     //private IConsole console = null;
-    private Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
     private ISolitaireAI ai;
     private ISolitaireCV cv;
 
     private boolean computationRunning = false;
     private boolean detectionRunning = false;
 
-    private static List<Card> predefinedStock = null;
+    private static List<Card> predefinedStock;
 
 
     GameController(GameScene scene, boolean manualAI, boolean manualCV, boolean usePredefinedStock) {
         this.scene = scene;
-        //console = scene.getConsole();
 
         // Setup control component
         scene.getControlComponent().onDetectStarted(this::startDetection);
@@ -54,7 +51,7 @@ class GameController {
             tableau.remove(tableau.size()-1);
 
         cv = manualCV ? new ManualCV() : new SolitaireCV();
-        ai = manualAI ? new ManualAI() : new MCTSGuiAgent(-1,heuristic);
+        ai = manualAI ? new ManualAI() : new MCTSGuiAgent(-1,new Cocktail(1,1,1,1,1,1,1,1,1));
 
         cv.setImageUpdateListener( (newImage) -> scene.getCameraComponent().updateImage(newImage) );
         cv.setErrorListener(err -> scene.getCameraComponent().showError(err) );
@@ -63,7 +60,7 @@ class GameController {
 
 
         // Setup initial stock
-        /*List<Card> stock;
+        List<Card> stock;
         if( manualCV ){
             stock = ((ManualCV) cv).getPredefinedStock();
         }else if( usePredefinedStock ){
@@ -72,18 +69,17 @@ class GameController {
             stock = new LinkedList<>();
             for(int i=0; i<24; i++) stock.add(Card.createUnknown());
         }
-        currentGameState.setStock(stock);*/
+        currentGameState.setStock(stock);
 
-        currentGameState = customStartingState();
+        /*currentGameState = customStartingState();
         firstGameState = false;
+        */
 
-
+        // Intialize game and camera component
         scene.getGameComponent().updateGameState(currentGameState);
         scene.getCameraComponent().startLoading("Starting computer vision...");
 
-
-        //registerInputCommands();
-
+        // Initialize computer vision
         cv.initialize(() -> {
             scene.getCameraComponent().showMessage("Computer vision is ready!");
             scene.getControlComponent().disableButtons(false);
@@ -301,161 +297,8 @@ class GameController {
     }
 
 
-    public static void main(String[] args) {
-        List<GameState> testStates = createTestStates();
-        GameController gameController = new GameController();
-        // gameController.console = new TestConsole();
-        System.out.println(gameController.currentGameState);
-
-        // Update flipped
-        System.out.println(testStates.get(1));
-        gameController.detectedGameState = testStates.get(1);
-        gameController.updateStock();
-
-        // Update flipped
-        System.out.println(testStates.get(2));
-        gameController.detectedGameState = testStates.get(2);
-        gameController.updateStock();
-
-        // Update tableaus
-        gameController.detectedGameState = testStates.get(0);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
-        gameController.firstGameState = false;
-
-        // Update
-        gameController.detectedGameState = testStates.get(3);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
-
-        // Update
-        gameController.detectedGameState = testStates.get(4);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
-
-        // Update
-        gameController.detectedGameState = testStates.get(5);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
-
-        // Update
-        gameController.detectedGameState = testStates.get(6);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
-
-
-        System.out.println(gameController.currentGameState);
-    }
-
-
-
-    private static List<GameState> createTestStates(){
-        List<GameState> states = new LinkedList<>();
-
-        GameState state;
-
-        state = new GameState();
-        state.addToTableau(0, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        states.add(state);
-
-        state = new GameState();
-        state.addToFlipped(new Card(Card.Suit.CLUBS, 2));
-        state.addToFlipped(new Card(Card.Suit.SPADES, 4));
-        state.addToFlipped(new Card(Card.Suit.HEARTS, 1));
-        states.add(state);
-
-
-        state = new GameState();
-        state.addToFlipped(new Card(Card.Suit.HEARTS, 1));
-        state.addToFlipped(new Card(Card.Suit.SPADES, 2));
-        state.addToFlipped(new Card(Card.Suit.HEARTS, 5));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(0, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 1));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(0, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 1));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 1));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
-        state.addToFoundations(0, new Card(Card.Suit.SPADES, 1));
-        states.add(state);
-
-        return states;
-    }
-
-
-    private static class TestConsole implements IConsole {
-
-        @Override
-        public void print(String msg, Paint color, boolean bold) {
-
-        }
-
-        @Override
-        public void printError(String msg) {
-            System.out.println("Error: " + msg);
-        }
-
-        @Override
-        public void printInfo(String msg) {
-            System.out.println("Info: " + msg);
-        }
-
-        @Override
-        public void registerInputCommand(String input, InputCommand action) {
-
-        }
-    }
-
-
 
     private static GameState customStartingState(){
-
-
         GameState state = new GameState();
 
         for(int i=1; i<=13; i++){

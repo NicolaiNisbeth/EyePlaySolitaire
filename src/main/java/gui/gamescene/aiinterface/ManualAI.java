@@ -2,20 +2,18 @@ package gui.gamescene.aiinterface;
 
 
 import gui.gamescene.consolecomponent.ConsoleComponent;
-import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
-import gui.util.CommandToken;
+import gui.util.ActionConsole;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.util.List;
 
+public class ManualAI implements ISolitaireAI, ActionConsole.ActionListener {
 
-public class ManualAI implements ISolitaireAI, ConsoleComponent.InputListener {
-
-    private ConsoleComponent console = new ConsoleComponent();
-    private String computingInput = null;
+    private ConsoleComponent console = new ActionConsole(this);
+    private ActionConsole.Argument arg1 = null;
+    private ActionConsole.Argument arg2 = null;
 
     public ManualAI(){
         Stage stage = new Stage();
@@ -24,26 +22,14 @@ public class ManualAI implements ISolitaireAI, ConsoleComponent.InputListener {
         container.getChildren().add(console.getNode());
         stage.setScene(new Scene(container, 225, 300));
         stage.show();
-        console.setInputListener(this);
         console.printInfo("Manual AI Console\nType one of the available commands to prompt an action: 'tX tY', 'tX fY', 'sX tY' or 'sX fY', where X and Y are indexes of the tableau, foundation or stock (starting from 0)");
-    }
-
-
-    /**
-     * Read input from the console, and performs some sort of movement of
-     * the game state (i.e. move card from tableau 1 to 2).
-     */
-    @Override
-    public void onConsoleInput(String input, boolean wasCommand) {
-        if( !wasCommand ){
-            computingInput = input;
-        }
     }
 
 
     @Override
     public void startActionComputation(GameState gameState) throws IllegalGameStateException {
-        computingInput = null;
+        arg1 = null;
+        arg2 = null;
         console.printInfo("Computing initialized");
     }
 
@@ -56,39 +42,48 @@ public class ManualAI implements ISolitaireAI, ConsoleComponent.InputListener {
     public void endActionComputation(IActionPrompter prompter) {
         console.printInfo("Computing ended");
 
-        if( computingInput != null) {
-            CommandToken[] tokens = CommandToken.fromString(computingInput);
-            if (tokens[0].hasPrefix("s")) {
-                if (tokens[1].hasPrefix("t")) {
-                    prompter.promptStockToTableau(tokens[0].value, tokens[1].value);
-                }
-            }
-
-            if (tokens[0].hasPrefix("t")) {
-                if (tokens[1].hasPrefix("t")) {
-                    prompter.promptTableauToTableau(tokens[0].value, tokens[1].value);
-                }
-            }
-
-            if (tokens[0].hasPrefix("s")) {
-                if (tokens[1].hasPrefix("f")) {
-                    prompter.promptStockToFoundation(tokens[0].value, tokens[1].value);
-                }
-            }
-
-            if (tokens[0].hasPrefix("t")) {
-                if (tokens[1].hasPrefix("f")) {
-                    prompter.promptTableauToFoundation(tokens[0].value, tokens[1].value);
-                }
-            }
+        if( arg1 != null && arg2 != null ){
+            if( arg1.prefix.equals("t") && arg2.prefix.equals("t") )
+                prompter.promptTableauToTableau(arg1.value, arg2.value);
+            else
+            if( arg1.prefix.equals("t") && arg2.prefix.equals("f") )
+                prompter.promptTableauToFoundation(arg1.value, arg2.value);
+            else
+            if( arg1.prefix.equals("s") && arg2.prefix.equals("f") )
+                prompter.promptStockToFoundation(arg1.value, arg2.value);
+            else
+            if( arg1.prefix.equals("s") && arg2.prefix.equals("t") )
+               prompter.promptStockToTableau(arg1.value, arg2.value);
         }else{
             console.printError("No action was input");
             prompter.noActionComputed();
         }
-
-
     }
 
     // Unused method
     public void computeAction(GameState gameState, IActionPrompter prompter) throws IllegalGameStateException {}
+
+    @Override
+    public void onTableauToTableau(int sourceIndex, int targetIndex) {
+        arg1 = new ActionConsole.Argument("t", sourceIndex);
+        arg2 = new ActionConsole.Argument("t", targetIndex);
+    }
+
+    @Override
+    public void onTableauToFoundation(int tableauIndex, int foundationIndex) {
+        arg1 = new ActionConsole.Argument("t", tableauIndex);
+        arg2 = new ActionConsole.Argument("f", foundationIndex);
+    }
+
+    @Override
+    public void onStockToTableau(int stockIndex, int tableauIndex) {
+        arg1 = new ActionConsole.Argument("s", stockIndex);
+        arg2 = new ActionConsole.Argument("T", tableauIndex);
+    }
+
+    @Override
+    public void onStockToFoundation(int stockIndex, int foundationIndex) {
+        arg1 = new ActionConsole.Argument("s", stockIndex);
+        arg2 = new ActionConsole.Argument("f", foundationIndex);
+    }
 }
