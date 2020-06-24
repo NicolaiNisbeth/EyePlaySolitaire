@@ -63,7 +63,7 @@ class GameController {
 
 
         // Setup initial stock
-        /*List<Card> stock;
+        List<Card> stock;
         if( manualCV ){
             stock = ((ManualCV) cv).getPredefinedStock();
         }else if( usePredefinedStock ){
@@ -72,10 +72,10 @@ class GameController {
             stock = new LinkedList<>();
             for(int i=0; i<24; i++) stock.add(Card.createUnknown());
         }
-        currentGameState.setStock(stock);*/
+        currentGameState.setStock(stock);
 
-        currentGameState = customStartingState();
-        firstGameState = false;
+        //currentGameState = customStartingState();
+        //firstGameState = false;
 
 
         scene.getGameComponent().updateGameState(currentGameState);
@@ -144,7 +144,7 @@ class GameController {
                 if( foundation.size() != 13 ) gameWon = false;
             }
             if( gameWon ){
-                scene.getPrompter().gameLost();
+                scene.getPrompter().gameWon();
             }else{
                 // Run the computation if game state is ready
                 if( !currentGameState.getStock().contains(Card.createUnknown()) ){
