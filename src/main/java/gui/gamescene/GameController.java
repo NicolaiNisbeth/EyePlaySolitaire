@@ -201,12 +201,15 @@ class GameController {
         for(int i=0; i<7; i++){
             List<Card> newTableau = newGameState.getTableaus().get(i);
 
+            // Create unknown cards in the new tableau
             int unknownCount = 0;
-            for(Card card : currentGameState.getTableaus().get(i) )
-                if( card.equals(Card.createUnknown())) {
+            for(Card card : currentGameState.getTableaus().get(i) ) {
+                if (card.equals(Card.createUnknown())) {
                     newTableau.add(Card.createUnknown());
                     unknownCount++;
                 }
+            }
+
 
             for(Card card : detectedGameState.getTableaus().get(i) ) {
                 if (!firstGameState && isNewCard(currentGameState, card)) {
