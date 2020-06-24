@@ -49,6 +49,9 @@ public interface IActionPrompter {
     void promptStockToFoundation(int stockIndex, int foundationIndex);
 
 
+    void gameWon();
+
+
     /**
      * Prompts the user that action was computed
      */
