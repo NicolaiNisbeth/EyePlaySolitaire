@@ -1,8 +1,9 @@
 package gui.gamescene.gamestate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import ai.state.Deck;
+import ai.state.Foundation;
+
+import java.util.*;
 
 
 /**
@@ -96,6 +97,12 @@ public class GameState {
 
     public List<Card> getTableau(int idx){
         return tableaus.get(idx);
+    }
+
+    public Card getTableauTop(int tableauIndex){
+        List<Card> tableau = tableaus.get(tableauIndex);
+        if( tableau.size() == 0 ) return null;
+        return tableau.get(tableau.size()-1);
     }
 
     public List<List<Card>> getFoundations() {
@@ -223,6 +230,61 @@ public class GameState {
         }
 
         return true;
+    }
+
+
+
+    /** Returns a random card, missing from the Game State */
+    public Card getMissingCard(){
+        List<Card> missingCards = getMissingCards();
+        if( missingCards.size() == 0 ) return null;
+        Random random = new Random();
+        return missingCards.get(random.nextInt(missingCards.size()));
+    }
+
+    /** Returns a list of all cards missing from this state (or cards which are unknown) */
+    public List<Card> getMissingCards(){
+        List<Card> missingCards = Card.createDeck(false);
+        for( int i=missingCards.size()-1; i >= 0; i-- ){
+            if( containsCard(missingCards.get(i)) ) missingCards.remove(i);
+        }
+        return missingCards;
+    }
+
+    /** Tests if the Game State contains the given card, and if it's known */
+    public boolean containsCard(Card card){
+        for( List<Card> foundation : foundations )
+            if( foundation.contains(card)) return true;
+        for( List<Card> tableau : tableaus )
+            if( tableau.contains(card)) return true;
+        if( stock.contains(card) ) return true;
+        if( flipped.contains(card)) return true;
+        return false;
+    }
+
+
+    /**
+     * Generates a random valid starting state
+     *
+     * @param unknownStock  Whether or not the stock should be filled with unknown cards
+     */
+    public static GameState randomStartingState(boolean unknownStock){
+        GameState state = new GameState();
+        List<Card> deck = Card.createDeck(true);
+
+        for( int i=0; i<7; i++){
+            for( int j=0; j<i; j++){
+                state.addToTableau(i, Card.createUnknown());
+            }
+            state.addToTableau(i, deck.remove(deck.size()-1));
+        }
+
+        for( int i=0; i<24; i++ ){
+            if( unknownStock ) state.addToStock(Card.createUnknown());
+            else state.addToStock(deck.remove(deck.size()-1));
+        }
+
+        return state;
     }
 
 

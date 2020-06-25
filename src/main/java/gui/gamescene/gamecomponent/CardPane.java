@@ -12,25 +12,24 @@ import javafx.scene.paint.Color;
  * of a dynamic card image. */
 class CardPane extends Pane {
 
-    static int counter = 0;
-
-    CardPane(Image cardImage) {
+    CardPane(Image cardImage, boolean dropShadow) {
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(cardImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
         setBackground(background);
 
         // Add card drop shadow
-        DropShadow shadow = new DropShadow(2, new Color(0, 0, 0, 0.5));
-        shadow.setWidth(0);
-        shadow.setOffsetY(-2);
-        setEffect(shadow);
-
-        borderGlow();
+        if(dropShadow){
+            DropShadow shadow = new DropShadow(2, new Color(0, 0, 0, 0.5));
+            shadow.setWidth(0);
+            shadow.setOffsetY(-2);
+            setEffect(shadow);
+        }
     }
 
-    public void borderGlow() {
-        /**https://blog.idrsolutions.com/2014/02/tutorial-create-border-glow-effect-javafx/ **/
+
+    public void borderGlow( Color color) {
+        /* https://blog.idrsolutions.com/2014/02/tutorial-create-border-glow-effect-javafx/ */
         DropShadow borderGlow = new DropShadow();
         int depth = 100; //Setting the uniform variable for the glow width and height
         borderGlow.setOffsetY(0f);
@@ -38,13 +37,16 @@ class CardPane extends Pane {
         borderGlow.setWidth(depth);
         borderGlow.setHeight(depth);
         borderGlow.setSpread(0.5);
+        borderGlow.setColor(color);
+        setEffect(borderGlow);
+    }
 
-        if (counter % 2 == 0) {
-            borderGlow.setColor(Color.RED);
-        } else if(counter % 2 != 0) {
-            borderGlow.setColor(Color.WHITE);
-        }
 
-        counter++;
+    public void disableGlow(){
+        // Add card drop shadow
+        DropShadow shadow = new DropShadow(2, new Color(0, 0, 0, 0.5));
+        shadow.setWidth(0);
+        shadow.setOffsetY(-2);
+        setEffect(shadow);
     }
 }

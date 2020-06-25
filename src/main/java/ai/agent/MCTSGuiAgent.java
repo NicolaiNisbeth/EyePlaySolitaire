@@ -5,7 +5,7 @@ import ai.demo.SolitaireAI;
 import ai.heuristic.Heuristic;
 import ai.state.ActionFinder52;
 import ai.state.State;
-import gui.gamescene.aiinterface.IGamePrompter;
+import gui.gamescene.aiinterface.IActionPrompter;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.gamestate.GameState;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -22,7 +22,7 @@ public class MCTSGuiAgent implements ISolitaireAI {
     private Node root;
 
     @Override
-    public void computeAction(GameState gameState, IGamePrompter prompter) throws IllegalGameStateException {
+    public void computeAction(GameState gameState, IActionPrompter prompter) throws IllegalGameStateException {
         throw new NotImplementedException();
     }
 
@@ -36,7 +36,7 @@ public class MCTSGuiAgent implements ISolitaireAI {
     }
 
     @Override
-    public void endActionComputation(IGamePrompter prompter) {
+    public void endActionComputation(IActionPrompter prompter) {
         calculating = false;
         if(calculator == null || currentState == null) {
             throw new IllegalStateException("Must call startActionComputation first");
@@ -135,7 +135,6 @@ public class MCTSGuiAgent implements ISolitaireAI {
                 newRoot = child;
         }
         if(newRoot == null) {
-            System.out.println("AAAA?");
             return new Node(state, null, null);
         }
         newRoot.parent = null;

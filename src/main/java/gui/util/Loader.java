@@ -18,8 +18,8 @@ public class Loader extends VBox {
 
     private static Image IMAGE = new Image("images/loadingspinner.gif", false);
 
-    private static ImageView spinner;
-    private static Text loadingText;
+    private ImageView spinner;
+    private Text loadingText;
 
     public Loader(int width, int height, int fontSize){
         spinner = new ImageView(IMAGE);

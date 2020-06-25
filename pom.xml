@@ -21,7 +21,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>cv.communication.ClientStarter</mainClass>
+                            <mainClass>gui.SceneController</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -69,7 +69,15 @@
                 <targetPath>${project.build.directory}/release/ComputerVision</targetPath>
                 <includes>
                     <include>source/</include>
+                    <include>input/</include>
                     <include>requirements.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <includes>
+                    <include>*/</include>
                 </includes>
             </resource>
         </resources>
@@ -83,6 +91,13 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180813</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -2,10 +2,13 @@ package gui.gamescene;
 
 import ai.agent.MCTSGuiAgent;
 import ai.heuristic.Cocktail;
+
 import ai.heuristic.Heuristic;
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.ISolitaireAI;
+import gui.gamescene.aiinterface.ManualAI;
 import gui.gamescene.cvinterface.ISolitaireCV;
+import gui.gamescene.cvinterface.ManualCV;
 import gui.gamescene.gamestate.Card;
 import gui.gamescene.gamestate.GameState;
 
@@ -21,53 +24,82 @@ class GameController {
     private GameState lastGameState; // The most recent game state received from CV (not the most recent activated one though)
     private GameState detectedGameState;
     private GameState newGameState = null;
-    private GameState currentGameState = setupInitialGameState();
+    private GameState currentGameState = GameState.randomStartingState(true);
 
     private boolean firstGameState = true;
 
-    private IConsole console = null;
+    //private IConsole console = null;
+    private ISolitaireAI ai;
+    private ISolitaireCV cv;
     private Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
-    private ISolitaireAI ai = new MCTSGuiAgent(-1,heuristic);
-    private ISolitaireCV cv = new SolitaireCV();
-
     private boolean computationRunning = false;
     private boolean detectionRunning = false;
 
+    private static List<Card> predefinedStock;
 
-    GameController(GameScene scene) {
+
+    GameController(GameScene scene, boolean manualAI, boolean manualCV, boolean usePredefinedStock) {
         this.scene = scene;
-        console = scene.getConsole();
+
+        // Setup control component
+        scene.getControlComponent().onDetectStarted(this::startDetection);
+        scene.getControlComponent().onComputeStarted(this::compute);
+        scene.getControlComponent().onComputeStopped(this::stopCompute);
+
+
+
+        scene.getControlComponent().disableButtons(true);
+
+        // Remove top cards from game state
+        for( List<Card> tableau : currentGameState.getTableaus() )
+            tableau.remove(tableau.size()-1);
+
+        cv = manualCV ? new ManualCV() : new SolitaireCV();
+        ai = manualAI ? new ManualAI() : new MCTSGuiAgent(-1,heuristic);
 
         cv.setImageUpdateListener( (newImage) -> scene.getCameraComponent().updateImage(newImage) );
         cv.setErrorListener(err -> scene.getCameraComponent().showError(err) );
         cv.setGameStateUpdateListener(this::onDetection);
-        cv.start();
 
+
+
+        // Setup initial stock
+        List<Card> stock;
+        if( manualCV ){
+            stock = ((ManualCV) cv).getPredefinedStock();
+        }else if( usePredefinedStock ){
+            stock = predefinedStock;
+        }else{
+            stock = new LinkedList<>();
+            for(int i=0; i<24; i++) stock.add(Card.createUnknown());
+        }
+        currentGameState.setStock(stock);
+
+        //currentGameState = customStartingState();
+        //firstGameState = false;
+
+        // Intialize game and camera component
         scene.getGameComponent().updateGameState(currentGameState);
-
         scene.getCameraComponent().startLoading("Starting computer vision...");
 
-        // TODO: Comment this in, if you don't want to traverse stock
-        //setupTestStock(currentGameState.getStock());
-
-        registerInputCommands();
+        // Initialize computer vision
+        cv.initialize(() -> {
+            scene.getCameraComponent().showMessage("Computer vision is ready!");
+            scene.getControlComponent().disableButtons(false);
+        });
     }
 
 
-    // For testing purposes
+    // Default constructor for testing purposes
     private GameController() { }
 
-
-
-    private void registerInputCommands() {
-        console.registerInputCommand("detect", this::startDetection);
-        console.registerInputCommand("stop", this::stopWork);
-        console.registerInputCommand("compute", this::compute);
+    public GameState getCurrentGameState(){
+        return currentGameState;
     }
 
-
     private void startDetection() {
-        console.printInfo("Starting computervision detection (write 'stop' to lock detection)");
+        // console.printInfo("Starting computervision detection (write 'stop' to lock detection)");
+        cv.start();
         detectedGameState = lastGameState;
         if( detectedGameState != null )
             updateGameState();
@@ -84,64 +116,60 @@ class GameController {
     }
 
 
-    // Stops both computervision, and AI
-    private void stopWork()  {
-        if( detectionRunning ) {
-            detectionRunning = false;
-            console.printInfo("Stopped detection");
-        }
+    private void stopCompute(){
         if( computationRunning ){
             computationRunning = false;
-            console.printInfo("Stopping computation of best move");
             ai.endActionComputation(scene.getPrompter());
         }
     }
 
 
     private void compute(){
-        stopWork();
-        firstGameState = false;
-        currentGameState = newGameState;
+        cv.pause();
+        if( newGameState == null ){
+            scene.getControlComponent().displayMessage("No state has been detected yet!");
+        }else{
+            detectionRunning = false;
+            firstGameState = false;
+            currentGameState = newGameState;
 
-        // Update the stock cards
-        if( currentGameState.getStock().contains(Card.createUnknown()) ){
-            updateStock();
-        }
+            // Update the stock cards
+            if( currentGameState.getStock().contains(Card.createUnknown()) ){
+                updateStock();
+            }
 
-
-        // Run the computation if game state is ready
-        if( !currentGameState.getStock().contains(Card.createUnknown()) ){
-            updateGameState();
-            // Run computation
-            computeNextAction(currentGameState);
-            console.printInfo("Computing the best move (write 'stop' to get result)");
-        }
-    }
-
-
-    // Creates a game state with all the unknown cards (tableau and stock)
-    private static GameState setupInitialGameState(){
-        GameState state = new GameState();
-        for(int i=0; i<24; i++){
-            state.addToStock(Card.createUnknown());
-        }
-        for(int i=0; i<7; i++){
-            for(int j=0; j<i; j++){
-                state.addToTableau(i, Card.createUnknown());
+            boolean gameWon = true;
+            for( List<Card> foundation : currentGameState.getFoundations() ){
+                if( foundation.size() != 13 ) gameWon = false;
+            }
+            if( gameWon ){
+                scene.getPrompter().gameWon();
+            }else{
+                // Run the computation if game state is ready
+                if( !currentGameState.getStock().contains(Card.createUnknown()) ){
+                    updateGameState();
+                    // Run computation
+                    computeNextAction(currentGameState);
+                }else{
+                    computationRunning = false;
+                }
             }
         }
-        return state;
+
     }
 
 
     private void updateStock(){
         if( detectedGameState.getFlipped().size() == 0){
-            console.printError("No cards are drawn from the stock. Still need to detect " + currentGameState.getStock().size() + " cards.");
+            int unknownCount = 0;
+            for( Card card : currentGameState.getStock() )
+                if( card.isUnknown() ) unknownCount++;
+            scene.getControlComponent().displayMessage("Still need to detect " + unknownCount + " cards, but none are drawn from the stock");
             return;
         }
 
         if( compareCardLists(currentGameState.getStock(), detectedGameState.getFlipped()) ){
-            console.printError("You have drawn no new cards. Draw 3 new cards from the stock!");
+            scene.getControlComponent().displayMessage("You have drawn no new cards. Draw 3 new cards from the stock!");
             return;
         }
 
@@ -161,7 +189,7 @@ class GameController {
 
         // Print info to user
         String cardLabels = addedCards.stream().map(Card::toStringShort).collect(joining(", ", "", ""));
-        console.printInfo("Added " + addedCards.size() + " new cards to the stock: " + cardLabels);
+        scene.getControlComponent().displayMessage("Added " + addedCards.size() + " new cards to the stock: " + cardLabels);
     }
 
 
@@ -176,12 +204,15 @@ class GameController {
         for(int i=0; i<7; i++){
             List<Card> newTableau = newGameState.getTableaus().get(i);
 
+            // Create unknown cards in the new tableau
             int unknownCount = 0;
-            for(Card card : currentGameState.getTableaus().get(i) )
-                if( card.equals(Card.createUnknown())) {
+            for(Card card : currentGameState.getTableaus().get(i) ) {
+                if (card.equals(Card.createUnknown())) {
                     newTableau.add(Card.createUnknown());
                     unknownCount++;
                 }
+            }
+
 
             for(Card card : detectedGameState.getTableaus().get(i) ) {
                 if (!firstGameState && isNewCard(currentGameState, card)) {
@@ -213,7 +244,14 @@ class GameController {
                 if( foundation.size() > 1 ){
                     System.out.printf("WARNING: Foundation %d of detected game state is larger than 1 - %d to be exact (how's that possible)?", i, foundation.size() );
                 }
+
                 Card card = foundation.get(0);
+
+                // Remove card from stock, if it was moved from there
+                if (!firstGameState && isNewCard(currentGameState, card) && newGameState.getStock().contains(card) ){
+                    newGameState.getStock().remove(card);
+                }
+
                 for (int j = 1; j <= card.getValue(); j++) {
                     newGameState.addToFoundations(i, new Card(card.getSuit(), j));
                 }
@@ -239,7 +277,7 @@ class GameController {
      * Sends an asynchronous computation request to the AI on a new non-UI thread.
      */
     private void computeNextAction(GameState state){
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try{
                 computationRunning = true;
                 ai.startActionComputation(state);
@@ -248,7 +286,9 @@ class GameController {
                 e.printStackTrace();
                 System.out.println(state);
             }
-        }).start();
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
 
@@ -263,177 +303,64 @@ class GameController {
     }
 
 
-    public static void main(String[] args) {
-        List<GameState> testStates = createTestStates();
-        GameController gameController = new GameController();
-        gameController.console = new TestConsole();
-        gameController.setupInitialGameState();
-        System.out.println(gameController.currentGameState);
 
-        // Update flipped
-        System.out.println(testStates.get(1));
-        gameController.detectedGameState = testStates.get(1);
-        gameController.updateStock();
+    private static GameState customStartingState(){
+        GameState state = new GameState();
 
-        // Update flipped
-        System.out.println(testStates.get(2));
-        gameController.detectedGameState = testStates.get(2);
-        gameController.updateStock();
+        for(int i=1; i<=13; i++){
+            state.addToFoundations(0, new Card(Card.Suit.DIAMONDS, i));
+        }
 
-        // Update tableaus
-        gameController.detectedGameState = testStates.get(0);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
-        gameController.firstGameState = false;
+        for(int i=1; i<=12; i++){
+            state.addToFoundations(1, new Card(Card.Suit.CLUBS, i));
+        }
 
-        // Update
-        gameController.detectedGameState = testStates.get(3);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
+        for(int i=1; i<=11; i++){
+            state.addToFoundations(2, new Card(Card.Suit.HEARTS, i));
+        }
 
-        // Update
-        gameController.detectedGameState = testStates.get(4);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
+        for(int i=1; i<=11; i++){
+            state.addToFoundations(3, new Card(Card.Suit.SPADES, i));
+        }
 
-        // Update
-        gameController.detectedGameState = testStates.get(5);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
+        state.addToTableau(0, new Card(Card.Suit.SPADES, 13));
+        state.addToTableau(6, new Card(Card.Suit.SPADES, 12));
 
-        // Update
-        gameController.detectedGameState = testStates.get(6);
-        gameController.updateGameState();
-        gameController.currentGameState = gameController.newGameState;
+        state.addToTableau(3, new Card(Card.Suit.CLUBS, 13));
 
+        state.addToTableau(4, new Card(Card.Suit.HEARTS, 13));
+        state.addToTableau(0, new Card(Card.Suit.HEARTS, 12));
 
-        System.out.println(gameController.currentGameState);
+        return state;
     }
 
 
-
-    private static List<GameState> createTestStates(){
-        List<GameState> states = new LinkedList<>();
-
-        GameState state;
-
-        state = new GameState();
-        state.addToTableau(0, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        states.add(state);
-
-        state = new GameState();
-        state.addToFlipped(new Card(Card.Suit.CLUBS, 2));
-        state.addToFlipped(new Card(Card.Suit.SPADES, 4));
-        state.addToFlipped(new Card(Card.Suit.HEARTS, 1));
-        states.add(state);
-
-
-        state = new GameState();
-        state.addToFlipped(new Card(Card.Suit.HEARTS, 1));
-        state.addToFlipped(new Card(Card.Suit.SPADES, 2));
-        state.addToFlipped(new Card(Card.Suit.HEARTS, 5));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(0, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 1));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(0, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 1));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(1, new Card(Card.Suit.SPADES, 1));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
-        states.add(state);
-
-        state = new GameState();
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 5));
-        state.addToTableau(2, new Card(Card.Suit.SPADES, 4));
-        state.addToTableau(2, new Card(Card.Suit.HEARTS, 3));
-        state.addToTableau(3, new Card(Card.Suit.DIAMONDS, 12));
-        state.addToTableau(4, new Card(Card.Suit.CLUBS, 13));
-        state.addToTableau(5, new Card(Card.Suit.CLUBS, 9));
-        state.addToTableau(6, new Card(Card.Suit.SPADES, 2));
-        state.addToTableau(6, new Card(Card.Suit.HEARTS, 1));
-        state.addToFoundations(0, new Card(Card.Suit.SPADES, 1));
-        states.add(state);
-
-        return states;
-    }
-
-
-    private static class TestConsole implements IConsole {
-
-        @Override
-        public void printError(String msg) {
-            System.out.println("Error: " + msg);
-        }
-
-        @Override
-        public void printInfo(String msg) {
-            System.out.println("Info: " + msg);
-        }
-
-        @Override
-        public void registerInputCommand(String input, InputCommand action) {
-
-        }
-    }
-
-
-    private static void setupTestStock(List<Card> stock){
-        stock.set(0, new Card(Card.Suit.HEARTS,  1));
-        stock.set(1, new Card(Card.Suit.SPADES,  6));
-        stock.set(2, new Card(Card.Suit.DIAMONDS, 13));
-        stock.set(3, new Card(Card.Suit.HEARTS, 9));
-        stock.set(4, new Card(Card.Suit.CLUBS, 11));
-        stock.set(5, new Card(Card.Suit.SPADES, 2));
-        stock.set(6, new Card(Card.Suit.SPADES, 4));
-        stock.set(7, new Card(Card.Suit.DIAMONDS, 5));
-        stock.set(8, new Card(Card.Suit.DIAMONDS, 7));
-        stock.set(9, new Card(Card.Suit.HEARTS, 8));
-        stock.set(10, new Card(Card.Suit.CLUBS, 6));
-        stock.set(11, new Card(Card.Suit.SPADES, 13));
-        stock.set(12, new Card(Card.Suit.CLUBS, 7));
-        stock.set(13, new Card(Card.Suit.DIAMONDS, 1));
-        stock.set(14, new Card(Card.Suit.HEARTS, 7));
-        stock.set(15, new Card(Card.Suit.HEARTS, 4));
-        stock.set(16, new Card(Card.Suit.CLUBS, 10));
-        stock.set(17, new Card(Card.Suit.CLUBS, 12));
-        stock.set(18, new Card(Card.Suit.CLUBS, 3));
-        stock.set(19, new Card(Card.Suit.SPADES, 1));
-        stock.set(20, new Card(Card.Suit.HEARTS, 5));
-        stock.set(21, new Card(Card.Suit.DIAMONDS, 8));
-        stock.set(22, new Card(Card.Suit.HEARTS, 11));
-        stock.set(23, new Card(Card.Suit.SPADES, 10));
+    // Setup the predefined stock
+    static {
+        predefinedStock = new LinkedList<>();
+        predefinedStock.add(new Card(Card.Suit.HEARTS,  1));
+        predefinedStock.add(new Card(Card.Suit.SPADES,  6));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 13));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 9));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 11));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 2));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 4));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 5));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 7));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 8));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 6));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 13));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 7));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 1));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 7));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 4));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 10));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 12));
+        predefinedStock.add(new Card(Card.Suit.CLUBS, 3));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 1));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 5));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 8));
+        predefinedStock.add(new Card(Card.Suit.HEARTS, 11));
+        predefinedStock.add(new Card(Card.Suit.SPADES, 10));
     }
 }

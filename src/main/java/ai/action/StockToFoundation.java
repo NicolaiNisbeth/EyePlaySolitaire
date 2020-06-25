@@ -5,7 +5,7 @@ import ai.state.Foundation;
 import ai.state.Producer;
 import ai.state.State;
 import ai.state.Stock;
-import gui.gamescene.aiinterface.IGamePrompter;
+import gui.gamescene.aiinterface.IActionPrompter;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,11 +41,10 @@ public class StockToFoundation implements Action {
     }
 
     @Override
-    public void prompt(IGamePrompter prompter, State state) {
+    public void prompt(IActionPrompter prompter, State state) {
         Stock stock = state.getStock();
         int index = stock.getCardIndex(card);
-        //prompter.promptStockToFoundation(index, card.getSuit());
-        prompter.promptStockToFoundation(card, card.getSuit());
+        prompter.promptStockToFoundation(index, card.getSuit());
     }
 
     @Override

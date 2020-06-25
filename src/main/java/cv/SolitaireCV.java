@@ -21,12 +21,14 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
     private Server server;
     private ImageUpdateListener imageUpdateListener;
     private GameStateAnalyzer gameStateAnalyzer = new GameStateAnalyzer(416,416,2);
-    private boolean paused = false;
+    private boolean paused = true;
     private ErrorListener errorListener;
+    private InitializedCallback initializeCallback;
 
 
     @Override
-    public void start() {
+    public void initialize(InitializedCallback callback) {
+        this.initializeCallback = callback;
         try {
             // Start the server
             server = new Server(this, this);
@@ -48,15 +50,33 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
         }
     }
 
+
+    @Override
+    public void start() {
+        paused = false;
+
+        try{
+            // Signal Client to start detections
+            server.sendMessage(new Message(200, null));
+        }catch(IOException e){
+            e.printStackTrace();
+            errorListener.onError("Server error when sending start message to client");
+        }
+    }
+
+
     @Override
     public void pause() {
         paused = true;
+        try{
+            // Signal Client to pause detections
+            server.sendMessage(new Message(201, null));
+        }catch(IOException e){
+            e.printStackTrace();
+            errorListener.onError("Server error when sending stop message to client");
+        }
     }
 
-    @Override
-    public void unpause() {
-        paused = false;
-    }
 
     @Override
     public void setImageUpdateListener(ImageUpdateListener imageUpdateListener) {
@@ -87,18 +107,17 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
             switch(message.getCode()){
                 case 100:
                     // Client is ready
-                    System.out.println("Client is ready!");
-                    server.sendMessage(new Message(201, null));
+                    System.out.println("CV client is ready!");
+                    server.sendMessage(new Message(202, null));
+                    initializeCallback.onComputerVisionInitialized();
                     break;
                 case 101: // New Detections
                     decodeDetections(message.getData());
-                    System.out.println("Received game state: " + message.getData());
-
                     break;
                 case 102: // New Image
                     JSONObject data = message.getData();
                     if( data.length() == 0 ){
-                        server.sendMessage(new Message(201, null));
+                        server.sendMessage(new Message(202, null));
                     }else{
                         decodeImageMessage(data.getString("image"), data.getInt("width"), data.getInt("height"));
                     }
@@ -135,7 +154,7 @@ public class SolitaireCV implements ISolitaireCV, Server.ClientConnectCallback, 
                 imageUpdateListener.onImageUpdate(fxImage);
 
             // Signal to client that image was received
-            server.sendMessage(new Message(201, null));
+            server.sendMessage(new Message(202, null));
         } catch (IOException e) {
             e.printStackTrace();
         }

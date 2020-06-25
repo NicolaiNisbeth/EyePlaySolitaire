@@ -69,6 +69,7 @@ public class Server {
                 notifyError("Error occured when awaiting client: " +e.getMessage());
             }
         });
+        clientThread.setDaemon(true);
         clientThread.start();
     }
 

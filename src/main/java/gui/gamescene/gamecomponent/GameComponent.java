@@ -1,6 +1,7 @@
 package gui.gamescene.gamecomponent;
 
 
+import gui.gamescene.IComponent;
 import gui.gamescene.gamestate.GameState;
 import gui.gamescene.gamecomponent.CardStackContainer.Orientation;
 import gui.gamescene.gamestate.Card;
@@ -16,20 +17,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GameComponent implements IGameComponent {
+public class GameComponent implements IComponent {
 
     private StackPane container = new StackPane();
     private Text infoText = new Text();
 
     private GridPane grid = new GridPane();
-    private GameState gameState = new GameState();
     private CardImageLoader imageLoader = new CardImageLoader();
     private CardContainer stock;
     private CardStackContainer stockOverview;
     private CardStackContainer flipped;
     private List<CardStackContainer> tableaus;
     private List<CardContainer> foundations;
-
 
 
     public GameComponent(){
@@ -115,15 +114,18 @@ public class GameComponent implements IGameComponent {
         if( card.isUnknown() )
             return createCardBackPane();
         else
-            return new CardPane(imageLoader.getCard(card));
+            return new CardPane(imageLoader.getCard(card), true);
     }
 
     private CardPane createCardBackPane(){
-        return new CardPane(imageLoader.getCardBack());
+        return new CardPane(imageLoader.getCardBack(), true);
+    }
+
+    private CardPane createFoundationBorderPane(){
+        return new CardPane(imageLoader.getFoundationBorder(), false);
     }
 
 
-    @Override
     public void updateGameState(GameState gameState) {
         // Make sure it's run on the ui thread
         Platform.runLater(() -> {
@@ -140,7 +142,7 @@ public class GameComponent implements IGameComponent {
             List<Card> stock = gameState.getStock();
             for (Card card : stock) {
                 CardPane pane = createCardPane(card);
-                this.stockOverview.addCard(pane);
+                this.stockOverview.addCardPane(pane);
             }
 
             // Update Flipped cards
@@ -148,7 +150,7 @@ public class GameComponent implements IGameComponent {
             List<Card> flipped = gameState.getFlipped();
             for (Card card : flipped) {
                 CardPane pane = createCardPane(card);
-                this.flipped.addCard(pane);
+                this.flipped.addCardPane(pane);
             }
 
             // Update tableaus
@@ -156,10 +158,13 @@ public class GameComponent implements IGameComponent {
                 List<Card> tableau = gameState.getTableaus().get(i);
 
                 tableaus.get(i).clearCards();
-
-                for (Card card : tableau) {
-                    CardPane pane = createCardPane(card);
-                    tableaus.get(i).addCard(pane);
+                if( tableau.size() == 0){
+                    tableaus.get(i).addCardPane(createFoundationBorderPane());
+                }else{
+                    for (Card card : tableau) {
+                        CardPane pane = createCardPane(card);
+                        tableaus.get(i).addCardPane(pane);
+                    }
                 }
             }
 
@@ -172,9 +177,24 @@ public class GameComponent implements IGameComponent {
                 if( foundation.size() > 0 ){
                     Card topCard = foundation.get(foundation.size()-1);
                     foundations.get(i).setCard(createCardPane(topCard));
+                }else{
+                    foundations.get(i).setCard(createFoundationBorderPane());
                 }
             }
         });
+    }
+
+    public void highlightTableauCard(int tableauIndex, int cardIndex,  Color color){
+        int adjustedCardIndex = cardIndex < 0 ? 0 : cardIndex;
+        tableaus.get(tableauIndex).getCard(adjustedCardIndex).borderGlow(color);
+    }
+
+    public void highlightFoundation(int index, Color color){
+        ((CardPane) foundations.get(index).getChildren().get(0)).borderGlow(color);
+    }
+
+    public void highlightStockCard(int index, Color color){
+        stockOverview.getCard(index).borderGlow(color);
     }
 
     @Override

@@ -43,17 +43,26 @@ public class ClientStarter {
         new AsyncInputReader(process.getErrorStream(), errorOutputListener);
 
         // Wait for process to finish on seperate thread
-        new Thread(() -> {
+        Thread waitingThread = new Thread(() -> {
             boolean processFinished = false;
             while(!processFinished)
                 try{
                     process.waitFor(); // Blocks the thread until process is finished
                     processFinished = true;
-                }catch(InterruptedException e){}
+                }catch(InterruptedException e){
+                    System.out.println("INTERRUPTED!");
+                }
 
             if( processFinishedCallback != null )
                 processFinishedCallback.onClientFinish(process.exitValue());
-        }).start();
+        });
+        waitingThread.setDaemon(true);
+        waitingThread.start();
+
+        /*  Shutdown thread which runs when program terminates,
+            ensuring that the child process is killed. */
+        Thread shutdownThread = new Thread(() -> process.destroyForcibly() );
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
     }
 
 
@@ -139,6 +148,7 @@ public class ClientStarter {
             reader = new BufferedReader(new InputStreamReader(stream));
 
             thread = new Thread(this::readOutput);
+            thread.setDaemon(true);
             thread.start();
         }
 

@@ -1,12 +1,11 @@
 package ai.action;
 
 import ai.state.Card;
-import ai.state.Foundation;
 import ai.state.Producer;
 import ai.state.State;
 import ai.state.Stock;
 import ai.state.Tableau;
-import gui.gamescene.aiinterface.IGamePrompter;
+import gui.gamescene.aiinterface.IActionPrompter;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,11 +43,10 @@ public class StockToTableau implements Action {
     }
 
     @Override
-    public void prompt(IGamePrompter prompter, State state) {
+    public void prompt(IActionPrompter prompter, State state) {
         Stock stock = state.getStock();
         int index = stock.getCardIndex(card);
-        //prompter.promptStockToTableau(index, tableauIndex);
-        prompter.promptStockToTableau(card, tableauIndex);
+        prompter.promptStockToTableau(index, tableauIndex);
     }
 
     @Override

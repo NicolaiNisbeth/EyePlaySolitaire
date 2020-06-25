@@ -58,12 +58,16 @@ public class CardStackContainer extends StackPane {
      *
      * @throws IndexOutOfBoundsException If the stack is full (size given on construction)
      */
-    public void addCard(CardPane card){
+    public void addCardPane(CardPane card){
         if( cardCount == size )
             throw new IndexOutOfBoundsException(String.format("Too many cards in container. Size is %d.",size));
 
         containers[cardCount].setNode(card);
         cardCount++;
+    }
+
+    public CardPane getCard(int index){
+        return (CardPane) containers[index].getChildren().get(0);
     }
 
 

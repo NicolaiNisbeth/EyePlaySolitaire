@@ -17,7 +17,7 @@ public interface ISolitaireAI {
      * @throws IllegalGameStateException If the given GameState does not conform to the Game Rules.
      */
     @Deprecated
-    void computeAction(GameState gameState, IGamePrompter prompter) throws IllegalGameStateException;
+    void computeAction(GameState gameState, IActionPrompter prompter) throws IllegalGameStateException;
 
 
 
@@ -33,13 +33,13 @@ public interface ISolitaireAI {
 
     /**
      * Terminates the started computation, causing the best action to be prompted
-     * via the given IGamePrompter
+     * via the given IActionPrompter
      *
      * @param prompter Prompter which implements the prompting of a given action.
      *
      * @throws IllegalStateException    Thrown if computation has not been started yet using the startActionComputation
      */
-    void endActionComputation(IGamePrompter prompter);
+    void endActionComputation(IActionPrompter prompter);
 
 
     class IllegalGameStateException extends Exception { }

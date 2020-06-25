@@ -1,5 +1,3 @@
 # Computer Vision Input
-This folder contain the input files for the application's computer vision.  
-Some of the required input files are not included in the git repository, but must be downloaded manually from selected sources.
-
-TODO: Add download sources here
+This folder contain the input files for the application's computer vision. 
+To run the using computer vision, you must download the .weights file and place it in this folder [https://drive.google.com/file/d/1dU54CXJGaNa5mWBCrZsBpgsy_mCRXiGt/view?usp=sharing](https://drive.google.com/file/d/1dU54CXJGaNa5mWBCrZsBpgsy_mCRXiGt/view?usp=sharing)
