@@ -47,6 +47,9 @@ class GameController {
         scene.getControlComponent().onDetectStarted(this::startDetection);
         scene.getControlComponent().onComputeStarted(this::compute);
         scene.getControlComponent().onComputeStopped(this::stopCompute);
+
+
+
         scene.getControlComponent().disableButtons(true);
 
         // Remove top cards from game state
