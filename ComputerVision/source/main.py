@@ -6,7 +6,6 @@ import base64
 import io
 import cv2
 
-
 from message import Message
 from connector import Connector
 from detector import Detector
@@ -34,6 +33,7 @@ def main():
     
     # Start Detector
     detector = Detector(new_detections)
+    detector.start_detections()
 
     # Notify server that the client has started
     connector.send_message(Message(100, "{}"))
