@@ -3,6 +3,7 @@ package gui.gamescene;
 import ai.agent.MCTSGuiAgent;
 import ai.heuristic.Cocktail;
 
+import ai.heuristic.Heuristic;
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.aiinterface.ManualAI;
@@ -30,7 +31,7 @@ class GameController {
     //private IConsole console = null;
     private ISolitaireAI ai;
     private ISolitaireCV cv;
-
+    private Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
     private boolean computationRunning = false;
     private boolean detectionRunning = false;
 
@@ -44,6 +45,9 @@ class GameController {
         scene.getControlComponent().onDetectStarted(this::startDetection);
         scene.getControlComponent().onComputeStarted(this::compute);
         scene.getControlComponent().onComputeStopped(this::stopCompute);
+
+
+
         scene.getControlComponent().disableButtons(true);
 
         // Remove top cards from game state
@@ -51,7 +55,7 @@ class GameController {
             tableau.remove(tableau.size()-1);
 
         cv = manualCV ? new ManualCV() : new SolitaireCV();
-        ai = manualAI ? new ManualAI() : new MCTSGuiAgent(-1,new Cocktail(1,1,1,1,1,1,1,1,1));
+        ai = manualAI ? new ManualAI() : new MCTSGuiAgent(-1,heuristic);
 
         cv.setImageUpdateListener( (newImage) -> scene.getCameraComponent().updateImage(newImage) );
         cv.setErrorListener(err -> scene.getCameraComponent().showError(err) );
@@ -71,9 +75,8 @@ class GameController {
         }
         currentGameState.setStock(stock);
 
-        /*currentGameState = customStartingState();
-        firstGameState = false;
-        */
+        //currentGameState = customStartingState();
+        //firstGameState = false;
 
         // Intialize game and camera component
         scene.getGameComponent().updateGameState(currentGameState);
@@ -140,7 +143,7 @@ class GameController {
                 if( foundation.size() != 13 ) gameWon = false;
             }
             if( gameWon ){
-                scene.getPrompter().gameLost();
+                scene.getPrompter().gameWon();
             }else{
                 // Run the computation if game state is ready
                 if( !currentGameState.getStock().contains(Card.createUnknown()) ){
@@ -328,8 +331,6 @@ class GameController {
         state.addToTableau(4, new Card(Card.Suit.HEARTS, 13));
         state.addToTableau(0, new Card(Card.Suit.HEARTS, 12));
 
-
-
         return state;
     }
 
@@ -347,7 +348,7 @@ class GameController {
         predefinedStock.add(new Card(Card.Suit.DIAMONDS, 5));
         predefinedStock.add(new Card(Card.Suit.DIAMONDS, 7));
         predefinedStock.add(new Card(Card.Suit.HEARTS, 8));
-        predefinedStock.add(new Card(Card.Suit.CLUBS, 6));
+        predefinedStock.add(new Card(Card.Suit.DIAMONDS, 6));
         predefinedStock.add(new Card(Card.Suit.SPADES, 13));
         predefinedStock.add(new Card(Card.Suit.CLUBS, 7));
         predefinedStock.add(new Card(Card.Suit.DIAMONDS, 1));
