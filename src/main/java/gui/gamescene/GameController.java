@@ -3,6 +3,7 @@ package gui.gamescene;
 import ai.agent.MCTSGuiAgent;
 import ai.heuristic.Cocktail;
 
+import ai.heuristic.Heuristic;
 import cv.SolitaireCV;
 import gui.gamescene.aiinterface.ISolitaireAI;
 import gui.gamescene.aiinterface.ManualAI;
@@ -30,7 +31,7 @@ class GameController {
     //private IConsole console = null;
     private ISolitaireAI ai;
     private ISolitaireCV cv;
-
+    private Heuristic heuristic = new Cocktail(1,1,1,1,1,1,1,1,1);
     private boolean computationRunning = false;
     private boolean detectionRunning = false;
 
