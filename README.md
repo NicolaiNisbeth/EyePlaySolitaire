@@ -17,7 +17,9 @@ After pressing the start button, the game will be begin and instructions will be
 
 ## Results
 The AI is using the MCTS agent simply because it outperformed alternatives, as seen below. For clarification, score describes number of cards in the tableau.
+
 ![Image of system](https://github.com/NicolaiNisbeth/EyePlaySolitaire/blob/master/src/main/resources/images/results_ai.png?raw=true)
 
 For the fun of comparison, we also tested our agent on a relaxed version of solitaire where every card in the stack (top left corner) is available. As expected the win ratio increases drastically. Winning as much as 64% of the games.
+
 ![Image of system](https://github.com/NicolaiNisbeth/EyePlaySolitaire/blob/master/src/main/resources/images/results_ai_relaxed.png?raw=true)
