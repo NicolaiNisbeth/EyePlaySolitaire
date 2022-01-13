@@ -20,6 +20,6 @@ The AI is using the MCTS agent simply because it outperformed alternatives, as s
 
 ![Image of system](https://github.com/NicolaiNisbeth/EyePlaySolitaire/blob/master/src/main/resources/images/results_ai.png?raw=true)
 
-For the fun of comparison, we also tested our agent on a relaxed version of solitaire where every card in the stack (top left corner) is available at all times. As expected the win ratio increases drastically. Winning as much as 64% of the games.
+For the fun of comparison, we also tested our agent on a relaxed version of solitaire where every card in the stack (top left corner) is known at all times. As expected the win ratio increases drastically. Winning as much as 64% of the games.
 
 ![Image of system](https://github.com/NicolaiNisbeth/EyePlaySolitaire/blob/master/src/main/resources/images/results_ai_relaxed.png?raw=true)
